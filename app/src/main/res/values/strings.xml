@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MoneyGuardian</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="titulo_lista_de_amigos">Lista de amigos</string>
+    <string name="nuevo_amigo">Nuevo amigo</string>
+    <string name="nuevo_grupo_amigos">Nuevo grupo</string>
+    <string name="titulo_grupos_de_amigos">Grupos de amigos</string>
 </resources>
