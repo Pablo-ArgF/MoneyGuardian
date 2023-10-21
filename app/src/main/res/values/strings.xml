@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MoneyGuardian</string>
+    <string name="PagosConjuntos">Pagos conjuntos</string>
+    <string name="Amigos">Amigos</string>
 </resources>
