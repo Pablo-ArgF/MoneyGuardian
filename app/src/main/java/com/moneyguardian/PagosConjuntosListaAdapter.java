@@ -29,7 +29,7 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
     @Override
     public PagosConjuntosListaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_pagos_conjuntos, parent, false);
+                .inflate(R.layout.linea_recycler_view_pago_conjunto, parent, false);
         return new PagosConjuntosListaViewHolder(itemView);
     }
 
