@@ -56,12 +56,10 @@ public class ListaPagosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Mostramos el fragmento en el contenedor
-        View root= inflater.inflate(R.layout.activity_main, container, false);
-        TextView tvName = root.findViewById(R.id.namePago);
+        View root= inflater.inflate(R.layout.fragment_lista_pagos, container, false);
+        TextView tvName = root.findViewById(R.id.namePagos);
         tvName.setText(namePago);
         ImageView ivImagen = root.findViewById(R.id.iconPago);
-        Picasso.get()
-                .load(imagen).into(ivImagen);
 
         return root;
     }
