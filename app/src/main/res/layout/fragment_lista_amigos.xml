@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
@@ -20,7 +20,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
@@ -42,18 +42,20 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerListaGruposAmigos"
             android:layout_width="match_parent"
-            android:layout_height="266dp" />
+            android:layout_height="275dp"
+            />
 
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
+            android:background="?android:attr/listDivider"
+            android:layout_margin="10dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
@@ -75,6 +77,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerListaAmigos"
             android:layout_width="match_parent"
-            android:layout_height="224dp" />
+            android:layout_height="275dp"
+            />
+
     </LinearLayout>
 </FrameLayout>

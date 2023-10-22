@@ -81,7 +81,10 @@ public class ListaGruposAdapter extends RecyclerView.Adapter<ListaGruposAdapter.
         public void bindUser(final GrupoUsuarios grupo, final OnItemClickListener listener) {
             nombre.setText(grupo.getNombre());
             StringBuilder s = new StringBuilder();
-            grupo.getUsuarios().forEach(u -> s.append(u.getNombre()));
+            grupo.getUsuarios().forEach(u -> s.append(u.getNombre()+ ", "));
+            //we delete the coma on the last element and the last space
+            s.deleteCharAt(s.length()-2);
+            s.deleteCharAt(s.length()-1);
             usuarios.setText(s.toString());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {

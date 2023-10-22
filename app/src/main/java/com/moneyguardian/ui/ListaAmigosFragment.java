@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -144,6 +145,17 @@ public class ListaAmigosFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_lista_amigos, container, false);
         listaGruposView = root.findViewById(R.id.recyclerListaGruposAmigos);
         listaAmigosView = root.findViewById(R.id.recyclerListaAmigos);
+
+        listaGruposView.setHasFixedSize(true);
+
+        //we add the layout manager to the group list
+        RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(container.getContext());
+        listaGruposView.setLayoutManager(groupLayoutManager);
+
+        //we add the layout manager to the friend list
+        RecyclerView.LayoutManager friendLayoutManager = new LinearLayoutManager(container.getContext());
+        listaAmigosView.setLayoutManager(friendLayoutManager);
+
 
         //cargamos los datos en la vista
         cargarListaGruposAmigos();
