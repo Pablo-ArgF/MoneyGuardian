@@ -9,6 +9,5 @@
     <string name="amigo">amigo</string>
     <string name="nombreGrupo">nombre del grupo</string>
     <string name="participantesGrupo">user1, user2, user 3, user 4, user 5, user 6, user 7, user 8, user 9, user 10</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="NuevoItemPago">Crear Nuevo</string>
 </resources>
