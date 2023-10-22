@@ -40,7 +40,7 @@ public class PagosConjuntosFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static PagosConjuntosFragment newInstance(String pago) {
+    public static PagosConjuntosFragment newInstance() {
         PagosConjuntosFragment fragment = new PagosConjuntosFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -50,11 +50,19 @@ public class PagosConjuntosFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_pagos_conjuntos, container, false);
+
         if (getArguments() != null) {
 
             // cargarPagos
 
-            listaPagosConjuntosView = (RecyclerView) listaPagosConjuntosView.findViewById(R.id.recyclerPagosConjuntos);
+            listaPagosConjuntosView = (RecyclerView) root.findViewById(R.id.recyclerPagosConjuntos);
 
             listaPagosConjuntosView.setHasFixedSize(true);
 
@@ -69,11 +77,6 @@ public class PagosConjuntosFragment extends Fragment {
 
             listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
 
         // TODO Cargamos aquí la lista de pagos? O en un onACtivityResult?
         PagosConjuntosListaAdapter pagosConjuntosListaAdapter =
@@ -84,7 +87,7 @@ public class PagosConjuntosFragment extends Fragment {
         listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pagos_conjuntos, container, false);
+        return root;
     }
 
     // Click del item del adapter

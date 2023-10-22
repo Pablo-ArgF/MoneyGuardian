@@ -24,7 +24,7 @@
                 android:layout_weight="1"
 ></ImageView>
             <TextView
-                android:id="@+id/namePago"
+                android:id="@+id/namePagos"
                 android:layout_width="286dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
