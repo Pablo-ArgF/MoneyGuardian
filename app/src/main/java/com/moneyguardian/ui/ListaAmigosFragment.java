@@ -88,10 +88,11 @@ public class ListaAmigosFragment extends Fragment {
         Log.i("Click adapter","Item Clicked to be removed "+amigo.getNombre());
 
         // Handle delete button click
-        listaAmigos.remove(amigo);
+
         //TODO BD- creo que aqui va la logica de borrar amigos en bd
         int index = listaAmigos.indexOf(amigo);
         this.amigosAdapter.deleteAmigo(amigo);
+        listaAmigos.remove(amigo);
         this.amigosAdapter.notifyItemRemoved(index);
     }
 
