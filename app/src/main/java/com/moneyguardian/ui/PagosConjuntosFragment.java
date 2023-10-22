@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.moneyguardian.PagosConjuntosListaAdapter;
 import com.moneyguardian.R;
+import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 
 import java.util.ArrayList;
@@ -92,15 +93,10 @@ public class PagosConjuntosFragment extends Fragment {
 
     // Click del item del adapter
     public void clickonItem(PagoConjunto pagoConjunto) {
-        Log.i("Click adapter", "Item Clicked " + pagoConjunto.toString());
-        // TODO sin hacer hasta que llegue la funcionalidad y los layouts
-        // Toast.makeText(MainActivity.this, "Item Clicked "+user.getId(), Toast.LENGTH_LONG).show();
+        ListaPagosFragment listaPagosFragment=ListaPagosFragment.newInstance
+                ((ArrayList) pagoConjunto.getItems(),pagoConjunto.getNombre());
 
-        // Paso el modo de apertura
-        //Intent intent = new Intent(MainRecycler.this, ShowMovie.class);
-        //intent.putExtra(PELICULA_SELECCIONADA, peli);
-
-        // Ahora hace una transición
-        //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        getParentFragmentManager().beginTransaction().
+                replace(R.id.fragmentListaPagos, listaPagosFragment).commit();
     }
 }

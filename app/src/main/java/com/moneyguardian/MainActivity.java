@@ -17,8 +17,8 @@ public class MainActivity extends AppCompatActivity {
 /*        ListaAmigosFragment amigosFragment = ListaAmigosFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 amigosFragment).commit();*/
-        PagosConjuntosFragment pagosConjuntosFragment = PagosConjuntosFragment.newInstance();
+        ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance(null,"");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                pagosConjuntosFragment).commit();
+                listaPagosFragment).commit();
     }
 }

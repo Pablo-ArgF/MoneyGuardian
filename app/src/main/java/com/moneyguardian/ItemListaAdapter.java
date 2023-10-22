@@ -43,7 +43,10 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
 
     @Override
     public int getItemCount() {
-        return listaItemsPago.size();
+        if(listaItemsPago == null){
+            return 0;
+        }
+        return listaItemsPago.size() ;
     }
 
     public static class ItemListaViewHolder extends RecyclerView.ViewHolder{
