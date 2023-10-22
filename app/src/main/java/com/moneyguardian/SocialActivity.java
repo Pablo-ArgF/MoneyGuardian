@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.moneyguardian.ui.ListaAmigosFragment;
 import com.moneyguardian.ui.ListaPagosFragment;
+import com.moneyguardian.ui.PagosConjuntosFragment;
 
 public class SocialActivity extends AppCompatActivity {
 
@@ -19,6 +20,11 @@ public class SocialActivity extends AppCompatActivity {
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        ListaAmigosFragment listaAmigosFragment = new ListaAmigosFragment();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos, listaAmigosFragment).commit();
+
 
     }
 
@@ -31,20 +37,19 @@ public class SocialActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             /* Según el caso, crearemos un Fragmento u otro */
-            if (itemId == R.id.fragmentListaPagos) {
+            if (itemId == R.id.navigation_pagos_conjuntos) {
                 /* Haciendo uso del FactoryMethod pasándole todos los parámetros necesarios */
 
-                ListaPagosFragment listaPagosFragment = new ListaPagosFragment();
+                PagosConjuntosFragment pagosConjuntosFragmentsFragment = new PagosConjuntosFragment();
 
-                /* ¿Qué estaremos haciendo aquí? */
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, listaPagosFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos, pagosConjuntosFragmentsFragment).commit();
                 return true;
             }
 
-            if (itemId == R.id.fragmentListaAmigos) {
+            if (itemId == R.id.navigation_amigos) {
                 ListaAmigosFragment listaAmigosFragment = new ListaAmigosFragment();
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, listaAmigosFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos, listaAmigosFragment).commit();
                 return true;
             }
 

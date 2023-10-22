@@ -32,7 +32,7 @@ public class PagosConjuntosFragment extends Fragment {
 
     // Modelo de datos
 
-    private ArrayList<PagoConjunto> listaPagosConjuntos;
+    private ArrayList<PagoConjunto> listaPagosConjuntos = new ArrayList<>();
     private PagoConjunto pagoConjunto;
     private RecyclerView listaPagosConjuntosView;
 
