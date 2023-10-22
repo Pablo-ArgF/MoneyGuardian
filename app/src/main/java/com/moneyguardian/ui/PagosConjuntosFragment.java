@@ -1,12 +1,13 @@
 package com.moneyguardian.ui;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import android.widget.TextView;
 
 import com.moneyguardian.PagosConjuntosListaAdapter;
 import com.moneyguardian.R;
+import com.moneyguardian.modelo.PagoConjunto;
+
+import java.util.ArrayList;
 
 public class PagosConjuntosFragment extends Fragment {
 
@@ -28,18 +32,17 @@ public class PagosConjuntosFragment extends Fragment {
 
     // Modelo de datos
 
-    // TODO private ArrayList<PagoConjunto> listaPagosConjuntos;
-    // TODO private PagoConjunto pagoConjunto;
+    private ArrayList<PagoConjunto> listaPagosConjuntos;
+    private PagoConjunto pagoConjunto;
     private RecyclerView listaPagosConjuntosView;
 
     public PagosConjuntosFragment() {
         // Required empty public constructor
     }
 
-    public static PagosConjuntosFragment newInstance(String param1, String param2) {
+    public static PagosConjuntosFragment newInstance(String pago) {
         PagosConjuntosFragment fragment = new PagosConjuntosFragment();
         Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,22 +51,23 @@ public class PagosConjuntosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-           // mParam1 = getArguments().getString(ARG_PARAM1);
 
             // cargarPagos
 
-            //listaPagosConjuntosView = (RecyclerView) findViewById(R.id.reciclerView);
+            listaPagosConjuntosView = (RecyclerView) listaPagosConjuntosView.findViewById(R.id.recyclerPagosConjuntos);
 
             listaPagosConjuntosView.setHasFixedSize(true);
 
-            //PagosConjuntosListaAdapter pagosConjuntosListaAdapter =
-            // new PagosConjuntosListaAdapter(listaPagosConjuntos,
-            // new ListaPeliculaAdapter.OnItemClickListener() {
-            // @Override
-            // public void onItemClick(PagoConjunto pago){ clickonitem(pagoConjunto);}
-            // });
+            PagosConjuntosListaAdapter pagosConjuntosListaAdapter =
+                    new PagosConjuntosListaAdapter(listaPagosConjuntos,
+                            new PagosConjuntosListaAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(PagoConjunto pago) {
+                                    clickonItem(pagoConjunto);
+                                }
+                            });
 
-            //listaPagosConjuntosView.setAdapter(pagosConjuntosAdapter);
+            listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
         }
     }
 
@@ -71,20 +75,29 @@ public class PagosConjuntosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_pagos_conjuntos, container, false);
-
-        TextView nombrePago = root.findViewById(R.id.textNombrePagoConjunto);
-        //nombrePago.setText(nombrePagoConjunto);
-
         // TODO Cargamos aquí la lista de pagos? O en un onACtivityResult?
-        // PagosConjuntosListaAdapter pagosConjuntosListaAdapter =
-        // new PagosConjuntosListaAdapter(listaPagosConjuntos, (pago) -> {
-        // cliconItem(pago);
-        // });
+        PagosConjuntosListaAdapter pagosConjuntosListaAdapter =
+                new PagosConjuntosListaAdapter(listaPagosConjuntos, (pago) -> {
+                    clickonItem(pago);
+                });
 
-        //listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
+        listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_pagos_conjuntos, container, false);
+    }
+
+    // Click del item del adapter
+    public void clickonItem(PagoConjunto pagoConjunto) {
+        Log.i("Click adapter", "Item Clicked " + pagoConjunto.toString());
+        // TODO sin hacer hasta que llegue la funcionalidad y los layouts
+        // Toast.makeText(MainActivity.this, "Item Clicked "+user.getId(), Toast.LENGTH_LONG).show();
+
+        // Paso el modo de apertura
+        //Intent intent = new Intent(MainRecycler.this, ShowMovie.class);
+        //intent.putExtra(PELICULA_SELECCIONADA, peli);
+
+        // Ahora hace una transición
+        //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 }
