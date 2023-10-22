@@ -3,34 +3,40 @@ package com.moneyguardian.ui;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.moneyguardian.ListaBalanceItemAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ItemPagosFragment extends Fragment {
 
     private static final String NAME = "name";
-    private static final String USER_PAID = "userPaid";
-    private static final String USERS_AND_PAYMENTS = "usersAndPayments";
+    private static final String USERS_AND_PAYMENTS = "balance";
 
-    private String mParam1;
-    private String mParam2;
-    private HashMap<Usuario,Integer> mParam3;
+    private String nombreItem;
+    private HashMap<Usuario,Integer> mapBalance = new HashMap<>();
 
-    public static ItemPagosFragment newInstance(String param1, String param2,
+    private TextView tvNombreItem;
+    private RecyclerView rvBalance;
+
+    public static ItemPagosFragment newInstance(String param1,
                                                 HashMap<Usuario,Integer> param3) {
         ItemPagosFragment fragment = new ItemPagosFragment();
         Bundle args = new Bundle();
         args.putString(NAME, param1);
-        args.putString(USER_PAID, param2);
         args.putSerializable(USERS_AND_PAYMENTS, param3);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -38,9 +44,8 @@ public class ItemPagosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(NAME);
-            mParam2 = getArguments().getString(USER_PAID);
-            mParam3 = getArguments().getParcelable(USERS_AND_PAYMENTS);
+            nombreItem = getArguments().getString(NAME);
+            mapBalance = (HashMap<Usuario, Integer>) getArguments().get(USERS_AND_PAYMENTS);
         }
     }
 
@@ -48,6 +53,21 @@ public class ItemPagosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_item_pagos, container, false);
+        View root = inflater.inflate(R.layout.fragment_item_pagos, container, false);
+        tvNombreItem = root.findViewById(R.id.tituloItemPago);
+        rvBalance = root.findViewById(R.id.recyclerListaItems);
+
+        //we add the layout manager to the group list
+        RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(container.getContext());
+        rvBalance.setLayoutManager(groupLayoutManager);
+
+        ListaBalanceItemAdapter adapter = new ListaBalanceItemAdapter(mapBalance);
+
+        rvBalance.setAdapter(adapter);
+
+        tvNombreItem.setText(this.nombreItem);
+
+        return root;
     }
 }
+
