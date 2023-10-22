@@ -8,19 +8,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.moneyguardian.model.ItemPago;
+import com.moneyguardian.modelo.ItemPagoConjunto;
 
 import java.util.List;
 
 public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.ItemListaViewHolder>{
     public interface OnItemClickListener {
-        void onItemClick(ItemPago item);
+        void onItemClick(ItemPagoConjunto item);
     }
 
-    private List<ItemPago> listaItemsPago;
+    private List<ItemPagoConjunto> listaItemsPago;
     private final OnItemClickListener listener;
 
-    public ItemListaAdapter(List<ItemPago> listaItemsPago, OnItemClickListener listener) {
+    public ItemListaAdapter(List<ItemPagoConjunto> listaItemsPago, OnItemClickListener listener) {
         this.listaItemsPago = listaItemsPago;
         this.listener = listener;
     }
@@ -36,7 +36,7 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
 
     @Override
     public void onBindViewHolder(@NonNull ItemListaViewHolder holder, int position) {
-        ItemPago itemPago= listaItemsPago.get(position);
+        ItemPagoConjunto itemPago= listaItemsPago.get(position);
 
         holder.bindUser(itemPago, listener);
     }
@@ -61,8 +61,8 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
         }
 
         // asignar valores a los componentes
-        public void bindUser(final ItemPago itemPago, final OnItemClickListener listener) {
-            name.setText(itemPago.getName());
+        public void bindUser(final ItemPagoConjunto itemPago, final OnItemClickListener listener) {
+            name.setText(itemPago.getNombre());
             userPay.setText(itemPago.getUser());
             money.setText(itemPago.getMoney());
 

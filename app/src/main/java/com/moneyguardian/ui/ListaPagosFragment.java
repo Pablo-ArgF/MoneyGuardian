@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneyguardian.ItemListaAdapter;
 import com.moneyguardian.R;
-import com.moneyguardian.model.ItemPago;
+import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class ListaPagosFragment extends Fragment {
     private static final String IMAGEN = "Imagen";
     private String imagen;
     private String namePago;
-    private List<ItemPago> listaPagos;
+    private List<ItemPagoConjunto> listaPagos;
 
     RecyclerView listItemsPagosView;
 
@@ -78,17 +78,17 @@ public class ListaPagosFragment extends Fragment {
        ItemListaAdapter lpAdapter= new ItemListaAdapter(listaPagos,
                 new ItemListaAdapter.OnItemClickListener() {
                     @Override
-                    public void onItemClick(ItemPago itemPago) {
+                    public void onItemClick(ItemPagoConjunto itemPago) {
                         clickonItem(itemPago);
                     }
                 });
         listItemsPagosView.setAdapter(lpAdapter);
     }
 
-    private void clickonItem(ItemPago itemPago) {
+    private void clickonItem(ItemPagoConjunto itemPago) {
 
         ItemPagosFragment argumentoFragment=ItemPagosFragment.newInstance
-                (itemPago.getName(),itemPago.getUser(),itemPago.getUsariosPagos());
+                (itemPago.getNombre(),itemPago.getUser(),itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
                 replace(R.id.fragmentListaPagos, argumentoFragment).commit();

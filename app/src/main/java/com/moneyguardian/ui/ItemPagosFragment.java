@@ -9,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moneyguardian.R;
-import com.moneyguardian.model.Usuario;
+import com.moneyguardian.modelo.Usuario;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class ItemPagosFragment extends Fragment {
 
