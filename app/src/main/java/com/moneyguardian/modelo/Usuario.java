@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Usuario implements Parcelable {
 
@@ -88,5 +89,18 @@ public class Usuario implements Parcelable {
         dest.writeTypedList(misPagosConjuntos);
         // Write 'Foto' if it's a Parcelable or some other type
         // Example: dest.writeParcelable(foto, flags);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return nombre.equals(usuario.nombre) && correo.equals(usuario.correo) && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, correo, amigos, misPagosConjuntos);
     }
 }
