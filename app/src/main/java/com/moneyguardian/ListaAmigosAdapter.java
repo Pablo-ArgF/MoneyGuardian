@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,11 +24,16 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
         void onItemClick(Usuario item);
+        void onDeleteClick(Usuario item);
     }
 
     public ListaAmigosAdapter(List<Usuario> listaAmigos, OnItemClickListener listener) {
         this.listaAmigos = listaAmigos;
         this.listener = listener;
+    }
+
+    public void deleteAmigo(Usuario amigo) {
+        listaAmigos.remove(amigo);
     }
 
     @NonNull
@@ -63,6 +69,7 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
     public static class AmigoViewHolder extends RecyclerView.ViewHolder{
 
         private TextView nombre;
+        private ImageButton deleteButton;
 
         // Meter la imagen aqui también si se mete en el usuario
 
@@ -70,7 +77,7 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
             super(itemView);
 
             nombre= (TextView)itemView.findViewById(R.id.nombreAmigo);
-
+            deleteButton = (ImageButton) itemView.findViewById(R.id.btnBorrarAmigo);
         }
 
         // asignar valores a los componentes
@@ -78,7 +85,14 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
             nombre.setText(amigo.getNombre());
 
             //funcionalidad de borrado de usuarios
-
+            // Set a click listener for the delete button
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Handle the delete button click, e.g., call a method to delete the item
+                    listener.onDeleteClick(amigo);
+                }
+            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {

@@ -44,6 +44,8 @@ public class ListaAmigosFragment extends Fragment {
     private RecyclerView listaAmigosView;
     private RecyclerView listaGruposView;
 
+    private ListaAmigosAdapter amigosAdapter;
+
 
     public ListaAmigosFragment() {
         // Required empty public constructor
@@ -55,7 +57,6 @@ public class ListaAmigosFragment extends Fragment {
      *
      * @return A new instance of fragment ListaAmigosFragment.
      */
-    // TODO: Revisar que no necesito pasarle nada en constructor
     public static ListaAmigosFragment newInstance() {
         ListaAmigosFragment fragment = new ListaAmigosFragment();
         Bundle args = new Bundle();
@@ -83,8 +84,18 @@ public class ListaAmigosFragment extends Fragment {
         */
     }
 
+    public void clickonDeleteAmigo (Usuario amigo){
+        Log.i("Click adapter","Item Clicked to be removed "+amigo.getNombre());
+
+        // Handle delete button click
+        listaAmigos.remove(amigo);
+        //TODO BD- creo que aqui va la logica de borrar amigos en bd
+        int index = listaAmigos.indexOf(amigo);
+        this.amigosAdapter.deleteAmigo(amigo);
+        this.amigosAdapter.notifyItemRemoved(index);
+    }
+
     private void cargarListaAmigos() {
-        //TODO añadir boton de eliminar amigos en la lista de amigos
         listaAmigos = new LinkedList<>();
         // Dummy data
         String[] nombres = {"John Doe", "Alice Johnson", "Bob Smith", "Emma Brown", "David Davis", "Olivia Wilson", "Michael Lee", "Sophia White", "James Harris", "Ava Robinson"};
@@ -95,11 +106,18 @@ public class ListaAmigosFragment extends Fragment {
             listaAmigos.add(usuario);
         }
 
-        ListaAmigosAdapter amigosAdapter = new ListaAmigosAdapter(listaAmigos,
-                (amigo) ->{
-                    clickonAmigo(amigo);
-                });
-        listaAmigosView.setAdapter(amigosAdapter); //TODO mirar donde inicializar el valor de la view
+        amigosAdapter = new ListaAmigosAdapter(listaAmigos,new ListaAmigosAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Usuario item) {
+                clickonAmigo(item);
+            }
+
+            @Override
+            public void onDeleteClick(Usuario item) {
+                clickonDeleteAmigo(item);
+            }
+        });
+        listaAmigosView.setAdapter(amigosAdapter);
     }
 
     private void cargarListaGruposAmigos() {
@@ -121,7 +139,7 @@ public class ListaAmigosFragment extends Fragment {
                 (grupo) ->{
                     clickonGrupo(grupo);
                 });
-        listaGruposView.setAdapter(gruposAdapter); //TODO mirar donde inicializar el valor de la view
+        listaGruposView.setAdapter(gruposAdapter);
     }
 
     private void clickonGrupo(GrupoUsuarios grupo) {
