@@ -32,10 +32,10 @@ public class ListaPagosFragment extends Fragment {
 
     RecyclerView listItemsPagosView;
 
-    public static ListaPagosFragment newInstance(ArrayList<ItemPagoConjunto> param1, String param2) {
+    public static ListaPagosFragment newInstance(List<ItemPagoConjunto> param1, String param2) {
         ListaPagosFragment fragment = new ListaPagosFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(LISTA_PAGOS, param1);
+        args.putParcelableArrayList(LISTA_PAGOS, new ArrayList<>(param1));
         args.putString(NAME_PAGO, param2);
         fragment.setArguments(args);
         return fragment;

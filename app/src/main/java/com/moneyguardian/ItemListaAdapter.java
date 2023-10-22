@@ -30,7 +30,7 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
     @Override
     public ItemListaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_lista_pagos, parent, false);
+                .inflate(R.layout.pago_lista_recycler, parent, false);
         return new ItemListaViewHolder(itemView);
     }
 
