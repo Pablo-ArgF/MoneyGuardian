@@ -41,7 +41,7 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
 
 
     /** Asocia el contenido a los componentes de la vista,
-     * concretamente con nuestro PeliculaViewHolder que recibimos como parámetro
+     * concretamente con nuestro AmigoHolder que recibimos como parámetro
      */
     @Override
     public void onBindViewHolder(@NonNull AmigoViewHolder holder, int position) {
@@ -69,13 +69,17 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
         public AmigoViewHolder(View itemView) {
             super(itemView);
 
-            nombre= (TextView)itemView.findViewById(R.id.nombreGrupo);
+            nombre= (TextView)itemView.findViewById(R.id.nombreAmigo);
 
         }
 
         // asignar valores a los componentes
         public void bindUser(final Usuario amigo, final OnItemClickListener listener) {
             nombre.setText(amigo.getNombre());
+
+            //funcionalidad de borrado de usuarios
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     Log.i("ListaAmigosAdapter", "OnClick bindUser usuario " + amigo.getNombre());

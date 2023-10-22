@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneyguardian.modelo.GrupoUsuarios;
-import com.moneyguardian.modelo.Usuario;
 
 import java.util.LinkedList;
 import java.util.List;
