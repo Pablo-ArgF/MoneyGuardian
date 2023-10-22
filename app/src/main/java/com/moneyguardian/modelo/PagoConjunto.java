@@ -54,4 +54,36 @@ public class PagoConjunto implements Parcelable {
         // Write 'Foto' or 'Icono' if they are Parcelable or some other type
         // Example: dest.writeParcelable(foto, flags);
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Date getFechaPago() {
+        return fechaPago;
+    }
+
+    public void setFechaPago(Date fechaPago) {
+        this.fechaPago = fechaPago;
+    }
+
+    public List<Usuario> getParticipantes() {
+        return participantes;
+    }
+
+    public void setParticipantes(List<Usuario> participantes) {
+        this.participantes = participantes;
+    }
+
+    public List<ItemPagoConjunto> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemPagoConjunto> items) {
+        this.items = items;
+    }
 }
