@@ -6,4 +6,7 @@
     <string name="nuevo_amigo">Nuevo amigo</string>
     <string name="nuevo_grupo_amigos">Nuevo grupo</string>
     <string name="titulo_grupos_de_amigos">Grupos de amigos</string>
+    <string name="amigo">amigo</string>
+    <string name="nombreGrupo">nombre del grupo</string>
+    <string name="participantesGrupo">user1, user2, user 3, user 4</string>
 </resources>

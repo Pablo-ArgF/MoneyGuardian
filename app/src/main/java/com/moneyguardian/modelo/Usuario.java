@@ -9,10 +9,10 @@ import java.util.List;
 
 public class Usuario implements Parcelable {
 
-    private String nombreUsuario;
+    private String nombre;
     private String correo;
     private List<Usuario> amigos;
-    private List<PagoConjunto> misPagosConjuntos;
+    private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
     // Consider adding a field for 'Foto' if needed
 
 
@@ -28,8 +28,8 @@ public class Usuario implements Parcelable {
         }
     };
 
-    public Usuario(String nombreUsuario, String correo, List<Usuario> amigos, List<PagoConjunto> misPagosConjuntos) {
-        this.nombreUsuario = nombreUsuario;
+    public Usuario(String nombre, String correo, List<Usuario> amigos, List<PagoConjunto> misPagosConjuntos) {
+        this.nombre = nombre;
         this.correo = correo;
         this.amigos = amigos;
         this.misPagosConjuntos = misPagosConjuntos;
@@ -37,18 +37,18 @@ public class Usuario implements Parcelable {
 
 
     protected Usuario(Parcel in) {
-        nombreUsuario = in.readString();
+        nombre = in.readString();
         correo = in.readString();
         amigos = in.createTypedArrayList(Usuario.CREATOR);
         misPagosConjuntos = in.createTypedArrayList(PagoConjunto.CREATOR);
     }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getCorreo() {
@@ -82,7 +82,7 @@ public class Usuario implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(nombreUsuario);
+        dest.writeString(nombre);
         dest.writeString(correo);
         dest.writeTypedList(amigos);
         dest.writeTypedList(misPagosConjuntos);
