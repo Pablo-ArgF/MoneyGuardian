@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">MoneyGuardian</string>
+    <string name="PagosConjuntos">Pagos conjuntos</string>
+    <string name="Amigos">Amigos</string>
     <string name="nombrePagoConjunto">Pagos conjuntos</string>
     <string name="FechaPago">Fecha del pago</string>
     <string name="PagoConjuntoCosteHint">Coste del pago conjunto</string>

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ItemPagosFragment fragment = ItemPagosFragment.newInstance("Prueba",userMap);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos,
                 fragment).commit();
     }
 }

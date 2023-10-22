@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_amigos"
+        android:title="@string/Amigos" />
+    <item
+        android:id="@+id/navigation_pagos_conjuntos"
+        android:title="@string/PagosConjuntos" />
+
+</menu>
