@@ -9,7 +9,7 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/imagen"
+        android:id="@+id/imgAmigoEnBalance"
         android:layout_width="48dp"
         android:layout_height="72dp"
         android:contentDescription="@string/app_name"

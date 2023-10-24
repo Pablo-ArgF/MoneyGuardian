@@ -86,7 +86,7 @@ public class ListaPagosFragment extends Fragment {
     private void clickonItem(ItemPagoConjunto itemPago) {
 
         ItemPagosFragment argumentoFragment=ItemPagosFragment.newInstance
-                (itemPago.getNombre(),itemPago.getUser(),itemPago.getPagos());
+                (itemPago.getNombre(),itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
                 replace(R.id.fragmentListaPagos, argumentoFragment).commit();
