@@ -77,8 +77,7 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
         private String calculatePrecio(PagoConjunto pagoConjunto){
             int total = 0;
             for(ItemPagoConjunto item : pagoConjunto.getItems()){
-                // TODO: lo dejo sin hacer ya que se va a cambiar el modelo
-                // para que no haya errores
+                total += item.getMoney();
             }
             return total+"";
         }

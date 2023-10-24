@@ -73,14 +73,14 @@ public class ItemPagoConjunto implements Parcelable {
         this.pagos = pagos;
     }
 
-    public String getMoney(){
+    public int getMoney(){
         int total = 0;
 
         for(Usuario u : pagos.keySet()){
             total += abs(pagos.getOrDefault(u,0));
         }
 
-        return total+"";
+        return total;
     }
 
     public String getUser() {
