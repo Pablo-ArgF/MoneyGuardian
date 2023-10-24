@@ -9,7 +9,7 @@
     >
 
     <ImageView
-        android:id="@+id/imagen"
+        android:id="@+id/imgAmigoEnBalance"
         android:layout_width="48dp"
         android:layout_height="72dp"
         android:contentDescription="@string/app_name"
@@ -23,7 +23,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/nombreGrupo"
+            android:id="@+id/nombreAmigoEnBalance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/nombreGrupo"

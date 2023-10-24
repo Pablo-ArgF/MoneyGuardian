@@ -71,7 +71,7 @@ public class ListaGruposAdapter extends RecyclerView.Adapter<ListaGruposAdapter.
         public GrupoViewHolder(View itemView) {
             super(itemView);
 
-            nombre= (TextView)itemView.findViewById(R.id.nombreGrupo);
+            nombre= (TextView)itemView.findViewById(R.id.nombreAmigoEnBalance);
             usuarios= (TextView)itemView.findViewById(R.id.listaParticipantes);
 
         }

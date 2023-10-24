@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.moneyguardian.ui.ListaAmigosFragment;
-import com.moneyguardian.ui.ListaPagosFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,8 +15,8 @@ public class MainActivity extends AppCompatActivity {
 /*        ListaAmigosFragment amigosFragment = ListaAmigosFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 amigosFragment).commit();*/
-        ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance(null,"");
+        PagosConjuntosFragment pagosConjuntosFragment = PagosConjuntosFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos,
-                listaPagosFragment).commit();
+                pagosConjuntosFragment).commit();
     }
 }
