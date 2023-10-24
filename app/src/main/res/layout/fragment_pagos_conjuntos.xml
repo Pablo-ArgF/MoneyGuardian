@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentPagosConjuntos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.PagosConjuntosFragment">
@@ -16,23 +17,24 @@
             android:layout_height="wrap_content"
             android:text="@string/nombrePagoConjunto"
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-            app:layout_constraintBottom_toBottomOf="@+id/recyclerPagosConjuntos"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintHorizontal_bias="0.065"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.013" />
+            app:layout_constraintVertical_bias="0.035" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPagosConjuntos"
             android:layout_width="369dp"
             android:layout_height="630dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.38"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.514" />
+            app:layout_constraintTop_toBottomOf="@+id/textNombrePagoConjunto"
+            app:layout_constraintVertical_bias="0.257" />
 
         <Button
             android:id="@+id/button"

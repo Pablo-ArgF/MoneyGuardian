@@ -96,11 +96,7 @@ public class Usuario implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return nombre.equals(usuario.nombre) && correo.equals(usuario.correo) && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nombre, correo, amigos, misPagosConjuntos);
+        return nombre.equals(usuario.nombre) && correo.equals(usuario.correo)
+                && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
     }
 }

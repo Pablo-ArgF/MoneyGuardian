@@ -30,7 +30,7 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
     @Override
     public ItemListaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_lista_pagos, parent, false);
+                .inflate(R.layout.pago_lista_recycler, parent, false);
         return new ItemListaViewHolder(itemView);
     }
 
@@ -43,7 +43,10 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
 
     @Override
     public int getItemCount() {
-        return listaItemsPago.size();
+        if(listaItemsPago == null){
+            return 0;
+        }
+        return listaItemsPago.size() ;
     }
 
     public static class ItemListaViewHolder extends RecyclerView.ViewHolder{
@@ -64,7 +67,7 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
         public void bindUser(final ItemPagoConjunto itemPago, final OnItemClickListener listener) {
             name.setText(itemPago.getNombre());
             userPay.setText(itemPago.getUser());
-            money.setText(itemPago.getMoney());
+            money.setText(itemPago.getMoney()+ "€");
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

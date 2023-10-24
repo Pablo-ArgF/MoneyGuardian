@@ -18,6 +18,7 @@ import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListaPagosFragment extends Fragment {
@@ -31,12 +32,11 @@ public class ListaPagosFragment extends Fragment {
 
     RecyclerView listItemsPagosView;
 
-    public static ListaPagosFragment newInstance(String param1,String param2,String param3) {
+    public static ListaPagosFragment newInstance(List<ItemPagoConjunto> param1, String param2) {
         ListaPagosFragment fragment = new ListaPagosFragment();
         Bundle args = new Bundle();
-        args.putString(LISTA_PAGOS, param1);
+        args.putParcelableArrayList(LISTA_PAGOS, new ArrayList<>(param1));
         args.putString(NAME_PAGO, param2);
-        args.putString(IMAGEN, param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,7 +89,7 @@ public class ListaPagosFragment extends Fragment {
                 (itemPago.getNombre(),itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragmentListaPagos, argumentoFragment).commit();
+                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).commit();
 
     }
 }

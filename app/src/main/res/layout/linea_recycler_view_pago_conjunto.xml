@@ -43,14 +43,12 @@
 
         </LinearLayout>
 
-        <EditText
+        <TextView
             android:id="@+id/editTextPagoConjuntoCoste"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/PagoConjuntoCosteHint"
-            android:inputType="numberDecimal" />
+            android:text="TextView" />
 
     </LinearLayout>
 
