@@ -67,7 +67,7 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
         public void bindUser(final ItemPagoConjunto itemPago, final OnItemClickListener listener) {
             name.setText(itemPago.getNombre());
             userPay.setText(itemPago.getUser());
-            money.setText(itemPago.getMoney()+ "");
+            money.setText(itemPago.getMoney()+ "€");
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -79,7 +79,7 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
             for(ItemPagoConjunto item : pagoConjunto.getItems()){
                 total += item.getMoney();
             }
-            return total+"";
+            return total+"€";
         }
     }
 
