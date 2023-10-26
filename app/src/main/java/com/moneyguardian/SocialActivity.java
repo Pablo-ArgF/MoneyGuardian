@@ -3,6 +3,7 @@ package com.moneyguardian;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -24,7 +25,6 @@ public class SocialActivity extends AppCompatActivity {
         ListaAmigosFragment listaAmigosFragment = new ListaAmigosFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos, listaAmigosFragment).commit();
-
 
     }
 

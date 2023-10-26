@@ -17,4 +17,13 @@
     <string name="nombreGrupo">nombre del grupo</string>
     <string name="participantesGrupo">user1, user2, user 3, user 4, user 5, user 6, user 7, user 8, user 9, user 10</string>
     <string name="NuevoItemPago">Crear Nuevo</string>
+    <string name="NuevoPagoConjunto">Nuevo Pago Conjunto</string>
+    <string name="nombre">Nombre</string>
+    <string name="NombrePagoConjunto">Nombre pago conjunto</string>
+    <string name="IconoPagoConjunto">Icono del pago conjunto</string>
+    <string name="Opcional">(Opcional)</string>
+    <string name="Seleccionarr">Seleccionar</string>
+    <string name="UsuariosNuevoPagoConjunto">Participantes</string>
+    <string name="Añadir">Añadir\n</string>
+    <string name="Crear">Crear</string>
 </resources>
