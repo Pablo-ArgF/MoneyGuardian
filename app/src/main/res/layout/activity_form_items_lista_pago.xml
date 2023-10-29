@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainRelativeItemsForm"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FormItemsListaPago">
+
+    <TextView
+        android:id="@+id/formItemPagoNameTV"
+        android:layout_width="238dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="104dp"
+        android:text="@string/formListaPagosName"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/formItemPagoNameTextField"
+        android:layout_width="282dp"
+        android:layout_height="57dp"
+        android:layout_below="@+id/formItemPagoNameTV"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="60dp"
+        android:ems="10"
+        android:hint="@string/formListaPagosName"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextNumberDecimal"
+        android:layout_width="112dp"
+        android:layout_height="57dp"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="230dp"
+        android:ems="10"
+        android:hint="@string/formListaPagosHintCantidadTotal"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/formItemPagoNameTextField"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="226dp"
+        android:text="@string/formListaPagosCantidadTotal"
+        android:textSize="18sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recicledViewUsersSelected"
+        android:layout_width="353dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/editTextNumberDecimal"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="18dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recicledViewUsersToSelect"
+        android:layout_width="354dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/recicledViewUsersSelected"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="80dp" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/acceptBtn" />
+
+</RelativeLayout>
