@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "881426924975",
+    "project_id": "moneguardian-app",
+    "storage_bucket": "moneguardian-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881426924975:android:e57288e46678c3f77b9b5a",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2TfrspUvZ0yu4HYS8C9Aqfw-KjnXTar4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
