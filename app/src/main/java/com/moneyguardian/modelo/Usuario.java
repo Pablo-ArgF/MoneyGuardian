@@ -99,4 +99,9 @@ public class Usuario implements Parcelable {
         return nombre.equals(usuario.nombre) && correo.equals(usuario.correo)
                 && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
     }
+
+    @Override
+    public String toString() {
+        return nombre + " " + correo;
+    }
 }

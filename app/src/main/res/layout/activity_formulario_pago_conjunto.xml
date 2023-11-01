@@ -75,8 +75,8 @@
 
     <Button
         android:id="@+id/buttonSeleccionarImagenNuevoPagoConjunto"
-        android:layout_width="126dp"
-        android:layout_height="37dp"
+        android:layout_width="137dp"
+        android:layout_height="53dp"
         android:text="@string/Seleccionarr"
         android:textAppearance="@android:style/TextAppearance.Small"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -98,29 +98,6 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonSeleccionarImagenNuevoPagoConjunto"
         app:layout_constraintVertical_bias="0.097" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerUsuariosNuevoPagoConjunto"
-        android:layout_width="140dp"
-        android:layout_height="196dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.036"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantes"
-        app:layout_constraintVertical_bias="0.065" />
-
-    <Button
-        android:id="@+id/buttonAñadirUsuarioNuevoPagoConjunto"
-        android:layout_width="92dp"
-        android:layout_height="43dp"
-        android:text="@string/Añadir"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.292"
-        app:layout_constraintStart_toEndOf="@+id/textViewParticipantes"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSeleccionarImagenNuevoPagoConjunto"
-        app:layout_constraintVertical_bias="0.104" />
-
     <Button
         android:id="@+id/buttonCrearNuevoPagoConjunto"
         android:layout_width="121dp"
@@ -131,6 +108,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.944"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerUsuariosNuevoPagoConjunto"
-        app:layout_constraintVertical_bias="0.789" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantes"
+        app:layout_constraintVertical_bias="0.947" />
+
+    <ListView
+        android:id="@+id/listUsuariosNuevoPagoConjunto"
+        android:layout_width="251dp"
+        android:layout_height="224dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCrearNuevoPagoConjunto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantes"
+        app:layout_constraintVertical_bias="0.2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
