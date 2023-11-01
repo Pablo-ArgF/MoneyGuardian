@@ -63,9 +63,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
 
         listViewUsuarios.setChoiceMode(CHOICE_MODE_MULTIPLE);
-        listViewUsuarios.setAdapter(new ArrayAdapter<Usuario>(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
+        //listViewUsuarios.setAdapter(new ArrayAdapter<Usuario>(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
         // TODO esto no funciona? Pero lo anterior si?
-        // listViewUsuarios.setAdapter(new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
+        listViewUsuarios.setAdapter(new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
 
     }
 
