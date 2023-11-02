@@ -78,31 +78,33 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUserAccount()
     {
-
-        // show the visibility of progress bar to show loading
-        progressbar.setVisibility(View.VISIBLE);
-
         // Take the value of two edit texts in Strings
         String email, password;
         email = emailTextView.getText().toString();
         password = passwordTextView.getText().toString();
+        boolean valid = true;
 
         // validations for input email and password
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getApplicationContext(),
-                            "Please enter email!!",
-                            Toast.LENGTH_LONG)
-                    .show();
-            return;
+            emailTextView.setError(getText(R.string.error_empty_mail));
+            valid = false;
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getApplicationContext(),
-                            "Please enter password!!",
-                            Toast.LENGTH_LONG)
-                    .show();
+            passwordTextView.setError(getText(R.string.error_password_empty));
+            valid = false;
+
+        } else if (password.length() < 6) {
+            passwordTextView.setError(getString(R.string.error_password_length));
+            valid = false;
+        }
+        if(!valid) //Errors in the fields
+        {
             return;
         }
+
+        // show the visibility of progress bar to show loading
+        progressbar.setVisibility(View.VISIBLE);
 
         // signin existing user
         mAuth.signInWithEmailAndPassword(email, password)
@@ -113,10 +115,6 @@ public class LoginActivity extends AppCompatActivity {
                                     @NonNull Task<AuthResult> task)
                             {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(),
-                                                    "Login successful!!",
-                                                    Toast.LENGTH_LONG)
-                                            .show();
 
                                     // hide the progress bar
                                     progressbar.setVisibility(View.GONE);
@@ -133,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     // sign-in failed
                                     Toast.makeText(getApplicationContext(),
-                                                    "Login failed!!",
+                                                    getText(R.string.error_singin),
                                                     Toast.LENGTH_LONG)
                                             .show();
 

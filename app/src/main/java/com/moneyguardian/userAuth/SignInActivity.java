@@ -78,21 +78,25 @@ public class SignInActivity  extends AppCompatActivity {
         String email, password;
         email = emailTextView.getText().toString();
         password = passwordTextView.getText().toString();
+        boolean valid = true;
 
-        // Validations for input email and password
+        // validations for input email and password
         if (TextUtils.isEmpty(email)) {
-            emailTextView.setError(getString(R.string.error_empty_mail));
-            return;
+            emailTextView.setError(getText(R.string.error_empty_mail));
+            valid = false;
         }
+
         if (TextUtils.isEmpty(password)) {
-           passwordTextView.setError(getString(R.string.error_password_empty));
-           return;
+            passwordTextView.setError(getText(R.string.error_password_empty));
+            valid = false;
+
+        } else if (password.length() < 6) {
+            passwordTextView.setError(getString(R.string.error_password_length));
+            valid = false;
         }
-        else {
-            if(password.length() < 6){ //we do not allow passwords with less than 6 chars
-                passwordTextView.setError(getString(R.string.error_password_length));
-                return;
-            }
+        if(!valid) //Errors in the fields
+        {
+            return;
         }
 
         // create new user or register new user
@@ -115,7 +119,7 @@ public class SignInActivity  extends AppCompatActivity {
                             // if the user created intent to login activity
                             Intent intent
                                     = new Intent(SignInActivity.this,
-                                    MainActivity.class);
+                                    SignInActivity.class);
                             startActivity(intent);
                         }
                         else {

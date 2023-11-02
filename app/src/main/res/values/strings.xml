@@ -31,4 +31,6 @@
     <string name="error_password_length">La contraseña ha de tener al menos 6 caracteres</string>
     <string name="singin_correcto">Cuenta creada</string>
     <string name="signin_error">Algo ha ido mal, reintentelo más tarde</string>
+    <string name="signin">Registrarse</string>
+    <string name="error_singin">Correo o contraseña incorrectos, intentelo de nuevo</string>
 </resources>
