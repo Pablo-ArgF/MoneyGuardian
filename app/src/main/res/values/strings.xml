@@ -17,4 +17,18 @@
     <string name="nombreGrupo">nombre del grupo</string>
     <string name="participantesGrupo">user1, user2, user 3, user 4, user 5, user 6, user 7, user 8, user 9, user 10</string>
     <string name="NuevoItemPago">Crear Nuevo</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="correo">Correo</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="enter_password">Escribe tu contraseña</string>
+    <string name="enter_email">Introduce tu email</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_signin">SignInActivity</string>
+    <string name="login">Login</string>
+    <string name="enter_your_email">Enter your Email</string>
+    <string name="error_empty_mail">El correo no puede estar vacío</string>
+    <string name="error_password_empty">La contraseña no puede estar vacía</string>
+    <string name="error_password_length">La contraseña ha de tener al menos 6 caracteres</string>
+    <string name="singin_correcto">Cuenta creada</string>
+    <string name="signin_error">Algo ha ido mal, reintentelo más tarde</string>
 </resources>

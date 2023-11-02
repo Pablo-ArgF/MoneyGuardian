@@ -15,6 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.MoneyGuardian"
         tools:targetApi="31">
+
+        <activity
+            android:name=".userAuth.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login"/>
+        <activity
+            android:name=".userAuth.SignInActivity"
+            android:exported="false"
+            android:label="@string/title_activity_signin"/>
+
         <activity
             android:name=".SocialActivity"
             android:exported="true"
@@ -26,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

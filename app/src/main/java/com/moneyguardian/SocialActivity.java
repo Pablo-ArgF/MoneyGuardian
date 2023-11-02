@@ -4,20 +4,37 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.moneyguardian.ui.ListaAmigosFragment;
 import com.moneyguardian.ui.ListaPagosFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
+import com.moneyguardian.userAuth.LoginActivity;
 
 public class SocialActivity extends AppCompatActivity {
+
+    private FirebaseAuth auth;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        //TODO move this to main activity when changed
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if(user == null){
+            //if no user -> send to login page
+            Intent intent = new Intent(SocialActivity.this, LoginActivity.class);
+            startActivity(intent);
+
+        }
+
         setContentView(R.layout.activity_social);
 
 
