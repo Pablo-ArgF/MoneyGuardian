@@ -45,10 +45,11 @@
     </LinearLayout>
 
     <CheckBox
-        android:id="@+id/checkBox5"
-        style="@android:style/Widget.Holo.CompoundButton.CheckBox"
+        android:id="@+id/checkBoxUsuarios"
+        style="@android:style/Widget.CompoundButton.CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="5" />
+        android:layout_weight="10"
+        android:checked="false" />
 
 </LinearLayout>

@@ -113,8 +113,8 @@
 
     <ListView
         android:id="@+id/listUsuariosNuevoPagoConjunto"
-        android:layout_width="251dp"
-        android:layout_height="224dp"
+        android:layout_width="397dp"
+        android:layout_height="225dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonCrearNuevoPagoConjunto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.062"
