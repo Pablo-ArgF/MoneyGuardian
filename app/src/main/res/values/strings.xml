@@ -33,4 +33,6 @@
     <string name="signin_error">Algo ha ido mal, reintentelo más tarde</string>
     <string name="signin">Registrarse</string>
     <string name="error_singin">Correo o contraseña incorrectos, intentelo de nuevo</string>
+    <string name="error_singin_google">Error al iniciar sesión con Google</string>
+    <string name="default_web_client_id">881426924975-etpv0lisj9l3c2k5bhmd9icvgq26v4j7.apps.googleusercontent.com</string>
 </resources>

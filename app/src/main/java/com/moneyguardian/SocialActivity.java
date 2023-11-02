@@ -27,6 +27,7 @@ public class SocialActivity extends AppCompatActivity {
 
         //TODO move this to main activity when changed
         auth = FirebaseAuth.getInstance();
+
         user = auth.getCurrentUser();
 
         if(user == null){
