@@ -12,6 +12,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,6 +37,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     private ImageView IVPreviewImage;
     private ListView listViewUsuarios;
     private ArrayList<Usuario> usuarios;
+    private UsuarioArrayAdapter usuarioArrayAdapter;
 
     // Activity result code
     private final static int SELECT_PICTURE = 200;
@@ -52,20 +55,22 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         IVPreviewImage = findViewById(R.id.imagePreviewNuevoPagoConjunto);
         listViewUsuarios = findViewById(R.id.listUsuariosNuevoPagoConjunto);
 
-        // handle the Choose Image button to trigger
-        // the image chooser function
+        // Manejo del botón de la imágen
         BSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 imageChooser();
+                crearPagoConjunto();
             }
         });
 
-
+        usuarioArrayAdapter = new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios);
         listViewUsuarios.setChoiceMode(CHOICE_MODE_MULTIPLE);
-        //listViewUsuarios.setAdapter(new ArrayAdapter<Usuario>(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
-        // TODO esto no funciona? Pero lo anterior si?
-        listViewUsuarios.setAdapter(new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
+
+        // Sin utilizar un adapter custom:
+        // listViewUsuarios.setAdapter(new ArrayAdapter<Usuario>(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
+
+        listViewUsuarios.setAdapter(usuarioArrayAdapter);
 
     }
 
@@ -79,9 +84,11 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     }
 
     private void crearPagoConjunto() {
-        // TODO: como usar el SparseBooleanArray
-        // TODO Usando checkedPositions.get(i) obtenemos true si está marcado y false si no
-        //listViewUsuarios.getCheckedItemPositions();
+        SparseBooleanArray checkboxes = listViewUsuarios.getCheckedItemPositions();
+        // Esto no funciona
+        Log.i("Checkbox", String.valueOf(checkboxes.get(0)));
+        // Esto si
+        Log.i("Checkbox 2", String.valueOf(usuarioArrayAdapter.isChecked(0)));
     }
 
     ActivityResultLauncher<Intent> launchSomeActivity
@@ -92,7 +99,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                 if (result.getResultCode()
                         == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    // do your operation from here....
                     if (data != null
                             && data.getData() != null) {
                         Uri selectedImageUri = data.getData();

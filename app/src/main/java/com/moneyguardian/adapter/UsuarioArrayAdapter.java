@@ -35,15 +35,14 @@ public class UsuarioArrayAdapter extends ArrayAdapter<Usuario> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        // convertView which is recyclable view
         View currentItemView = convertView;
 
-        // of the recyclable view is null then inflate the custom layout for the same
+        // Inflamos el layout si la vista es null
         if (currentItemView == null) {
             currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.usuario_list_view, parent, false);
         }
 
-        // get the position of the view from the ArrayAdapter
+        // Posición de la vista desde el array adapter
         Usuario currentUser = getItem(position);
 
         if (currentUser != null) {
@@ -66,13 +65,20 @@ public class UsuarioArrayAdapter extends ArrayAdapter<Usuario> {
         return currentItemView;
     }
 
+    /**
+     * Listener para las checkbox
+     */
     CompoundButton.OnCheckedChangeListener mListener = new CompoundButton.OnCheckedChangeListener() {
 
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            checked[(Integer) buttonView.getTag()] = isChecked; // get the tag so we know the row and store the status
+            checked[(Integer) buttonView.getTag()] = isChecked;
 
-            Log.i("Checkbox: ", String.valueOf(checked[(Integer) buttonView.getTag()]));
+            Log.i("Checkbox: " + buttonView.getTag() + " status: ", String.valueOf(checked[(Integer) buttonView.getTag()]));
         }
     };
+
+    public boolean isChecked(int i) {
+        return checked[i];
+    }
 
 }
