@@ -13,9 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,7 +24,6 @@ import com.moneyguardian.modelo.Usuario;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
@@ -60,9 +57,10 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageChooser();
-                crearPagoConjunto();
             }
         });
+
+        // Manjeo de la lista de usuarios
 
         usuarioArrayAdapter = new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios);
         listViewUsuarios.setChoiceMode(CHOICE_MODE_MULTIPLE);
@@ -71,6 +69,16 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         // listViewUsuarios.setAdapter(new ArrayAdapter<Usuario>(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
 
         listViewUsuarios.setAdapter(usuarioArrayAdapter);
+
+        // Manejo del botón de crear
+
+        Button btnCrear = findViewById(R.id.buttonCrearNuevoPagoConjunto);
+        btnCrear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                crearPagoConjunto();
+            }
+        });
 
     }
 
@@ -84,11 +92,14 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     }
 
     private void crearPagoConjunto() {
-        SparseBooleanArray checkboxes = listViewUsuarios.getCheckedItemPositions();
         // Esto no funciona
-        Log.i("Checkbox", String.valueOf(checkboxes.get(0)));
+        Log.i("Checkbox", String.valueOf(listViewUsuarios.getCheckedItemPositions().get(0)));
         // Esto si
         Log.i("Checkbox 2", String.valueOf(usuarioArrayAdapter.isChecked(0)));
+
+        // TODO enviar a la base de datos
+
+        // Abrir la venta a de ver información del pago
     }
 
     ActivityResultLauncher<Intent> launchSomeActivity
