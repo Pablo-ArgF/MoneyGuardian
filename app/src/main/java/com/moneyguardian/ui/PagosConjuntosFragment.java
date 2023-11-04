@@ -96,9 +96,9 @@ public class PagosConjuntosFragment extends Fragment {
         btnNuevoPago.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO problemas con los fragments...
-                // Intent intent = new Intent(SocialActivity.this, FormularioPagoConjuntoActivity.class);
-
+                // Al ser un fragment, hay que usar getActivity para obtener el contexto
+                Intent intent = new Intent(getActivity(), FormularioPagoConjuntoActivity.class);
+                startActivity(intent);
             }
         });
 
