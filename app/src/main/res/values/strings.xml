@@ -26,4 +26,5 @@
     <string name="UsuariosNuevoPagoConjunto">Participantes</string>
     <string name="Añadir">Añadir\n</string>
     <string name="Crear">Crear</string>
+    <string name="ErrorNombreVacio">El nombre no puede estar vacío</string>
 </resources>

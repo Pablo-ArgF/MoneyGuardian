@@ -1,9 +1,12 @@
 package com.moneyguardian.ui;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,7 +43,6 @@ public class PagosConjuntosFragment extends Fragment {
     public static final String PAGO_CONJUNTO_CREADO = "pago_conjunto_creado";
 
     // Identificador de activiy
-    // TODO Necesario?
     public static final int GESTION_ACTIVITY = 1;
 
     // Modelo de datos
@@ -98,7 +100,7 @@ public class PagosConjuntosFragment extends Fragment {
             public void onClick(View v) {
                 // Al ser un fragment, hay que usar getActivity para obtener el contexto
                 Intent intent = new Intent(getActivity(), FormularioPagoConjuntoActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, GESTION_ACTIVITY);
             }
         });
 
@@ -172,5 +174,28 @@ public class PagosConjuntosFragment extends Fragment {
 
         getParentFragmentManager().beginTransaction().
                 replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Comprobamos a qué petición se está respondiendo
+        // TODO comprobar error del requestCode
+        if (requestCode == GESTION_ACTIVITY) {
+            // Nos aseguramos que el resultado fue OK
+            if (resultCode == RESULT_OK) {
+                this.pagoConjunto = data.getParcelableExtra(PAGO_CONJUNTO_CREADO);
+                // Log.d("PeliCreadaRecicler", peli.getTitulo());
+
+                // Refrescar el RecyclerView
+                // Añadimos a la lista de peliculas la peli nueva
+                this.listaPagosConjuntos.add(this.pagoConjunto);
+
+                PagosConjuntosListaAdapter listaPagosConjuntosAdapter = new PagosConjuntosListaAdapter(this.listaPagosConjuntos, (pago) -> {
+                    clickonItem(pago);
+                });
+                listaPagosConjuntosView.setAdapter(listaPagosConjuntosAdapter);
+            }
+        }
     }
 }

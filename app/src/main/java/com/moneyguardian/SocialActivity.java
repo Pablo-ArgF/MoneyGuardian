@@ -1,6 +1,7 @@
 package com.moneyguardian;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,6 +14,7 @@ import com.moneyguardian.ui.ListaPagosFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 
 public class SocialActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,6 @@ public class SocialActivity extends AppCompatActivity {
             //Si no es nula y no entra... Algo falla.
             throw new IllegalStateException("Unexpected value: " + item.getItemId());
         }
-
-        ;
     };
+
 }

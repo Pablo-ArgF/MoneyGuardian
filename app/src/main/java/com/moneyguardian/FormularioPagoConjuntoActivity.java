@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,11 +22,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.moneyguardian.adapter.UsuarioArrayAdapter;
+import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.ui.PagosConjuntosFragment;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
@@ -40,6 +45,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
     // Activity result code
     private final static int SELECT_PICTURE = 200;
+
+    // Valores del pago conjunto
+    private EditText nombrePago;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +88,28 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (validarPagoConjunto()) {
                     Log.i("Estado Pago Conjunto", "Validado");
+
+                    List<Usuario> participantes = new ArrayList<Usuario>();
+                    // Rellenamos la lista de usuarios
+                    for (int i = 0; i < usuarios.size(); i++) {
+                        if (usuarioArrayAdapter.isChecked(i)) {
+                            participantes.add(usuarios.get(i));
+                        }
+                    }
+
+                    // La fecha se inicializa automáticamente a la actual
+                    PagoConjunto pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes);
+
+                    // TODO enviar a la base de datos
+
+                    //Snackbar.make(findViewById(R.id.layout), R.string.saved_item, Snackbar.LENGTH_LONG).show();
+
+                    Intent intentResult = new Intent();
+                    intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
+                    setResult(RESULT_OK, intentResult);
+                    finish();
                 }
+                Log.i("Estado Pago Conjunto", "No validado");
             }
         });
 
@@ -103,10 +132,10 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
         // Validar datos
 
-        EditText nombrePago = findViewById(R.id.editTextNombrePagoConjunto);
+        nombrePago = findViewById(R.id.editTextNombrePagoConjunto);
         if (nombrePago.getText().toString().trim().isEmpty()) {
-            // TODO sacarlo al strings.xml?
-            nombrePago.setError("El nombre no puede estar vacío");
+            // TODO es necesario sacarlo al string.xml?
+            nombrePago.setError(Resources.getSystem().getString(R.string.ErrorNombreVacio));
             return false;
         }
 
@@ -128,9 +157,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             return false;
         }
 
-        // TODO enviar a la base de datos
-
-        // Abrir la venta a de ver información del pago
         return true;
     }
 

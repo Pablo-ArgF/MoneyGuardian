@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,10 @@ public class PagoConjunto implements Parcelable {
         this.fechaPago = fechaPago;
         this.participantes = participantes;
         this.items = items;
+    }
+
+    public PagoConjunto(String nombre, Date fechaPago, List<Usuario> participantes) {
+        this(nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
     }
 
 
@@ -39,6 +44,7 @@ public class PagoConjunto implements Parcelable {
             return new PagoConjunto[size];
         }
     };
+
 
     @Override
     public int describeContents() {
