@@ -15,8 +15,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.moneyguardian.adapter.UsuarioArrayAdapter;
 import com.moneyguardian.modelo.Usuario;
@@ -76,7 +78,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         btnCrear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                crearPagoConjunto();
+                if (validarPagoConjunto()) {
+                    Log.i("Estado Pago Conjunto", "Validado");
+                }
             }
         });
 
@@ -91,15 +95,43 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         launchSomeActivity.launch(i);
     }
 
-    private void crearPagoConjunto() {
+    private boolean validarPagoConjunto() {
         // Esto no funciona
-        Log.i("Checkbox", String.valueOf(listViewUsuarios.getCheckedItemPositions().get(0)));
+        // Log.i("Checkbox", String.valueOf(listViewUsuarios.getCheckedItemPositions().get(0)));
         // Esto si
         Log.i("Checkbox 2", String.valueOf(usuarioArrayAdapter.isChecked(0)));
+
+        // Validar datos
+
+        EditText nombrePago = findViewById(R.id.editTextNombrePagoConjunto);
+        if (nombrePago.getText().toString().trim().isEmpty()) {
+            // TODO sacarlo al strings.xml?
+            nombrePago.setError("El nombre no puede estar vacío");
+            return false;
+        }
+
+        // TODO validad icono
+
+        boolean oneUserMarked = false;
+        for (int i = 0; i < this.usuarios.size(); i++) {
+            if (usuarioArrayAdapter.isChecked(i)) {
+                oneUserMarked = true;
+                break;
+            }
+        }
+        // Si no hay, como mínimo, otro usuario en el pago, no dejamos que se efectue
+        if (!oneUserMarked) {
+            // TODO: al ser un text view, no deja ver cual es el error
+            TextView usuarios = findViewById(R.id.textViewParticipantes);
+            // TODO sacarlo al strings.xml?
+            usuarios.setError("Debe haber como mínimo otro usuario en el pago");
+            return false;
+        }
 
         // TODO enviar a la base de datos
 
         // Abrir la venta a de ver información del pago
+        return true;
     }
 
     ActivityResultLauncher<Intent> launchSomeActivity
