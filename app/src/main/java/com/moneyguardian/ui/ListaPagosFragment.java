@@ -56,7 +56,7 @@ public class ListaPagosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Mostramos el fragmento en el contenedor
-        View root= inflater.inflate(R.layout.fragment_lista_pagos, container, false);
+        View root = inflater.inflate(R.layout.fragment_lista_pagos, container, false);
         TextView tvName = root.findViewById(R.id.namePagos);
         tvName.setText(namePago);
         ImageView ivImagen = root.findViewById(R.id.iconPago);
@@ -66,14 +66,14 @@ public class ListaPagosFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        listItemsPagosView = (RecyclerView)view.findViewById(R.id.mainListPagosRecycler);
+        listItemsPagosView = (RecyclerView) view.findViewById(R.id.mainListPagosRecycler);
         listItemsPagosView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager =
                 new LinearLayoutManager(view.getContext().getApplicationContext());
         listItemsPagosView.setLayoutManager(layoutManager);
 
-       ItemListaAdapter lpAdapter= new ItemListaAdapter(listaPagos,
+        ItemListaAdapter lpAdapter = new ItemListaAdapter(listaPagos,
                 new ItemListaAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(ItemPagoConjunto itemPago) {
@@ -85,11 +85,11 @@ public class ListaPagosFragment extends Fragment {
 
     private void clickonItem(ItemPagoConjunto itemPago) {
 
-        ItemPagosFragment argumentoFragment=ItemPagosFragment.newInstance
-                (itemPago.getNombre(),itemPago.getPagos());
+        ItemPagosFragment argumentoFragment = ItemPagosFragment.newInstance
+                (itemPago.getNombre(), itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).commit();
+                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).addToBackStack("TAG").commit();
 
     }
 }
