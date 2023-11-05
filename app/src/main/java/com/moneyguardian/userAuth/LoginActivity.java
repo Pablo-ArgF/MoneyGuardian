@@ -3,6 +3,7 @@ package com.moneyguardian.userAuth;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -14,6 +15,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +30,7 @@ import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,27 +54,23 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
+    private boolean showOneTapUI = true;
     private SignInClient oneTapClient;;
-    private BeginSignInRequest signInRequest;
+    private BeginSignInRequest signUpRequest;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         oneTapClient = Identity.getSignInClient(this);
-        signInRequest = BeginSignInRequest.builder()
-                .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                        .setSupported(true)
-                        .build())
+        signUpRequest = BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
                         // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.default_web_client_id))
-                        // Only show accounts previously used to sign in.
-                        .setFilterByAuthorizedAccounts(true)
+                        // Show all accounts on the device.
+                        .setFilterByAuthorizedAccounts(false)
                         .build())
-                // Automatically sign in when exactly one credential is retrieved.
-                .setAutoSelectEnabled(true)
                 .build();
         
         
@@ -100,83 +103,73 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        This object is the one in charge of google auth launch window and the result of it
+        */
+        ActivityResultLauncher<IntentSenderRequest> activityResultLauncher =
+                registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(),
+                        new ActivityResultCallback<ActivityResult>() {
+                            @Override
+                            public void onActivityResult(ActivityResult result) {
+                                if(result.getResultCode() == Activity.RESULT_OK){
+                                    try {
+                                        SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(result.getData());
+                                        String idToken = credential.getGoogleIdToken();
+                                        if (idToken !=  null) {
+                                            /*String email = credential.getId();
+                                            Toast.makeText(getApplicationContext(),"Email: "+email,Toast.LENGTH_LONG).show();*/
 
+                                            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+                                            mAuth.signInWithCredential(firebaseCredential)
+                                                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                                            if (task.isSuccessful()) {
+                                                                // Sign in success, update UI with the signed-in user's information
+                                                                FirebaseUser user = mAuth.getCurrentUser();
+                                                                if(user != null) //Login complete
+                                                                    startActivity(new Intent(LoginActivity.this, SocialActivity.class));
+                                                            } else {
+                                                                // If sign in fails, display a message to the user.);
+                                                                Toast.makeText(LoginActivity.this,
+                                                                        getText(R.string.error_singin_google),
+                                                                        Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    } catch (ApiException e) {
+                                        Toast.makeText(LoginActivity.this,
+                                                getText(R.string.error_singin_google),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
         btn_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*GoogleSignInOptions googleConf = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build();
-                GoogleSignInClient googleClient = GoogleSignIn.getClient(getApplicationContext(),googleConf);
-
-
-                startActivityForResult(googleClient.getSignInIntent(),REQ_ONE_TAP);*/
-                oneTapClient.beginSignIn(signInRequest)
-                        .addOnSuccessListener( new OnSuccessListener<BeginSignInResult>() {
+                oneTapClient.beginSignIn(signUpRequest)
+                        .addOnSuccessListener(LoginActivity.this, new OnSuccessListener<BeginSignInResult>() {
                             @Override
                             public void onSuccess(BeginSignInResult result) {
-                                try {
-
-                                    startIntentSenderForResult(
-                                            result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
-                                            null, 0, 0, 0);
-                                } catch (IntentSender.SendIntentException e) {
-                                    Log.e(TAG, "Couldn't start One Tap UI: " + e.getLocalizedMessage());
-                                }
+                                IntentSenderRequest intentSenderRequest =
+                                        new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build();
+                                activityResultLauncher.launch(intentSenderRequest);
                             }
-                        }).addOnFailureListener( new OnFailureListener() {
+                        })
+                        .addOnFailureListener(LoginActivity.this, new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.i("Error","Hola" + e.getLocalizedMessage());
+                                // No Google Accounts found. Just continue presenting the signed-out UI.
+                                Toast.makeText(LoginActivity.this,
+                                        getText(R.string.error_singin_google),
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
-
             }
         });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQ_ONE_TAP:
-                try {
-                    SignInCredential googleCredential = oneTapClient.getSignInCredentialFromIntent(data);
-                    String idToken = googleCredential.getGoogleIdToken();
-                    if (idToken !=  null) {
-                        // Got an ID token from Google. Use it to authenticate
-                        // with Firebase.
-                        AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
-                        mAuth.signInWithCredential(firebaseCredential)
-                                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            // Sign in success, update UI with the signed-in user's information
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Me cago en la puta funciona", Toast.LENGTH_LONG).show();
-                                            Intent i = new Intent(LoginActivity.this, SocialActivity.class);
-                                            startActivity(i);
-
-                                        } else {
-                                            // If sign in fails, display a message to the user.
-                                            Toast.makeText(getApplicationContext(),
-                                                    getText(R.string.error_singin_google), Toast.LENGTH_LONG).show();
-                                        }
-                                        }
-                                    });
-
-                    }
-                } catch (Exception e) {
-                    // ...
-                }
-                break;
-        }
-    }
-
-
 
     @Override
     protected void onStart() {

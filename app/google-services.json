@@ -7,14 +7,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:881426924975:android:e57288e46678c3f77b9b5a",
+        "mobilesdk_app_id": "1:881426924975:android:a4539abcd443ab887b9b5a",
         "android_client_info": {
           "package_name": "com.moneyguardian"
         }
       },
       "oauth_client": [
         {
-          "client_id": "881426924975-2jhkpg2fb9dv5a55fcehau54mc83a5n2.apps.googleusercontent.com",
+          "client_id": "881426924975-ebmlsl6sbfo6l5ocmd1rj3md5li1p87a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.moneyguardian",
