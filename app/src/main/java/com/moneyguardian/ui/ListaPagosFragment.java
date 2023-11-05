@@ -89,7 +89,7 @@ public class ListaPagosFragment extends Fragment {
                 (itemPago.getNombre(), itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).addToBackStack("TAG").commit();
+                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).addToBackStack(null).commit();
 
     }
 }
