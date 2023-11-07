@@ -105,7 +105,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
                     // TODO enviar a la base de datos
 
-                    //Snackbar.make(findViewById(R.id.recyclerPagosConjuntos), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
+                    // TODO descomentar cuando se solucione el parcelable
+                    //Snackbar.make(findViewById(R.id.layoutFormularioPagoConjunto), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
 
                     Intent intentResult = new Intent();
                     intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
@@ -191,4 +192,26 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     }
                 }
             });
+
+    /**
+     * Para guardar un archivo local en Firebase
+     *
+     * Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
+     * StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
+     * uploadTask = riversRef.putFile(file);
+     *
+     * // Register observers to listen for when the download is done or if it fails
+     * uploadTask.addOnFailureListener(new OnFailureListener() {
+     *     @Override
+     *     public void onFailure(@NonNull Exception exception) {
+     *         // Handle unsuccessful uploads
+     *     }
+     * }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+     *     @Override
+     *     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+     *         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+     *         // ...
+     *     }
+     * });
+     */
 }

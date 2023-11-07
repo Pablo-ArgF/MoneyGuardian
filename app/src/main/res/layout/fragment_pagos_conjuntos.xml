@@ -8,6 +8,7 @@
     tools:context=".ui.PagosConjuntosFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutFragmentPagosConjuntos"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
