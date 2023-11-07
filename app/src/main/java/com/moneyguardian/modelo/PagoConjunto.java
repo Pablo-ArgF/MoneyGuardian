@@ -13,6 +13,7 @@ import java.util.List;
 public class PagoConjunto implements Parcelable {
     private String nombre;
     private Date fechaPago;
+    private Date fechaLimite;
     // Consider adding a field for 'Foto' or 'Icono' if needed
     private Uri imagen = null;
     private List<Usuario> participantes;
@@ -32,6 +33,11 @@ public class PagoConjunto implements Parcelable {
 
     public PagoConjunto(String nombre, Date fechaPago, List<Usuario> participantes) {
         this(nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+    }
+
+    public PagoConjunto(String nombre, Date fechaPago, List<Usuario> participantes, Date fechaLimite) {
+        this(nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+        this.fechaLimite = fechaLimite;
     }
 
 
@@ -65,6 +71,8 @@ public class PagoConjunto implements Parcelable {
         dest.writeSerializable(fechaPago); // Write Date as serializable
         dest.writeTypedList(participantes);
         dest.writeTypedList(items);
+        // dest.writeSerializable(fechaLimite);
+        // dest.writeParcelable(imagen, flags); // Va a funcionar?
         // Write 'Foto' or 'Icono' if they are Parcelable or some other type
         // Example: dest.writeParcelable(foto, flags);
     }
@@ -107,6 +115,14 @@ public class PagoConjunto implements Parcelable {
 
     public void setItems(List<ItemPagoConjunto> items) {
         this.items = items;
+    }
+
+    public void setFechaLimite(Date fechaLimite) {
+        this.fechaLimite = fechaLimite;
+    }
+
+    public Date getFechaLimite() {
+        return this.fechaLimite;
     }
 
 }
