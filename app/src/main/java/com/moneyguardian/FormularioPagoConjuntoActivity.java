@@ -40,6 +40,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
     // Imagen de preview
     private ImageView IVPreviewImage;
+    private Uri selectedImageUri;
     private ListView listViewUsuarios;
     private ArrayList<Usuario> usuarios;
     private UsuarioArrayAdapter usuarioArrayAdapter;
@@ -93,8 +94,14 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     }
 
                     // La fecha se inicializa automáticamente a la actual
-                    // TODO quedaría añadir la imágen
-                    PagoConjunto pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes);
+                    PagoConjunto pagoConjunto = null;
+                    // Si tenemos imagen
+                    if (selectedImageUri != null) {
+                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes, selectedImageUri);
+                        // Si no tenemos imagen
+                    } else {
+                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes);
+                    }
 
                     // TODO enviar a la base de datos
 
@@ -172,6 +179,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                                     = MediaStore.Images.Media.getBitmap(
                                     this.getContentResolver(),
                                     selectedImageUri);
+                            this.selectedImageUri = selectedImageUri;
                         } catch (FileNotFoundException ef) {
                             // TODO
                             ef.printStackTrace();

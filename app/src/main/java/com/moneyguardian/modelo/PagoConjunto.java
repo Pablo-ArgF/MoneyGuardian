@@ -1,5 +1,6 @@
 package com.moneyguardian.modelo;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,6 +14,7 @@ public class PagoConjunto implements Parcelable {
     private String nombre;
     private Date fechaPago;
     // Consider adding a field for 'Foto' or 'Icono' if needed
+    private Uri imagen = null;
     private List<Usuario> participantes;
     private List<ItemPagoConjunto> items;
 
@@ -21,6 +23,11 @@ public class PagoConjunto implements Parcelable {
         this.fechaPago = fechaPago;
         this.participantes = participantes;
         this.items = items;
+    }
+
+    public PagoConjunto(String nombre, Date fecha, List<Usuario> participantes, Uri imagen) {
+        this(nombre, fecha, participantes, new ArrayList<ItemPagoConjunto>());
+        this.imagen = imagen;
     }
 
     public PagoConjunto(String nombre, Date fechaPago, List<Usuario> participantes) {
@@ -82,6 +89,14 @@ public class PagoConjunto implements Parcelable {
         return participantes;
     }
 
+    public Uri getImagen() {
+        return this.imagen;
+    }
+
+    public void setImagen(Uri imagen) {
+        this.imagen = imagen;
+    }
+
     public void setParticipantes(List<Usuario> participantes) {
         this.participantes = participantes;
     }
@@ -93,4 +108,5 @@ public class PagoConjunto implements Parcelable {
     public void setItems(List<ItemPagoConjunto> items) {
         this.items = items;
     }
+
 }
