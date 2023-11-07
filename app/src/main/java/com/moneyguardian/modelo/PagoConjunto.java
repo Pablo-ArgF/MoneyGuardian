@@ -30,6 +30,7 @@ public class PagoConjunto implements Parcelable {
 
     protected PagoConjunto(Parcel in) {
         nombre = in.readString();
+        // TODO error aqui a la hora de hacer el parcelable
         participantes = in.createTypedArrayList(Usuario.CREATOR);
     }
 

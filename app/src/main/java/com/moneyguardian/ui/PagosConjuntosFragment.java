@@ -184,9 +184,8 @@ public class PagosConjuntosFragment extends Fragment {
         if (requestCode == GESTION_ACTIVITY) {
             // Nos aseguramos que el resultado fue OK
             if (resultCode == RESULT_OK) {
-                // TODO esta dando el erro aquí
+                // TODO esta dando el error aquí
                 this.pagoConjunto = data.getParcelableExtra(PAGO_CONJUNTO_CREADO);
-                // Log.d("PeliCreadaRecicler", peli.getTitulo());
 
                 // Refrescar el RecyclerView
                 // Añadimos a la lista de peliculas la peli nueva

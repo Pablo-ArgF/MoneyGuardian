@@ -20,6 +20,7 @@ public class Usuario implements Parcelable {
     public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
         @Override
         public Usuario createFromParcel(Parcel in) {
+            // TODO infinite loop
             return new Usuario(in);
         }
 
@@ -41,6 +42,7 @@ public class Usuario implements Parcelable {
         nombre = in.readString();
         correo = in.readString();
         amigos = in.createTypedArrayList(Usuario.CREATOR);
+        // TODO inifinite loop
         misPagosConjuntos = in.createTypedArrayList(PagoConjunto.CREATOR);
     }
 

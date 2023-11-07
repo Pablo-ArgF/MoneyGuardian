@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.moneyguardian.adapter.UsuarioArrayAdapter;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
@@ -42,9 +43,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     private ListView listViewUsuarios;
     private ArrayList<Usuario> usuarios;
     private UsuarioArrayAdapter usuarioArrayAdapter;
-
-    // Activity result code
-    private final static int SELECT_PICTURE = 200;
 
     // Valores del pago conjunto
     private EditText nombrePago;
@@ -75,9 +73,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         usuarioArrayAdapter = new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios);
         listViewUsuarios.setChoiceMode(CHOICE_MODE_MULTIPLE);
 
-        // Sin utilizar un adapter custom:
-        // listViewUsuarios.setAdapter(new ArrayAdapter<Usuario>(this, android.R.layout.simple_list_item_multiple_choice, usuarios));
-
         listViewUsuarios.setAdapter(usuarioArrayAdapter);
 
         // Manejo del botón de crear
@@ -98,11 +93,12 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     }
 
                     // La fecha se inicializa automáticamente a la actual
+                    // TODO quedaría añadir la imágen
                     PagoConjunto pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes);
 
                     // TODO enviar a la base de datos
 
-                    //Snackbar.make(findViewById(R.id.layout), R.string.saved_item, Snackbar.LENGTH_LONG).show();
+                    //Snackbar.make(findViewById(R.id.recyclerPagosConjuntos), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
 
                     Intent intentResult = new Intent();
                     intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
@@ -134,8 +130,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
         nombrePago = findViewById(R.id.editTextNombrePagoConjunto);
         if (nombrePago.getText().toString().trim().isEmpty()) {
-            // TODO es necesario sacarlo al string.xml?
-            nombrePago.setError(Resources.getSystem().getString(R.string.ErrorNombreVacio));
+            nombrePago.setError(getString(R.string.ErrorNombreVacio));
             return false;
         }
 

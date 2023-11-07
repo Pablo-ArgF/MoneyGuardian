@@ -27,4 +27,5 @@
     <string name="Añadir">Añadir\n</string>
     <string name="Crear">Crear</string>
     <string name="ErrorNombreVacio">El nombre no puede estar vacío</string>
+    <string name="PagoConjuntoCreado">El pago se ha creado</string>
 </resources>
