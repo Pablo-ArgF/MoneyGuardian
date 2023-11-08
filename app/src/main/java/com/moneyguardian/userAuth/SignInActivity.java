@@ -13,20 +13,29 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.SocialActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignInActivity  extends AppCompatActivity {
     private EditText emailTextView, passwordTextView;
     private Button btn_register;
     private ProgressBar progressbar;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onStart() {
@@ -36,7 +45,7 @@ public class SignInActivity  extends AppCompatActivity {
             //launch the main activity
             Intent intent
                     = new Intent(SignInActivity.this,
-                    SocialActivity.class); //TODO change this to main at some point
+                    MainActivity.class);
             startActivity(intent);
         }
     }
@@ -49,6 +58,7 @@ public class SignInActivity  extends AppCompatActivity {
 
         // taking FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // initialising all views through id defined above
         emailTextView = findViewById(R.id.email);
@@ -100,8 +110,7 @@ public class SignInActivity  extends AppCompatActivity {
         }
 
         // create new user or register new user
-        mAuth
-                .createUserWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
                     @Override
@@ -116,24 +125,53 @@ public class SignInActivity  extends AppCompatActivity {
                             // hide the progress bar
                             progressbar.setVisibility(View.GONE);
 
-                            // if the user created intent to login activity
-                            Intent intent
-                                    = new Intent(SignInActivity.this,
-                                    SignInActivity.class);
-                            startActivity(intent);
+                            //we store the user info in the database, the default name for the
+                            //user will be the mail used to login
+                            storeUserInDB();
                         }
                         else {
-
-                            // Registration failed
-                            Toast.makeText(
-                                            getApplicationContext(),
-                                            getText(R.string.signin_error),
-                                            Toast.LENGTH_LONG)
-                                    .show();
+                            //we check if it was a collision on the mail
+                            if(task.getException() instanceof FirebaseAuthUserCollisionException)
+                                emailTextView.setError(getString(R.string.error_singin_usedMail));
+                            else {// Registration failed
+                                Toast.makeText(
+                                                getApplicationContext(),
+                                                getText(R.string.signin_error),
+                                                Toast.LENGTH_LONG)
+                                        .show();
+                            }
 
                             // hide the progress bar
                             progressbar.setVisibility(View.GONE);
                         }
+                    }
+                });
+    }
+
+    public void storeUserInDB(){
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", mAuth.getCurrentUser().getEmail());
+        user.put("email", mAuth.getCurrentUser().getEmail());
+        db.collection("users")
+                .document(mAuth.getUid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        // if the user created intent to login activity
+                        Intent intent
+                                = new Intent(SignInActivity.this,
+                                SignInActivity.class);
+                        startActivity(intent);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //we delete the user, it could not be created
+                        mAuth.getCurrentUser().delete();
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.error_db_add_user),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
     }

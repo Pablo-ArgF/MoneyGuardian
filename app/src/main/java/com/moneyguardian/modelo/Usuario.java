@@ -36,6 +36,8 @@ public class Usuario implements Parcelable {
         this.misPagosConjuntos = misPagosConjuntos;
     }
 
+    public Usuario() {
+    }
 
     protected Usuario(Parcel in) {
         nombre = in.readString();
