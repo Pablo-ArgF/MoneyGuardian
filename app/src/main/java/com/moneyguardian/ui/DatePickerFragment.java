@@ -10,6 +10,9 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
 
+/**
+ * Este dialog se encarga de generar un date picker con la fecha mínima puesta a hoy
+ */
 public class DatePickerFragment extends DialogFragment {
 
     private DatePickerDialog.OnDateSetListener listener;
@@ -31,8 +34,10 @@ public class DatePickerFragment extends DialogFragment {
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
-
-        return new DatePickerDialog(getActivity(), listener, year, month, day);
+        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), listener, year, month, day);
+        // Ponemos la fecha mínima a hoy
+        datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        return datePicker;
     }
 
 }

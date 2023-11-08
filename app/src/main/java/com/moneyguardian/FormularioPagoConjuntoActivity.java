@@ -50,6 +50,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
     // Valores del pago conjunto
     private EditText nombrePago;
+    private EditText fechaPago;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +163,12 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         nombrePago = findViewById(R.id.editTextNombrePagoConjunto);
         if (nombrePago.getText().toString().trim().isEmpty()) {
             nombrePago.setError(getString(R.string.ErrorNombreVacio));
+            return false;
+        }
+
+        fechaPago = findViewById(R.id.editFechaMaximaPagoConjunto);
+        if (fechaPago.getText().toString().trim().isEmpty()) {
+            fechaPago.setError(getString(R.string.ErrorFechaVacia));
             return false;
         }
 
