@@ -7,6 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".FormularioPagoConjuntoActivity">
 
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></ScrollView>
     <TextView
         android:id="@+id/textViewNuevoPagoConjunto"
         android:layout_width="wrap_content"
@@ -20,18 +23,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022" />
 
-    <TextView
-        android:id="@+id/textViewNuevoNombrePagoConjunto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nombre"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.044"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNuevoPagoConjunto"
-        app:layout_constraintVertical_bias="0.055" />
-
     <EditText
         android:id="@+id/editTextNombrePagoConjunto"
         android:layout_width="254dp"
@@ -41,22 +32,35 @@
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.082"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNuevoNombrePagoConjunto"
-        app:layout_constraintVertical_bias="0.042" />
+        app:layout_constraintVertical_bias="0.016" />
 
     <TextView
-        android:id="@+id/textViewFotoNuevoPagoConjunto"
+        android:id="@+id/textViewNuevoNombrePagoConjunto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/IconoPagoConjunto"
+        android:text="@string/nombre"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHorizontal_bias="0.036"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNombrePagoConjunto"
-        app:layout_constraintVertical_bias="0.045" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNuevoPagoConjunto"
+        app:layout_constraintVertical_bias="0.018" />
+
+    <Button
+        android:id="@+id/buttonSeleccionarImagenNuevoPagoConjunto"
+        android:layout_width="137dp"
+        android:layout_height="53dp"
+        android:text="@string/Seleccionarr"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.036"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagePreviewNuevoPagoConjunto"
+        app:layout_constraintVertical_bias="0.032" />
 
     <ImageView
         android:id="@+id/imagePreviewNuevoPagoConjunto"
@@ -68,24 +72,24 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.034"
+        app:layout_constraintHorizontal_bias="0.029"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewFotoNuevoPagoConjunto"
-        app:layout_constraintVertical_bias="0.019"
+        app:layout_constraintVertical_bias="0.022"
         app:srcCompat="@android:drawable/ic_menu_gallery" />
 
-    <Button
-        android:id="@+id/buttonSeleccionarImagenNuevoPagoConjunto"
-        android:layout_width="137dp"
-        android:layout_height="53dp"
-        android:text="@string/Seleccionarr"
-        android:textAppearance="@android:style/TextAppearance.Small"
+    <TextView
+        android:id="@+id/textViewFotoNuevoPagoConjunto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="@string/IconoPagoConjunto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintHorizontal_bias="0.038"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagePreviewNuevoPagoConjunto"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintTop_toBottomOf="@+id/editFechaMaximaPagoConjunto"
+        app:layout_constraintVertical_bias="0.004" />
 
     <TextView
         android:id="@+id/textViewParticipantes"
@@ -97,7 +101,25 @@
         app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonSeleccionarImagenNuevoPagoConjunto"
-        app:layout_constraintVertical_bias="0.097" />
+        app:layout_constraintVertical_bias="0.042" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantes"
+        app:layout_constraintVertical_bias="0.071">
+
+        <ListView
+            android:id="@+id/listUsuariosNuevoPagoConjunto"
+            android:layout_width="match_parent"
+            android:layout_height="191dp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/buttonCrearNuevoPagoConjunto"
@@ -109,18 +131,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.944"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantes"
-        app:layout_constraintVertical_bias="0.947" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.387" />
 
-    <ListView
-        android:id="@+id/listUsuariosNuevoPagoConjunto"
-        android:layout_width="397dp"
-        android:layout_height="225dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonCrearNuevoPagoConjunto"
+    <TextView
+        android:id="@+id/textViewFechaMaxPagoConjunto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/FechaLimite"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintHorizontal_bias="0.041"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantes"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextNombrePagoConjunto"
+        app:layout_constraintVertical_bias="0.014" />
+
+    <EditText
+        android:id="@+id/editFechaMaximaPagoConjunto"
+        android:layout_width="193dp"
+        android:layout_height="52dp"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="@string/AñadirFecha"
+        android:inputType="date"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFechaMaxPagoConjunto"
+        app:layout_constraintVertical_bias="0.03" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

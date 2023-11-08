@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.moneyguardian.adapter.UsuarioArrayAdapter;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.ui.DatePickerFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 
 import java.io.FileNotFoundException;
@@ -56,6 +59,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         // TODO inicializar la lista con la BD
         usuarios = new ArrayList<>();
         usuarios.add(new Usuario("Pepe", "pepe@pepe.pepe", new ArrayList<>(), new ArrayList<>()));
+        usuarios.add(new Usuario("Pepa", "pepe@pepe.pepe", new ArrayList<>(), new ArrayList<>()));
+        usuarios.add(new Usuario("Pipi", "pepe@pepe.pepe", new ArrayList<>(), new ArrayList<>()));
 
         BSelectImage = findViewById(R.id.buttonSeleccionarImagenNuevoPagoConjunto);
         IVPreviewImage = findViewById(R.id.imagePreviewNuevoPagoConjunto);
@@ -75,6 +80,24 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         listViewUsuarios.setChoiceMode(CHOICE_MODE_MULTIPLE);
 
         listViewUsuarios.setAdapter(usuarioArrayAdapter);
+
+        // Manejo de la seleccion de fecha
+        EditText etPlannedDate = (EditText) findViewById(R.id.editFechaMaximaPagoConjunto);
+        etPlannedDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                        // +1 because January is zero
+                        final String selectedDate = day + " / " + (month + 1) + " / " + year;
+                        etPlannedDate.setText(selectedDate);
+                    }
+                });
+
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
 
         // Manejo del botón de crear
 

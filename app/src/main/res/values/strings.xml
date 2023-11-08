@@ -28,4 +28,6 @@
     <string name="Crear">Crear</string>
     <string name="ErrorNombreVacio">El nombre no puede estar vacío</string>
     <string name="PagoConjuntoCreado">El pago se ha creado</string>
+    <string name="FechaLimite">Fecha límite para pagar</string>
+    <string name="AñadirFecha">Añadir Fecha</string>
 </resources>

@@ -15,9 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.MoneyGuardian"
         tools:targetApi="31">
+
         <activity
             android:name=".FormularioPagoConjuntoActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".SocialActivity"

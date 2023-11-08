@@ -14,7 +14,6 @@ public class PagoConjunto implements Parcelable {
     private String nombre;
     private Date fechaPago;
     private Date fechaLimite;
-    // Consider adding a field for 'Foto' or 'Icono' if needed
     private Uri imagen = null;
     private List<Usuario> participantes;
     private List<ItemPagoConjunto> items;
