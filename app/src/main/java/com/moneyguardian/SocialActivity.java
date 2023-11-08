@@ -1,8 +1,10 @@
 package com.moneyguardian;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -12,6 +14,7 @@ import com.moneyguardian.ui.ListaPagosFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 
 public class SocialActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +27,6 @@ public class SocialActivity extends AppCompatActivity {
         ListaAmigosFragment listaAmigosFragment = new ListaAmigosFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos, listaAmigosFragment).commit();
-
 
     }
 
@@ -57,7 +59,6 @@ public class SocialActivity extends AppCompatActivity {
             //Si no es nula y no entra... Algo falla.
             throw new IllegalStateException("Unexpected value: " + item.getItemId());
         }
-
-        ;
     };
+
 }

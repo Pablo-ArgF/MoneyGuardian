@@ -1,17 +1,20 @@
 package com.moneyguardian.modelo;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class PagoConjunto implements Parcelable {
     private String nombre;
     private Date fechaPago;
-    // Consider adding a field for 'Foto' or 'Icono' if needed
+    private Date fechaLimite;
+    private Uri imagen = null;
     private List<Usuario> participantes;
     private List<ItemPagoConjunto> items;
 
@@ -22,9 +25,24 @@ public class PagoConjunto implements Parcelable {
         this.items = items;
     }
 
+    public PagoConjunto(String nombre, Date fecha, List<Usuario> participantes, Uri imagen) {
+        this(nombre, fecha, participantes, new ArrayList<ItemPagoConjunto>());
+        this.imagen = imagen;
+    }
+
+    public PagoConjunto(String nombre, Date fechaPago, List<Usuario> participantes) {
+        this(nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+    }
+
+    public PagoConjunto(String nombre, Date fechaPago, List<Usuario> participantes, Date fechaLimite) {
+        this(nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+        this.fechaLimite = fechaLimite;
+    }
+
 
     protected PagoConjunto(Parcel in) {
         nombre = in.readString();
+        // TODO error aqui a la hora de hacer el parcelable
         participantes = in.createTypedArrayList(Usuario.CREATOR);
     }
 
@@ -40,6 +58,7 @@ public class PagoConjunto implements Parcelable {
         }
     };
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -51,6 +70,8 @@ public class PagoConjunto implements Parcelable {
         dest.writeSerializable(fechaPago); // Write Date as serializable
         dest.writeTypedList(participantes);
         dest.writeTypedList(items);
+        // dest.writeSerializable(fechaLimite);
+        // dest.writeParcelable(imagen, flags); // Va a funcionar?
         // Write 'Foto' or 'Icono' if they are Parcelable or some other type
         // Example: dest.writeParcelable(foto, flags);
     }
@@ -75,6 +96,14 @@ public class PagoConjunto implements Parcelable {
         return participantes;
     }
 
+    public Uri getImagen() {
+        return this.imagen;
+    }
+
+    public void setImagen(Uri imagen) {
+        this.imagen = imagen;
+    }
+
     public void setParticipantes(List<Usuario> participantes) {
         this.participantes = participantes;
     }
@@ -86,4 +115,13 @@ public class PagoConjunto implements Parcelable {
     public void setItems(List<ItemPagoConjunto> items) {
         this.items = items;
     }
+
+    public void setFechaLimite(Date fechaLimite) {
+        this.fechaLimite = fechaLimite;
+    }
+
+    public Date getFechaLimite() {
+        return this.fechaLimite;
+    }
+
 }
