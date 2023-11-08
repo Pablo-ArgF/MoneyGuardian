@@ -19,6 +19,8 @@
     <string name="NuevoItemPago">Crear Nuevo</string>
     <string name="formListaPagosName">Nombre del Item de Pago</string>
     <string name="acceptBtn">Aceptar</string>
-    <string name="formListaPagosCantidadTotal">Cantidad Total</string>
+    <string name="formListaPagosCantidadTotal">Cantidad Total: </string>
     <string name="formListaPagosHintCantidadTotal">Total</string>
+    <string name="TVPagador">Escoja la Persona que Paga:</string>
+    <string name="changeMoneyPerPerson">Editar Cantidad por Persona</string>
 </resources>

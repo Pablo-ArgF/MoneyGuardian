@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="104dp"
         android:text="@string/formListaPagosName"
         android:textSize="18sp" />
@@ -38,12 +38,12 @@
         android:id="@+id/editTextNumberDecimal"
         android:layout_width="112dp"
         android:layout_height="57dp"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentStart="true"
+        android:layout_below="@+id/formItemPagoNameTextField"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="18dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="230dp"
+        android:layout_marginEnd="93dp"
+        android:layout_toEndOf="@+id/textView3"
         android:ems="10"
         android:hint="@string/formListaPagosHintCantidadTotal"
         android:inputType="numberDecimal" />
@@ -54,36 +54,23 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/formItemPagoNameTextField"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="226dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="35dp"
         android:text="@string/formListaPagosCantidadTotal"
         android:textSize="18sp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recicledViewUsersSelected"
-        android:layout_width="353dp"
-        android:layout_height="150dp"
-        android:layout_below="@+id/editTextNumberDecimal"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="18dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recicledViewUsersToSelect"
         android:layout_width="354dp"
         android:layout_height="150dp"
-        android:layout_below="@+id/recicledViewUsersSelected"
+        android:layout_below="@+id/checkBox"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="18dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginBottom="80dp" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="53dp" />
 
     <Button
         android:id="@+id/button4"
@@ -94,5 +81,39 @@
         android:layout_marginEnd="17dp"
         android:layout_marginBottom="20dp"
         android:text="@string/acceptBtn" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="53dp"
+        android:layout_below="@+id/TVPagador"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="104dp" />
+
+    <TextView
+        android:id="@+id/TVPagador"
+        android:layout_width="239dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="102dp"
+        android:text="@string/TVPagador"
+        android:textSize="18sp" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/changeMoneyPerPerson" />
 
 </RelativeLayout>
