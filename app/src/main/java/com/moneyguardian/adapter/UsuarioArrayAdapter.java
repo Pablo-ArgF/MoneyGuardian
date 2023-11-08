@@ -16,14 +16,15 @@ import androidx.annotation.Nullable;
 
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 
 import java.util.ArrayList;
 
-public class UsuarioArrayAdapter extends ArrayAdapter<Usuario> {
+public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
 
     private boolean[] checked;
 
-    public UsuarioArrayAdapter(@NonNull Context context, int resource, ArrayList<Usuario> usuarios) {
+    public UsuarioArrayAdapter(@NonNull Context context, int resource, ArrayList<UsuarioParaParcelable> usuarios) {
         super(context, resource, usuarios);
         this.checked = new boolean[usuarios.toArray().length];
         for (int i = 0; i < this.checked.length; i++) {
@@ -43,14 +44,14 @@ public class UsuarioArrayAdapter extends ArrayAdapter<Usuario> {
         }
 
         // Posición de la vista desde el array adapter
-        Usuario currentUser = getItem(position);
+        UsuarioParaParcelable currentUser = getItem(position);
 
         if (currentUser != null) {
             TextView nombre = currentItemView.findViewById(R.id.nombreUsuario);
             TextView correo = currentItemView.findViewById(R.id.correoUsuario);
             ImageView imag = currentItemView.findViewById(R.id.imagenUsuario);
             nombre.setText(currentUser.getNombre());
-            correo.setText(currentUser.getCorreo());
+            correo.setText(currentUser.getEmail());
             // TODO Picasso.with(context)
             //.load(subjectData.Image)
             //.into(imag);

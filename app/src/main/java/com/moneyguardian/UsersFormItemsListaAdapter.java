@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 
 import org.w3c.dom.Text;
 
@@ -19,10 +20,10 @@ import java.util.List;
 
 public class UsersFormItemsListaAdapter extends
         RecyclerView.Adapter<UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder>{
-    private List<Usuario> usuariosDelPago;
+    private List<UsuarioParaParcelable> usuariosDelPago;
     private double cantidad;
 
-    public UsersFormItemsListaAdapter(List<Usuario> usuariosDelPago, double cantidad) {
+    public UsersFormItemsListaAdapter(List<UsuarioParaParcelable> usuariosDelPago, double cantidad) {
         this.usuariosDelPago = usuariosDelPago;
     }
 
@@ -31,14 +32,14 @@ public class UsersFormItemsListaAdapter extends
     @Override
     public UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.pago_lista_recycler, parent, false);
+                .inflate(R.layout.linea_recyler_form_items_pago_user_to_add, parent, false);
         return new UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder holder,
                                  int position) {
-        Usuario user= usuariosDelPago.get(position);
+        UsuarioParaParcelable user= usuariosDelPago.get(position);
         holder.bindUser(user, cantidad);
     }
 
@@ -67,7 +68,7 @@ public class UsersFormItemsListaAdapter extends
             //photo= (ImageView)itemView.findViewById(R.id.imageViewAvatarIcon);
         }
 
-        public void bindUser(final Usuario user,double cantidad) {
+        public void bindUser(final UsuarioParaParcelable user,double cantidad) {
             name.setText(user.getNombre());
             //photo.setImageIcon(user.getPhoto());
             if(participatesPayment.isChecked()){

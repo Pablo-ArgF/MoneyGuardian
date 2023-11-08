@@ -3,31 +3,28 @@ package com.moneyguardian.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Usuario implements Parcelable {
 
     private String nombre;
     private String correo;
-    private List<UsuarioNoParcelable> amigos;
+    private List<UsuarioParaParcelable> amigos;
     private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
     // Consider adding a field for 'Foto' if needed
 
-    public Usuario(String nombre, String correo, List<UsuarioNoParcelable> amigos, List<PagoConjunto> misPagosConjuntos) {
+
+    public Usuario(String nombre, String correo, List<UsuarioParaParcelable> amigos, List<PagoConjunto> misPagosConjuntos) {
         this.nombre = nombre;
         this.correo = correo;
         this.amigos = amigos;
         this.misPagosConjuntos = misPagosConjuntos;
     }
 
-
     protected Usuario(Parcel in) {
         nombre = in.readString();
         correo = in.readString();
+        amigos = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
         misPagosConjuntos = in.createTypedArrayList(PagoConjunto.CREATOR);
     }
 
@@ -35,6 +32,7 @@ public class Usuario implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeString(correo);
+        dest.writeTypedList(amigos);
         dest.writeTypedList(misPagosConjuntos);
     }
 
@@ -71,11 +69,11 @@ public class Usuario implements Parcelable {
         this.correo = correo;
     }
 
-    public List<UsuarioNoParcelable> getAmigos() {
+    public List<UsuarioParaParcelable> getAmigos() {
         return amigos;
     }
 
-    public void setAmigos(List<UsuarioNoParcelable> amigos) {
+    public void setAmigos(List<UsuarioParaParcelable> amigos) {
         this.amigos = amigos;
     }
 

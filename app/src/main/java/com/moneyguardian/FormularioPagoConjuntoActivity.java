@@ -27,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.moneyguardian.adapter.UsuarioArrayAdapter;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.ui.DatePickerFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 
@@ -45,7 +46,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     private ImageView IVPreviewImage;
     private Uri selectedImageUri;
     private ListView listViewUsuarios;
-    private ArrayList<Usuario> usuarios;
+    private ArrayList<UsuarioParaParcelable> usuarios;
     private UsuarioArrayAdapter usuarioArrayAdapter;
 
     // Valores del pago conjunto
@@ -59,9 +60,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
         // TODO inicializar la lista con la BD
         usuarios = new ArrayList<>();
-        usuarios.add(new Usuario("Pepe", "pepe@pepe.pepe", new ArrayList<>(), new ArrayList<>()));
-        usuarios.add(new Usuario("Pepa", "pepe@pepe.pepe", new ArrayList<>(), new ArrayList<>()));
-        usuarios.add(new Usuario("Pipi", "pepe@pepe.pepe", new ArrayList<>(), new ArrayList<>()));
+        usuarios.add(new UsuarioParaParcelable("Pepe","pepe@gmail.com"));
+        usuarios.add(new UsuarioParaParcelable("Pepa","pepa@gmail.com"));
+        usuarios.add(new UsuarioParaParcelable("Pipi","pipi@gmail.com"));
 
         BSelectImage = findViewById(R.id.buttonSeleccionarImagenNuevoPagoConjunto);
         IVPreviewImage = findViewById(R.id.imagePreviewNuevoPagoConjunto);
@@ -109,7 +110,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                 if (validarPagoConjunto()) {
                     Log.i("Estado Pago Conjunto", "Validado");
 
-                    List<Usuario> participantes = new ArrayList<Usuario>();
+                    List<UsuarioParaParcelable> participantes = new ArrayList<UsuarioParaParcelable>();
                     // Rellenamos la lista de usuarios
                     for (int i = 0; i < usuarios.size(); i++) {
                         if (usuarioArrayAdapter.isChecked(i)) {

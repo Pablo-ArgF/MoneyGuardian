@@ -1,27 +1,24 @@
 package com.moneyguardian;
 
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 
 import java.util.Map;
 
 
 public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceItemAdapter.BalanceViewHolder> {
 
-    private Map<Usuario,Integer> balance;
+    private Map<UsuarioParaParcelable,Integer> balance;
 
-    public ListaBalanceItemAdapter( Map<Usuario,Integer> balance) {
+    public ListaBalanceItemAdapter( Map<UsuarioParaParcelable,Integer> balance) {
         this.balance = balance;
     }
 
@@ -43,7 +40,7 @@ public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceIt
     public void onBindViewHolder(@NonNull BalanceViewHolder holder, int position) {
         // Extrae de la lista el elemento indicado por posición
         Object[] entradas = balance.entrySet().toArray();
-        Map.Entry<Usuario,Integer> entrada = (Map.Entry<Usuario,Integer>)(entradas[position]);
+        Map.Entry<UsuarioParaParcelable,Integer> entrada = (Map.Entry<UsuarioParaParcelable,Integer>)(entradas[position]);
         holder.bindUser(entrada.getKey(), entrada.getValue());
     }
 
@@ -69,7 +66,7 @@ public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceIt
         }
 
         // asignar valores a los componentes
-        public void bindUser(final Usuario amigo,int balance) {
+        public void bindUser(final UsuarioParaParcelable amigo, int balance) {
             nombre.setText(amigo.getNombre());
             StringBuilder sb = new StringBuilder();
             if(balance > 0) {//color verde

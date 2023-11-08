@@ -2,7 +2,6 @@ package com.moneyguardian.ui;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,30 +10,23 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.moneyguardian.FormularioPagoConjuntoActivity;
-import com.moneyguardian.MainActivity;
 import com.moneyguardian.PagosConjuntosListaAdapter;
 import com.moneyguardian.R;
-import com.moneyguardian.SocialActivity;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
-import com.moneyguardian.modelo.UsuarioNoParcelable;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class PagosConjuntosFragment extends Fragment {
 
@@ -115,10 +107,10 @@ public class PagosConjuntosFragment extends Fragment {
         Usuario u2 = new Usuario("Usuario2", "usuario2@gmail.com", null, null);
         Usuario u3 = new Usuario("Usuario3", "usuario3@gmail.com", null, null);
         Usuario u4 = new Usuario("Usuario4", "usuario4@gmail.com", null, null);
-        UsuarioNoParcelable un1 = new UsuarioNoParcelable("Usuario1");
-        UsuarioNoParcelable un2 = new UsuarioNoParcelable("Usuario2");
-        UsuarioNoParcelable un3 = new UsuarioNoParcelable("Usuario3");
-        UsuarioNoParcelable un4 = new UsuarioNoParcelable("Usuario4");
+        UsuarioParaParcelable un1 = new UsuarioParaParcelable("Usuario1", "usuario1@gmail.com");
+        UsuarioParaParcelable un2 = new UsuarioParaParcelable("Usuario2", "usuario2@gmail.com");
+        UsuarioParaParcelable un3 = new UsuarioParaParcelable("Usuario3", "usuario3@gmail.com");
+        UsuarioParaParcelable un4 = new UsuarioParaParcelable("Usuario4", "usuario4@gmail.com");
 
 
 
@@ -127,25 +119,25 @@ public class PagosConjuntosFragment extends Fragment {
         u3.setAmigos(Arrays.asList(un1, un2, un4));
         u4.setAmigos(Arrays.asList(un1, un3));
 
-        HashMap<Usuario, Integer> userPays1 = new HashMap<Usuario, Integer>();
-        userPays1.put(u1, 200);
-        userPays1.put(u2, -100);
-        userPays1.put(u3, -25);
-        userPays1.put(u4, -75);
-        HashMap<Usuario, Integer> userPays2 = new HashMap<Usuario, Integer>();
-        userPays2.put(u1, 200);
-        userPays2.put(u2, -200);
-        HashMap<Usuario, Integer> userPays3 = new HashMap<Usuario, Integer>();
-        userPays3.put(u1, -100);
-        userPays3.put(u2, 150);
-        userPays3.put(u3, -50);
-        HashMap<Usuario, Integer> userPays4 = new HashMap<Usuario, Integer>();
-        userPays4.put(u3, 25);
-        userPays4.put(u4, -25);
-        HashMap<Usuario, Integer> userPays5 = new HashMap<Usuario, Integer>();
-        userPays5.put(u2, -100);
-        userPays5.put(u3, 200);
-        userPays5.put(u4, -100);
+        HashMap<UsuarioParaParcelable, Integer> userPays1 = new HashMap<UsuarioParaParcelable, Integer>();
+        userPays1.put(un1, 200);
+        userPays1.put(un2, -100);
+        userPays1.put(un3, -25);
+        userPays1.put(un4, -75);
+        HashMap<UsuarioParaParcelable, Integer> userPays2 = new HashMap<UsuarioParaParcelable, Integer>();
+        userPays2.put(un1, 200);
+        userPays2.put(un2, -200);
+        HashMap<UsuarioParaParcelable, Integer> userPays3 = new HashMap<UsuarioParaParcelable, Integer>();
+        userPays3.put(un1, -100);
+        userPays3.put(un2, 150);
+        userPays3.put(un3, -50);
+        HashMap<UsuarioParaParcelable, Integer> userPays4 = new HashMap<UsuarioParaParcelable, Integer>();
+        userPays4.put(un3, 25);
+        userPays4.put(un4, -25);
+        HashMap<UsuarioParaParcelable, Integer> userPays5 = new HashMap<UsuarioParaParcelable, Integer>();
+        userPays5.put(un2, -100);
+        userPays5.put(un3, 200);
+        userPays5.put(un4, -100);
 
         ItemPagoConjunto ip1 = new ItemPagoConjunto("Item Pago 1", userPays1);
         ItemPagoConjunto ip2 = new ItemPagoConjunto("Item Pago 2", userPays2);
@@ -154,11 +146,11 @@ public class PagosConjuntosFragment extends Fragment {
         ItemPagoConjunto ip5 = new ItemPagoConjunto("Item Pago 5", userPays5);
 
         PagoConjunto pg1 = new PagoConjunto("Pago Conjunto 1",
-                new Date(), Arrays.asList(u1, u2, u3, u4), Arrays.asList(ip1, ip2, ip3));
+                new Date(), Arrays.asList(un1, un2, un3, un4), Arrays.asList(ip1, ip2, ip3));
         PagoConjunto pg2 = new PagoConjunto("Pago Conjunto 2",
-                new Date(), Arrays.asList(u3, u4), Arrays.asList(ip4));
+                new Date(), Arrays.asList(un3, un4), Arrays.asList(ip4));
         PagoConjunto pg3 = new PagoConjunto("Pago Conjunto 3",
-                new Date(), Arrays.asList(u2, u3, u4), Arrays.asList(ip5));
+                new Date(), Arrays.asList(un2, un3, un4), Arrays.asList(ip5));
 
         u1.setMisPagosConjuntos(Arrays.asList(pg1));
         u2.setMisPagosConjuntos(Arrays.asList(pg1, pg3));
