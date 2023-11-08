@@ -20,11 +20,10 @@ import java.util.List;
 public class UsersFormItemsListaAdapter extends
         RecyclerView.Adapter<UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder>{
     private List<Usuario> usuariosDelPago;
-    private View.OnClickListener listener;
+    private double cantidad;
 
-    public UsersFormItemsListaAdapter(List<Usuario> usuariosDelPago, View.OnClickListener listener) {
+    public UsersFormItemsListaAdapter(List<Usuario> usuariosDelPago, double cantidad) {
         this.usuariosDelPago = usuariosDelPago;
-        this.listener = listener;
     }
 
 
@@ -40,7 +39,7 @@ public class UsersFormItemsListaAdapter extends
     public void onBindViewHolder(@NonNull UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder holder,
                                  int position) {
         Usuario user= usuariosDelPago.get(position);
-        holder.bindUser(user, listener);
+        holder.bindUser(user, cantidad);
     }
 
     @Override
@@ -68,17 +67,14 @@ public class UsersFormItemsListaAdapter extends
             //photo= (ImageView)itemView.findViewById(R.id.imageViewAvatarIcon);
         }
 
-        public void bindUser(final Usuario user,View.OnClickListener checkBonOnCLick) {
+        public void bindUser(final Usuario user,double cantidad) {
             name.setText(user.getNombre());
             //photo.setImageIcon(user.getPhoto());
-            participatesPayment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(participatesPayment.isChecked()){
-
-                    }
-                }
-            });
+            if(participatesPayment.isChecked()){
+                moneyToPay.setText(cantidad+"");
+            }else{
+                moneyToPay.setText("");
+            }
         }
     }
 }

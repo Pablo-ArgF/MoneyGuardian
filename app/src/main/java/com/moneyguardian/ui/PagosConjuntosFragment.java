@@ -26,6 +26,7 @@ import com.moneyguardian.SocialActivity;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.modelo.UsuarioNoParcelable;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -114,11 +115,17 @@ public class PagosConjuntosFragment extends Fragment {
         Usuario u2 = new Usuario("Usuario2", "usuario2@gmail.com", null, null);
         Usuario u3 = new Usuario("Usuario3", "usuario3@gmail.com", null, null);
         Usuario u4 = new Usuario("Usuario4", "usuario4@gmail.com", null, null);
+        UsuarioNoParcelable un1 = new UsuarioNoParcelable("Usuario1");
+        UsuarioNoParcelable un2 = new UsuarioNoParcelable("Usuario2");
+        UsuarioNoParcelable un3 = new UsuarioNoParcelable("Usuario3");
+        UsuarioNoParcelable un4 = new UsuarioNoParcelable("Usuario4");
 
-        u1.setAmigos(Arrays.asList(u2, u3, u4));
-        u2.setAmigos(Arrays.asList(u1, u3));
-        u3.setAmigos(Arrays.asList(u1, u2, u4));
-        u4.setAmigos(Arrays.asList(u1, u3));
+
+
+        u1.setAmigos(Arrays.asList(un2, un3, un4));
+        u2.setAmigos(Arrays.asList(un1, un3));
+        u3.setAmigos(Arrays.asList(un1, un2, un4));
+        u4.setAmigos(Arrays.asList(un1, un3));
 
         HashMap<Usuario, Integer> userPays1 = new HashMap<Usuario, Integer>();
         userPays1.put(u1, 200);
@@ -170,7 +177,7 @@ public class PagosConjuntosFragment extends Fragment {
     // Click del item del adapter
     public void clickonItem(PagoConjunto pagoConjunto) {
         ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance
-                (pagoConjunto.getItems(), pagoConjunto.getNombre());
+                (pagoConjunto);
 
         getParentFragmentManager().beginTransaction().
                 replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).commit();
