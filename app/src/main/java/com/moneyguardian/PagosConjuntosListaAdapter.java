@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjuntosListaAdapter.PagosConjuntosListaViewHolder> {
@@ -52,19 +53,23 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
 
         private TextView name;
         private TextView money;
+        private TextView fecha;
 
         public PagosConjuntosListaViewHolder(View itemView) {
             super(itemView);
 
             name = (TextView) itemView.findViewById(R.id.TextNombrePagoConjuntoLinea);
             money = (TextView) itemView.findViewById(R.id.editTextPagoConjuntoCoste);
+            fecha = (TextView) itemView.findViewById(R.id.TextFechaPagoConjuntoLinea);
         }
 
         // asignar valores a los componentes
         public void bindUser(final PagoConjunto pagoConjunto, final OnItemClickListener listener) {
             name.setText(pagoConjunto.getNombre());
             money.setText(calculatePrecio(pagoConjunto));
-
+            String creacionPago = new SimpleDateFormat("dd-MM-yyyy").format(pagoConjunto.getFechaPago());
+            String limitePago = new SimpleDateFormat("dd-MM-yyyy").format(pagoConjunto.getFechaLimite());
+            fecha.setText(String.format(creacionPago));
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -74,12 +79,12 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
             });
         }
 
-        private String calculatePrecio(PagoConjunto pagoConjunto){
+        private String calculatePrecio(PagoConjunto pagoConjunto) {
             int total = 0;
-            for(ItemPagoConjunto item : pagoConjunto.getItems()){
+            for (ItemPagoConjunto item : pagoConjunto.getItems()) {
                 total += item.getMoney();
             }
-            return total+"€";
+            return total + "€";
         }
     }
 

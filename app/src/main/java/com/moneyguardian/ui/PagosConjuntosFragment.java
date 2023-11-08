@@ -113,7 +113,6 @@ public class PagosConjuntosFragment extends Fragment {
         UsuarioParaParcelable un4 = new UsuarioParaParcelable("Usuario4", "usuario4@gmail.com");
 
 
-
         u1.setAmigos(Arrays.asList(un2, un3, un4));
         u2.setAmigos(Arrays.asList(un1, un3));
         u3.setAmigos(Arrays.asList(un1, un2, un4));
@@ -147,10 +146,13 @@ public class PagosConjuntosFragment extends Fragment {
 
         PagoConjunto pg1 = new PagoConjunto("Pago Conjunto 1",
                 new Date(), Arrays.asList(un1, un2, un3, un4), Arrays.asList(ip1, ip2, ip3));
+        pg1.setFechaLimite(new Date());
         PagoConjunto pg2 = new PagoConjunto("Pago Conjunto 2",
                 new Date(), Arrays.asList(un3, un4), Arrays.asList(ip4));
+        pg2.setFechaLimite(new Date());
         PagoConjunto pg3 = new PagoConjunto("Pago Conjunto 3",
                 new Date(), Arrays.asList(un2, un3, un4), Arrays.asList(ip5));
+        pg3.setFechaLimite(new Date());
 
         u1.setMisPagosConjuntos(Arrays.asList(pg1));
         u2.setMisPagosConjuntos(Arrays.asList(pg1, pg3));

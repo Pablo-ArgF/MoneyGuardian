@@ -34,6 +34,7 @@ import com.moneyguardian.ui.PagosConjuntosFragment;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -60,9 +61,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
         // TODO inicializar la lista con la BD
         usuarios = new ArrayList<>();
-        usuarios.add(new UsuarioParaParcelable("Pepe","pepe@gmail.com"));
-        usuarios.add(new UsuarioParaParcelable("Pepa","pepa@gmail.com"));
-        usuarios.add(new UsuarioParaParcelable("Pipi","pipi@gmail.com"));
+        usuarios.add(new UsuarioParaParcelable("Pepe", "pepe@gmail.com"));
+        usuarios.add(new UsuarioParaParcelable("Pepa", "pepa@gmail.com"));
+        usuarios.add(new UsuarioParaParcelable("Pipi", "pipi@gmail.com"));
 
         BSelectImage = findViewById(R.id.buttonSeleccionarImagenNuevoPagoConjunto);
         IVPreviewImage = findViewById(R.id.imagePreviewNuevoPagoConjunto);
@@ -118,20 +119,26 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                         }
                     }
 
+                    String[] fechaTexto = fechaPago.getText().toString().trim().split("/");
+                    Calendar fechaLimite = Calendar.getInstance();
+
+                    fechaLimite.set(Integer.parseInt(fechaTexto[0].trim()), Integer.parseInt(fechaTexto[1].trim()), Integer.parseInt(fechaTexto[2].trim()));
+
+                    Date dateLimite = fechaLimite.getTime();
+
                     // La fecha se inicializa automáticamente a la actual
                     PagoConjunto pagoConjunto = null;
                     // Si tenemos imagen
                     if (selectedImageUri != null) {
-                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes, selectedImageUri);
+                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes, selectedImageUri, dateLimite);
                         // Si no tenemos imagen
                     } else {
-                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes);
+                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes, dateLimite);
                     }
 
                     // TODO enviar a la base de datos
 
-                    // TODO descomentar cuando se solucione el parcelable
-                    //Snackbar.make(findViewById(R.id.layoutFormularioPagoConjunto), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.layoutFormularioPagoConjunto), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
 
                     Intent intentResult = new Intent();
                     intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);

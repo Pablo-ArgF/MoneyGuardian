@@ -25,8 +25,8 @@ public class PagoConjunto implements Parcelable {
         this.items = items;
     }
 
-    public PagoConjunto(String nombre, Date fecha, List<UsuarioParaParcelable> participantes, Uri imagen) {
-        this(nombre, fecha, participantes, new ArrayList<ItemPagoConjunto>());
+    public PagoConjunto(String nombre, Date fecha, List<UsuarioParaParcelable> participantes, Uri imagen, Date fechaLimite) {
+        this(nombre, fecha, participantes, fechaLimite);
         this.imagen = imagen;
     }
 
@@ -45,12 +45,16 @@ public class PagoConjunto implements Parcelable {
         imagen = in.readParcelable(Uri.class.getClassLoader());
         participantes = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
         items = in.createTypedArrayList(ItemPagoConjunto.CREATOR);
+        fechaLimite = (Date) in.readSerializable(); // No se si va a tirar...
+        fechaPago = (Date) in.readSerializable();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeParcelable(imagen, flags);
+        dest.writeSerializable(fechaLimite);
+        dest.writeSerializable(fechaPago);
         dest.writeTypedList(participantes);
         dest.writeTypedList(items);
     }
