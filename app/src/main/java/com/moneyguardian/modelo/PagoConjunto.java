@@ -43,10 +43,15 @@ public class PagoConjunto implements Parcelable {
     protected PagoConjunto(Parcel in) {
         nombre = in.readString();
         imagen = in.readParcelable(Uri.class.getClassLoader());
+        fechaLimite = (Date) in.readSerializable(); // OJO, no se puede poner esta linea
+        fechaPago = (Date) in.readSerializable(); // ni esta antes de leer las listas
+        // No se por qué, pero si se leen antes las listas que las fechas
+        // al parsear la lista de items una de ellas va a generarse con un tamaño enorme
+        // y dará error de heap y un nullpointer (por el metodo de calcular pago), porque la inicializa
+        // con tamaño > 0 aunque esté vacía
         participantes = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
         items = in.createTypedArrayList(ItemPagoConjunto.CREATOR);
-        fechaLimite = (Date) in.readSerializable(); // No se si va a tirar...
-        fechaPago = (Date) in.readSerializable();
+
     }
 
     @Override

@@ -68,7 +68,6 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
             name.setText(pagoConjunto.getNombre());
             money.setText(calculatePrecio(pagoConjunto));
             String creacionPago = new SimpleDateFormat("dd-MM-yyyy").format(pagoConjunto.getFechaPago());
-            String limitePago = new SimpleDateFormat("dd-MM-yyyy").format(pagoConjunto.getFechaLimite());
             fecha.setText(String.format(creacionPago));
 
             itemView.setOnClickListener(new View.OnClickListener() {
