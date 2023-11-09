@@ -25,7 +25,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="@drawable/circle_button"
-        app:icon="@android:drawable/ic_menu_edit"
+        app:icon="@drawable/edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/profile_image"
         app:layout_constraintHorizontal_bias="1.0"
@@ -33,17 +33,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.317" />
 
-    <Button
-        android:id="@+id/btnEditUsername"
-        android:layout_width="62dp"
-        android:layout_height="62dp"
-        android:background="@drawable/circle_button"
-        app:icon="@android:drawable/ic_menu_edit"
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Username"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/usernameTxt"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintHorizontal_bias="0.197"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image"
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
@@ -71,18 +73,37 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameTxt"
+        app:layout_constraintTop_toBottomOf="@+id/ReestablecerTxt"
         app:layout_constraintVertical_bias="0.658" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/ReestablecerTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="Username"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image"
-        tools:layout_editor_absoluteX="63dp" />
+        android:text="@string/edit_reestablecer"
+        android:textAlignment="textStart"
+        android:textColor="#03A9F4"
+        android:textSize="15sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.187"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameTxt"
+        app:layout_constraintVertical_bias="0.009" />
+
+    <ImageButton
+        android:id="@+id/btnEditUsername"
+        android:layout_width="44dp"
+        android:layout_height="48dp"
+        android:background="@drawable/circle_button"
+        android:backgroundTint="@color/blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.089"
+        app:layout_constraintStart_toEndOf="@+id/usernameTxt"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintVertical_bias="0.032"
+        app:srcCompat="@drawable/edit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

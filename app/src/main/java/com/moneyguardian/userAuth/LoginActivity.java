@@ -40,6 +40,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
@@ -123,15 +124,29 @@ public class LoginActivity extends AppCompatActivity {
                                         SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(result.getData());
                                         String idToken = credential.getGoogleIdToken();
                                         if (idToken !=  null) {
-                                            /*String email = credential.getId();
-                                            Toast.makeText(getApplicationContext(),"Email: "+email,Toast.LENGTH_LONG).show();*/
-
                                             AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
                                             mAuth.signInWithCredential(firebaseCredential)
                                                     .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<AuthResult> task) {
-                                                            storeUserInDB();
+                                                            //if user already on db we login, if not
+                                                            //we add to db
+                                                            db.collection("users")
+                                                                .document(mAuth.getUid())
+                                                                .get()
+                                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                       if(task.getResult().exists()){
+                                                                           //we just login
+                                                                           startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                                                       }
+                                                                       else{
+                                                                           //we create the user in db
+                                                                           storeUserInDB();
+                                                                       }
+                                                                    }
+                                                                });
                                                         }
                                                     });
                                         }

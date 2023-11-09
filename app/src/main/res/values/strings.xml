@@ -38,4 +38,8 @@
     <string name="logout">Cerrar sesión</string>
     <string name="error_singin_usedMail">El correo usado ya está registrado</string>
     <string name="error_db_add_user">Error al registrar al usuario</string>
+    <string name="edit_reestablecer">Reestablecer</string>
+    <string name="error_update_username">Error al actualizar el nombre</string>
+    <string name="ok_update_username">Nombre de usuario cambiado</string>
+    <string name="error_update_username_alredyUsed">Username no disponible</string>
 </resources>
