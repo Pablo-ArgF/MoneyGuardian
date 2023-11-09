@@ -1,8 +1,10 @@
 package com.moneyguardian;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -54,6 +57,7 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
         private TextView name;
         private TextView money;
         private TextView fecha;
+        private ImageView image;
 
         public PagosConjuntosListaViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +65,7 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
             name = (TextView) itemView.findViewById(R.id.TextNombrePagoConjuntoLinea);
             money = (TextView) itemView.findViewById(R.id.editTextPagoConjuntoCoste);
             fecha = (TextView) itemView.findViewById(R.id.TextFechaPagoConjuntoLinea);
+            image = (ImageView) itemView.findViewById(R.id.imgViewPagoConjunto);
         }
 
         // asignar valores a los componentes
@@ -69,6 +74,10 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
             money.setText(calculatePrecio(pagoConjunto));
             String creacionPago = new SimpleDateFormat("dd-MM-yyyy").format(pagoConjunto.getFechaPago());
             fecha.setText(String.format(creacionPago));
+            // Colocamos la imagen si no es que hay
+            if (pagoConjunto.getImagen() != null) {
+                Picasso.get().load(pagoConjunto.getImagen()).into(image);
+            }
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
