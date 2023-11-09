@@ -16,9 +16,9 @@ import java.util.Map;
 
 public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceItemAdapter.BalanceViewHolder> {
 
-    private Map<UsuarioParaParcelable,Integer> balance;
+    private Map<UsuarioParaParcelable,Double> balance;
 
-    public ListaBalanceItemAdapter( Map<UsuarioParaParcelable,Integer> balance) {
+    public ListaBalanceItemAdapter( Map<UsuarioParaParcelable,Double> balance) {
         this.balance = balance;
     }
 
@@ -40,7 +40,7 @@ public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceIt
     public void onBindViewHolder(@NonNull BalanceViewHolder holder, int position) {
         // Extrae de la lista el elemento indicado por posición
         Object[] entradas = balance.entrySet().toArray();
-        Map.Entry<UsuarioParaParcelable,Integer> entrada = (Map.Entry<UsuarioParaParcelable,Integer>)(entradas[position]);
+        Map.Entry<UsuarioParaParcelable,Double> entrada = (Map.Entry<UsuarioParaParcelable,Double>)(entradas[position]);
         holder.bindUser(entrada.getKey(), entrada.getValue());
     }
 
@@ -66,7 +66,7 @@ public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceIt
         }
 
         // asignar valores a los componentes
-        public void bindUser(final UsuarioParaParcelable amigo, int balance) {
+        public void bindUser(final UsuarioParaParcelable amigo, Double balance) {
             nombre.setText(amigo.getNombre());
             StringBuilder sb = new StringBuilder();
             if(balance > 0) {//color verde

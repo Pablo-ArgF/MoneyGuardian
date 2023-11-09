@@ -108,6 +108,10 @@ public class PagoConjunto implements Parcelable {
         return items;
     }
 
+    public void addItem(ItemPagoConjunto ipc){
+        items.add(ipc);
+    }
+
     public void setItems(List<ItemPagoConjunto> items) {
         this.items = items;
     }

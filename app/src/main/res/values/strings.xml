@@ -37,4 +37,8 @@
     <string name="formListaPagosHintCantidadTotal">Total</string>
     <string name="TVPagador">Escoja la Persona que Paga:</string>
     <string name="changeMoneyPerPerson">Editar Cantidad por Persona</string>
+    <string name="dialog_title">Seleccione al menos un usuario para crear el item.</string>
+    <string name="creteItemPago">¿Esta seguro de que quiere crear el item de pago?</string>
+    <string name="cancel">Cancelar</string>
+    <string name="notAllPay">El dinero pagado no coincide con el total. Por favor ajuste las cantidades de cada usuario.</string>
 </resources>

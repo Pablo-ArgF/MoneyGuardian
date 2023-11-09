@@ -3,8 +3,6 @@ package com.moneyguardian.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
 public class UsuarioParaParcelable implements Parcelable {
 
     private String nombre;
@@ -58,5 +56,10 @@ public class UsuarioParaParcelable implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return getNombre();
     }
 }

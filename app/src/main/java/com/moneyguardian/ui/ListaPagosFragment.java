@@ -1,5 +1,7 @@
 package com.moneyguardian.ui;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -66,6 +68,12 @@ public class ListaPagosFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //TODO:Pillar los datos de la base de datos.
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Mostramos el fragmento en el contenedor
@@ -115,5 +123,28 @@ public class ListaPagosFragment extends Fragment {
         getParentFragmentManager().beginTransaction().
                 replace(R.id.fragment_container_amigos_pagos, argumentoFragment).commit();
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        assert data != null;
+        ItemPagoConjunto itemNuevo = data.getParcelableExtra("NEW_ITEM");
+
+        if (requestCode == GESTION_ACTIVITY) {
+            if(resultCode == RESULT_OK) {
+
+                this.listaPagos.add(itemNuevo);
+
+                ItemListaAdapter lpAdapter = new ItemListaAdapter(listaPagos,
+                        new ItemListaAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(ItemPagoConjunto itemPago) {
+                                clickonItem(itemPago);
+                            }
+                        });
+                listItemsPagosView.setAdapter(lpAdapter);
+            }
+        }
     }
 }
