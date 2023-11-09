@@ -1,13 +1,19 @@
 package com.moneyguardian;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
@@ -24,19 +30,31 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.userAuth.LoginActivity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity {
 
-    private Button btnEditPicture;
+    private ImageButton btnEditPicture;
     private ImageButton btnEditUsername;
     private Button btnLogout;
     private EditText txtUsername;
     private TextView txtReestablecer;
+    private CircleImageView imgUser;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
+    private StorageReference userImageRef;
 
     private boolean inEditUsernameMode;
     private String previousUsername;
@@ -49,12 +67,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+
+        userImageRef = storage.getReference()
+                .child("users/"+auth.getCurrentUser().getUid()+".jpg");
 
         btnEditPicture = findViewById(R.id.btnEditProfilePic);
         btnEditUsername = findViewById(R.id.btnEditUsername);
         btnLogout = findViewById(R.id.btnLogout);
         txtUsername = findViewById(R.id.usernameTxt);
         txtReestablecer = findViewById(R.id.ReestablecerTxt);
+        imgUser = findViewById(R.id.profile_image);
 
         txtUsername.setEnabled(false);
 
@@ -70,6 +93,99 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+
+        //logic to change the profile picture of the user
+        ActivityResultLauncher<Intent> launchSomeActivity
+                = registerForActivityResult(
+                new ActivityResultContracts
+                        .StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode()
+                            == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null
+                                && data.getData() != null) {
+                            Uri selectedImageUri = data.getData();
+                            Bitmap selectedImageBitmap = null;
+                            try {
+                                selectedImageBitmap
+                                        = MediaStore.Images.Media.getBitmap(
+                                        this.getContentResolver(),
+                                        selectedImageUri);
+                            } catch (FileNotFoundException ef) {
+                                // TODO
+                                ef.printStackTrace();
+                            } catch (IOException e) {
+                                // TODO
+                                e.printStackTrace();
+                            }
+                            //TODO revisar las reglas del firebase storage que es lo que esta fallando
+                            //TODO hacer que cargue la foto en la pantalla de inicio y en la del perfil al create
+
+                            //we store the image into the store and link it to the user entity
+                            //in the database for it to be accessed
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            selectedImageBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                            byte[] bytes = baos.toByteArray();
+
+                            UploadTask uploadTask = userImageRef.putBytes(bytes);
+                            Bitmap finalSelectedImageBitmap = selectedImageBitmap;
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(),
+                                                    getString(R.string.error_upload_user_image),
+                                                    Toast.LENGTH_LONG)
+                                            .show();
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    //we update the image on the image show
+                                    imgUser.setImageBitmap(finalSelectedImageBitmap);
+                                    //we store the link to the image in the store in the db
+                                    userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                             db.collection("users")
+                                                     .document(auth.getUid())
+                                                     .update("profilePicture",uri)
+                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                         @Override
+                                                         public void onSuccess(Void unused) {
+                                                             Toast.makeText(getApplicationContext(),
+                                                                             getString(R.string.ok_update_profilePicture),
+                                                                             Toast.LENGTH_LONG)
+                                                                     .show();
+                                                         }
+                                                     }).addOnFailureListener(new OnFailureListener() {
+                                                         @Override
+                                                         public void onFailure(@NonNull Exception e) {
+                                                             Toast.makeText(getApplicationContext(),
+                                                                             getString(R.string.error_update_profilePicture),
+                                                                             Toast.LENGTH_LONG)
+                                                                     .show();
+                                                         }
+                                                     });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+
+        btnEditPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+
+                launchSomeActivity.launch(i);
+            }
+        });
 
         btnEditUsername.setOnClickListener(new View.OnClickListener() {
             @Override

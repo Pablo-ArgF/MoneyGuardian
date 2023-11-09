@@ -20,19 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.195" />
 
-    <Button
-        android:id="@+id/btnEditProfilePic"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/circle_button"
-        app:icon="@drawable/edit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/profile_image"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/profile_image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.317" />
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -94,7 +81,7 @@
 
     <ImageButton
         android:id="@+id/btnEditUsername"
-        android:layout_width="44dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="@drawable/circle_button"
         android:backgroundTint="@color/blue"
@@ -104,6 +91,20 @@
         app:layout_constraintStart_toEndOf="@+id/usernameTxt"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         app:layout_constraintVertical_bias="0.032"
+        app:srcCompat="@drawable/edit" />
+
+    <ImageButton
+        android:id="@+id/btnEditProfilePic"
+        android:layout_width="59dp"
+        android:layout_height="56dp"
+        android:background="@drawable/circle_button"
+        android:backgroundTint="#03A9F4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32"
         app:srcCompat="@drawable/edit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

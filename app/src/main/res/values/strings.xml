@@ -42,4 +42,7 @@
     <string name="error_update_username">Error al actualizar el nombre</string>
     <string name="ok_update_username">Nombre de usuario cambiado</string>
     <string name="error_update_username_alredyUsed">Username no disponible</string>
+    <string name="error_upload_user_image">Error al cargar la nueva imagen</string>
+    <string name="ok_update_profilePicture">Foto de perfil cambiada con exito</string>
+    <string name="error_update_profilePicture">Error al actualizar la imagen de perfil, intentelo de nuevo</string>
 </resources>
