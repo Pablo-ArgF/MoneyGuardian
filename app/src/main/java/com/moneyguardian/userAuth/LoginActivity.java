@@ -40,8 +40,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.SocialActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -52,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressbar;
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
     private boolean showOneTapUI = true;
@@ -77,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // taking instance of FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // initialising all views through id defined above
         emailTextView = findViewById(R.id.email);
@@ -116,25 +124,29 @@ public class LoginActivity extends AppCompatActivity {
                                         SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(result.getData());
                                         String idToken = credential.getGoogleIdToken();
                                         if (idToken !=  null) {
-                                            /*String email = credential.getId();
-                                            Toast.makeText(getApplicationContext(),"Email: "+email,Toast.LENGTH_LONG).show();*/
-
                                             AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
                                             mAuth.signInWithCredential(firebaseCredential)
                                                     .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<AuthResult> task) {
-                                                            if (task.isSuccessful()) {
-                                                                // Sign in success, update UI with the signed-in user's information
-                                                                FirebaseUser user = mAuth.getCurrentUser();
-                                                                if(user != null) //Login complete
-                                                                    startActivity(new Intent(LoginActivity.this, SocialActivity.class));
-                                                            } else {
-                                                                // If sign in fails, display a message to the user.);
-                                                                Toast.makeText(LoginActivity.this,
-                                                                        getText(R.string.error_singin_google),
-                                                                        Toast.LENGTH_SHORT).show();
-                                                            }
+                                                            //if user already on db we login, if not
+                                                            //we add to db
+                                                            db.collection("users")
+                                                                .document(mAuth.getUid())
+                                                                .get()
+                                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                       if(task.getResult().exists()){
+                                                                           //we just login
+                                                                           startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                                                       }
+                                                                       else{
+                                                                           //we create the user in db
+                                                                           storeUserInDB();
+                                                                       }
+                                                                    }
+                                                                });
                                                         }
                                                     });
                                         }
@@ -179,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
             //launch the main activity
             Intent intent
                     = new Intent(LoginActivity.this,
-                    SocialActivity.class); //TODO change this to main at some point
+                    MainActivity.class);
             startActivity(intent);
         }
     }
@@ -231,7 +243,7 @@ public class LoginActivity extends AppCompatActivity {
                                     // intent to home activity
                                     Intent intent
                                             = new Intent(LoginActivity.this,
-                                            SocialActivity.class); //TODO change this to main at some point
+                                            MainActivity.class);
                                     startActivity(intent);
                                 }
 
@@ -248,5 +260,37 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                         });
+    }
+
+    public void storeUserInDB(){
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", mAuth.getCurrentUser().getEmail());
+        user.put("email", mAuth.getCurrentUser().getEmail());
+        user.put("profilePicture", getString(R.string.default_profilePicture));
+        db.collection("users")
+                .document(mAuth.getUid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        // if the user created intent to login activity
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null){ //Login complete
+                            Intent intent
+                                    = new Intent(LoginActivity.this,
+                                    SignInActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //we delete the user, it could not be created
+                        mAuth.getCurrentUser().delete();
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.error_db_add_user),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 }

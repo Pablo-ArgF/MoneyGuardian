@@ -35,4 +35,15 @@
     <string name="error_singin">Correo o contraseña incorrectos, intentelo de nuevo</string>
     <string name="error_singin_google">Error al iniciar sesión con Google</string>
     <string name="default_web_client_id">881426924975-djg99gp6ebn09tlgf6bnpjmdd27s85ma.apps.googleusercontent.com</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="error_singin_usedMail">El correo usado ya está registrado</string>
+    <string name="error_db_add_user">Error al registrar al usuario</string>
+    <string name="edit_reestablecer">Reestablecer</string>
+    <string name="error_update_username">Error al actualizar el nombre</string>
+    <string name="ok_update_username">Nombre de usuario cambiado</string>
+    <string name="error_update_username_alredyUsed">Username no disponible</string>
+    <string name="error_upload_user_image">Error al cargar la nueva imagen</string>
+    <string name="ok_update_profilePicture">Foto de perfil cambiada con exito</string>
+    <string name="error_update_profilePicture">Error al actualizar la imagen de perfil, intentelo de nuevo</string>
+    <string name="default_profilePicture"><![CDATA[https://firebasestorage.googleapis.com/v0/b/moneguardian-app.appspot.com/o/users%2Fdefault.jpg?alt=media&token=17124997-ff7c-4894-a86b-f04e190b4614]]></string>
 </resources>
