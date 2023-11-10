@@ -266,6 +266,7 @@ public class LoginActivity extends AppCompatActivity {
         Map<String, Object> user = new HashMap<>();
         user.put("name", mAuth.getCurrentUser().getEmail());
         user.put("email", mAuth.getCurrentUser().getEmail());
+        user.put("profilePicture", getString(R.string.default_profilePicture));
         db.collection("users")
                 .document(mAuth.getUid())
                 .set(user)

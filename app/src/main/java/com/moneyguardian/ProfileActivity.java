@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -88,7 +89,10 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if(documentSnapshot.exists()){
-                            //TODO meter la foto
+                            Uri profileUri =Uri.parse(documentSnapshot.get("profilePicture",String.class));
+                            Glide.with(getApplicationContext())
+                                    .load(profileUri)
+                                    .into(imgUser);
                             txtUsername.setText(documentSnapshot.get("name",String.class));
                         }
                     }
