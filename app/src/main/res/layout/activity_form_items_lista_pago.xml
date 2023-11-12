@@ -22,7 +22,7 @@
 
     <EditText
         android:id="@+id/formItemPagoNameTextField"
-        android:layout_width="282dp"
+        android:layout_width="wrap_content"
         android:layout_height="57dp"
         android:layout_below="@+id/formItemPagoNameTV"
         android:layout_alignParentStart="true"
