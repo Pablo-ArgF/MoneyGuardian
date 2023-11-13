@@ -10,32 +10,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
 
             <ImageView
                 android:id="@+id/iconPago"
                 android:layout_width="3dp"
                 android:layout_height="46dp"
                 android:layout_weight="1"
-></ImageView>
+            ></ImageView>
+
             <TextView
                 android:id="@+id/namePagos"
                 android:layout_width="286dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mainListPagosRecycler"
             android:layout_width="match_parent"
-            android:layout_height="611dp" />
+            android:layout_height="553dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "881426924975",
+    "project_id": "moneguardian-app",
+    "storage_bucket": "moneguardian-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881426924975:android:a4539abcd443ab887b9b5a",
+        "android_client_info": {
+          "package_name": "com.moneyguardian"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881426924975-ebmlsl6sbfo6l5ocmd1rj3md5li1p87a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moneyguardian",
+            "certificate_hash": "ef19a9b184b9df40a1ae2260c8bd3aeff21ad6c7"
+          }
+        },
+        {
+          "client_id": "881426924975-etpv0lisj9l3c2k5bhmd9icvgq26v4j7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2TfrspUvZ0yu4HYS8C9Aqfw-KjnXTar4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881426924975-etpv0lisj9l3c2k5bhmd9icvgq26v4j7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

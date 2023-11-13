@@ -102,21 +102,11 @@ public class PagosConjuntosFragment extends Fragment {
     }
 
     private ArrayList<PagoConjunto> cargarDatos() {
-
-        Usuario u1 = new Usuario("Usuario1", "usuario1@gmail.com", null, null);
-        Usuario u2 = new Usuario("Usuario2", "usuario2@gmail.com", null, null);
-        Usuario u3 = new Usuario("Usuario3", "usuario3@gmail.com", null, null);
-        Usuario u4 = new Usuario("Usuario4", "usuario4@gmail.com", null, null);
+        
         UsuarioParaParcelable un1 = new UsuarioParaParcelable("Usuario1", "usuario1@gmail.com");
         UsuarioParaParcelable un2 = new UsuarioParaParcelable("Usuario2", "usuario2@gmail.com");
         UsuarioParaParcelable un3 = new UsuarioParaParcelable("Usuario3", "usuario3@gmail.com");
         UsuarioParaParcelable un4 = new UsuarioParaParcelable("Usuario4", "usuario4@gmail.com");
-
-
-        u1.setAmigos(Arrays.asList(un2, un3, un4));
-        u2.setAmigos(Arrays.asList(un1, un3));
-        u3.setAmigos(Arrays.asList(un1, un2, un4));
-        u4.setAmigos(Arrays.asList(un1, un3));
 
         HashMap<UsuarioParaParcelable, Integer> userPays1 = new HashMap<UsuarioParaParcelable, Integer>();
         userPays1.put(un1, 200);
@@ -170,11 +160,10 @@ public class PagosConjuntosFragment extends Fragment {
 
     // Click del item del adapter
     public void clickonItem(PagoConjunto pagoConjunto) {
-        ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance
-                (pagoConjunto);
+        ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance(pagoConjunto.getItems(), pagoConjunto.getNombre());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).commit();
+                replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).addToBackStack(null).commit();
     }
 
     @Override
