@@ -39,6 +39,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".service.PushNotificationService" android:exported="false">
+            <intent-filter android:name="com.google.firebase.MESSAGING">
+
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
