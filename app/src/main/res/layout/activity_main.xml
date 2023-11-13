@@ -7,20 +7,6 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnGasto"
-        android:layout_width="178dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="76dp"
-        android:backgroundTint="@color/red"
-        android:text="@string/registrar_gasto"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
         android:id="@+id/btnIngreso"
         android:layout_width="178dp"
         android:layout_height="70dp"
@@ -30,10 +16,24 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnGasto"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.513" />
+
+    <Button
+        android:id="@+id/btnGasto"
+        android:layout_width="178dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="76dp"
+        android:backgroundTint="@color/red"
+        android:text="@string/registrar_gasto"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
+        app:layout_constraintVertical_bias="0.513" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileButton"
@@ -119,5 +119,18 @@
             android:layout_height="match_parent"
             app:srcCompat="@drawable/tips_icon" />
     </LinearLayout>
+    <!--
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottonnav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:menu="@menu/main_menu" />
+     -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

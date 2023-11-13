@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="@string/home_menu"
+        android:id="@+id/home_menu_btn"
+        android:icon="@drawable/home_icon"/>
+    <item
+        android:title="@string/lista_menu"
+        android:id="@+id/lista_menu_btn"
+        android:icon="@drawable/list_icon"/>
+    <item
+        android:title="@string/amigos_menu"
+        android:id="@+id/amigos_menu_btn"
+        android:icon="@drawable/amigos_icon"/>
+    <item
+        android:title="@string/pagos_conjuntos_menu"
+        android:id="@+id/pagos_conjuntos_menu_btn"
+        android:icon="@drawable/pagos_conjuntos_icon"/>
+</menu>
