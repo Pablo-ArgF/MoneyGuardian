@@ -46,4 +46,9 @@
     <string name="ok_update_profilePicture">Foto de perfil cambiada con exito</string>
     <string name="error_update_profilePicture">Error al actualizar la imagen de perfil, intentelo de nuevo</string>
     <string name="default_profilePicture"><![CDATA[https://firebasestorage.googleapis.com/v0/b/moneguardian-app.appspot.com/o/users%2Fdefault.jpg?alt=media&token=17124997-ff7c-4894-a86b-f04e190b4614]]></string>
+    <string name="registrar_ingreso">Registrar ingreso</string>
+    <string name="registrar_gasto">Registrar gasto</string>
+    <string name="welcome_msg">"Hola %1$s, bienvenido de vuelta"</string>
+    <string name="title_tips">Aprende a cómo manejar tu dinero</string>
+    <string name="body_tips">Con estos consejos puedes gestionar de forma mucho más eficiente tu capital.</string>
 </resources>

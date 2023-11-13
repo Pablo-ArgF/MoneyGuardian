@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,6 +26,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
 
     private CircleImageView profileBtn;
+    private TextView txtWelcome;
+    private LinearLayout tipsLayout;
+
+
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     @Override
@@ -44,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         profileBtn = findViewById(R.id.profileButton);
+        txtWelcome = findViewById(R.id.txtWelcome);
+        tipsLayout = findViewById(R.id.tipsLayout);
+
 
         //we load the image of the user into the profile btn
         //we get the uri from database user info 'profilePicture'
@@ -58,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
                                     Glide.with(getApplicationContext())
                                             .load(profileUri)
                                             .into(profileBtn);
+
+                                    //we load the name in the welcome msg
+                                    txtWelcome.setText( getString(R.string.welcome_msg,
+                                            documentSnapshot.get("name",String.class)));
                                 }
                             }
                         });
