@@ -14,24 +14,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.ui.ListaAmigosFragment;
+import com.moneyguardian.ui.MainFragment;
+import com.moneyguardian.ui.PagosConjuntosFragment;
 import com.moneyguardian.userAuth.LoginActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CircleImageView profileBtn;
-    private TextView txtWelcome;
-    private LinearLayout tipsLayout;
 
-
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-
+    private MainFragment fragmentMain;
+    private PagosConjuntosFragment fragmentPagosConjuntos;
+    private ListaAmigosFragment amigosFragment;
 
 
     @Override
@@ -39,54 +39,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        if(user == null){
-            //if no user -> send to login page
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
+        fragmentMain = new MainFragment();
+        fragmentPagosConjuntos = new PagosConjuntosFragment();
+        amigosFragment = new ListaAmigosFragment();
 
-        }
+        //we load main fragment
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+               fragmentMain).commit();
 
-        profileBtn = findViewById(R.id.profileButton);
-        txtWelcome = findViewById(R.id.txtWelcome);
-        tipsLayout = findViewById(R.id.tipsLayout);
-
-
-        //we load the image of the user into the profile btn
-        //we get the uri from database user info 'profilePicture'
-        db.collection("users")
-                        .document(auth.getUid())
-                                .get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                if(documentSnapshot.exists()){
-                                    Uri profileUri =Uri.parse(documentSnapshot.get("profilePicture",String.class));
-                                    Glide.with(getApplicationContext())
-                                            .load(profileUri)
-                                            .into(profileBtn);
-
-                                    //we load the name in the welcome msg
-                                    txtWelcome.setText( getString(R.string.welcome_msg,
-                                            documentSnapshot.get("name",String.class)));
-                                }
-                            }
-                        });
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(i);
-            }
-        });
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottonnav);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                item -> {
+                    int id = item.getItemId();
+                    if(id == R.id.home_menu_btn) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                                fragmentMain).commit();
+                        return true;
+                    }
+                    if(id == R.id.lista_menu_btn){
+                        //TODO implement lista view
+                        return false;
+                    }
+                    if(id == R.id.amigos_menu_btn){
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                                amigosFragment).commit();
+                        return true;
+                    }
+                    if(id == R.id.pagos_conjuntos_menu_btn){
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                                fragmentPagosConjuntos).commit();
+                        return true;
+                    }
+                    return false;
+                }
+        );
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
 
@@ -112,5 +104,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

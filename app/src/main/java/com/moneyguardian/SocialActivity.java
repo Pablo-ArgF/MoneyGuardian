@@ -35,6 +35,30 @@ public class SocialActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_amigos_pagos, listaAmigosFragment).commit();
 
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottonnav);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                item -> {
+                    int id = item.getItemId();
+                    if(id == R.id.home_menu_btn) {
+                        startActivity(new Intent(this, MainActivity.class));
+                        return true;
+                    }
+                    if(id == R.id.lista_menu_btn){
+                        //TODO implement lista view
+                        return false;
+                    }
+                    if(id == R.id.amigos_menu_btn){
+                        startActivity(new Intent(this, SocialActivity.class));
+                        return true;
+                    }
+                    if(id == R.id.pagos_conjuntos_menu_btn){
+                        startActivity(new Intent(this,SocialActivity.class));
+                        return true;
+                    }
+                    return false;
+                }
+        );
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -67,6 +91,6 @@ public class SocialActivity extends AppCompatActivity {
             throw new IllegalStateException("Unexpected value: " + item.getItemId());
         }
 
-        ;
+
     };
 }

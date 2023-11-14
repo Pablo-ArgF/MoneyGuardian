@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MoneyGuardian" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
         <item name="colorPrimary">@color/blue</item>
     </style>
 
