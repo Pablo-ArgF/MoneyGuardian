@@ -29,15 +29,17 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/amigo"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginLeft="10dp"/>
 
         <TextView
             android:id="@+id/txtBalance"
-            android:layout_width="141dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:text="TextView"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            />
 
         <!--Evitamos que sea más largo que la pantalla con los 2 ultimos items-->
 

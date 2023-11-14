@@ -4,7 +4,8 @@
     android:id="@+id/fragmentListaAmigos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ListaAmigosFragment">
+    tools:context=".ui.ListaAmigosFragment"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,9 +16,11 @@
             android:id="@+id/tituloFragmentAmigos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/titulo_lista_de_amigos"
+            android:text="@string/titulo_seccion_amigos"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -103,7 +103,7 @@ public class ListaAmigosFragment extends Fragment {
         String[] correos = {"john.doe@example.com", "alice.johnson@example.com", "bob.smith@example.com", "emma.brown@example.com", "david.davis@example.com", "olivia.wilson@example.com", "michael.lee@example.com", "sophia.white@example.com", "james.harris@example.com", "ava.robinson@example.com"};
 
         for (int i = 0; i < nombres.length; i++) {
-            Usuario usuario = new Usuario(nombres[i], correos[i], null, null);
+            Usuario usuario = new Usuario(nombres[i], correos[i],null, null, null);
             listaAmigos.add(usuario);
         }
 
@@ -124,7 +124,7 @@ public class ListaAmigosFragment extends Fragment {
     private void cargarListaGruposAmigos() {
         String[] nombresGrupos = {"Amigos de la Universidad", "Familiares", "Compañeros de Trabajo", "Vecinos", "Amigos de la Infancia", "Equipo de Deportes", "Amigos de Club de Lectura", "Compañeros de Clase", "Vecinos de la Calle A", "Amigos de Juegos en Línea"};
         List usuarios = IntStream.range(0, 30)
-                .mapToObj(i -> new Usuario("Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com", null, null))
+                .mapToObj(i -> new Usuario("Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com",null, null, null))
                 .collect(Collectors.toList());
         List<List<Usuario>> miembrosGrupos = Arrays.asList(usuarios.subList(0, 3), usuarios.subList(3, 6), usuarios.subList(6, 9), usuarios.subList(9, 12), usuarios.subList(12, 15), usuarios.subList(15, 18), usuarios.subList(18, 21), usuarios.subList(21, 24), usuarios.subList(24, 27), usuarios.subList(27, 30));
 

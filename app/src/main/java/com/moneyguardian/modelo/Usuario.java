@@ -14,7 +14,9 @@ public class Usuario implements Parcelable {
     private String correo;
     private List<Usuario> amigos;
     private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
-    // Consider adding a field for 'Foto' if needed
+    private String uriImg;
+
+
 
 
     public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
@@ -29,11 +31,12 @@ public class Usuario implements Parcelable {
         }
     };
 
-    public Usuario(String nombre, String correo, List<Usuario> amigos, List<PagoConjunto> misPagosConjuntos) {
+    public Usuario(String nombre, String correo,String imgUri, List<Usuario> amigos, List<PagoConjunto> misPagosConjuntos) {
         this.nombre = nombre;
         this.correo = correo;
         this.amigos = amigos;
         this.misPagosConjuntos = misPagosConjuntos;
+        this.uriImg = imgUri;
     }
 
     public Usuario() {
@@ -42,8 +45,17 @@ public class Usuario implements Parcelable {
     protected Usuario(Parcel in) {
         nombre = in.readString();
         correo = in.readString();
+        uriImg = in.readString();
         amigos = in.createTypedArrayList(Usuario.CREATOR);
         misPagosConjuntos = in.createTypedArrayList(PagoConjunto.CREATOR);
+    }
+
+    public String getUriImg() {
+        return uriImg;
+    }
+
+    public void setUriImg(String uriImg) {
+        this.uriImg = uriImg;
     }
 
     public String getNombre() {
@@ -89,8 +101,7 @@ public class Usuario implements Parcelable {
         dest.writeString(correo);
         dest.writeTypedList(amigos);
         dest.writeTypedList(misPagosConjuntos);
-        // Write 'Foto' if it's a Parcelable or some other type
-        // Example: dest.writeParcelable(foto, flags);
+        dest.writeString(uriImg);
     }
 
     @Override

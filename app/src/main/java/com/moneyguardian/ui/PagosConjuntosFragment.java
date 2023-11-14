@@ -95,10 +95,10 @@ public class PagosConjuntosFragment extends Fragment {
 
     private ArrayList<PagoConjunto> cargarDatos() {
 
-        Usuario u1 = new Usuario("Usuario1", "usuario1@gmail.com", null, null);
-        Usuario u2 = new Usuario("Usuario2", "usuario2@gmail.com", null, null);
-        Usuario u3 = new Usuario("Usuario3", "usuario3@gmail.com", null, null);
-        Usuario u4 = new Usuario("Usuario4", "usuario4@gmail.com", null, null);
+        Usuario u1 = new Usuario("Usuario1", "usuario1@gmail.com",null, null, null);
+        Usuario u2 = new Usuario("Usuario2", "usuario2@gmail.com",null, null, null);
+        Usuario u3 = new Usuario("Usuario3", "usuario3@gmail.com",null, null, null);
+        Usuario u4 = new Usuario("Usuario4", "usuario4@gmail.com",null, null, null);
 
         u1.setAmigos(Arrays.asList(u2, u3, u4));
         u2.setAmigos(Arrays.asList(u1, u3));
@@ -158,6 +158,6 @@ public class PagosConjuntosFragment extends Fragment {
                 (pagoConjunto.getItems(), pagoConjunto.getNombre());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).addToBackStack(null).commit();
+                replace(R.id.fragmentContainerMain, listaPagosFragment).addToBackStack(null).commit();
     }
 }

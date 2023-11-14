@@ -18,9 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.moneyguardian.MainActivity;
 import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
+import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.userAuth.LoginActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,10 +36,12 @@ public class MainFragment extends Fragment {
     private TextView txtWelcome;
     private LinearLayout tipsLayout;
 
+    private Usuario usuario;
+
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
-
+    private View root;
 
 
     public MainFragment() {
@@ -67,6 +69,14 @@ public class MainFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //we reload user data
+        loadUserInfo(root);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         auth = FirebaseAuth.getInstance();
@@ -79,31 +89,14 @@ public class MainFragment extends Fragment {
 
         }
         View root = inflater.inflate(R.layout.fragment_main,container, false);
+        this.root = root;
         profileBtn = root.findViewById(R.id.profileButton);
         txtWelcome = root.findViewById(R.id.txtWelcome);
         tipsLayout = root.findViewById(R.id.tipsLayout);
 
+        if(usuario == null)
+            loadUserInfo(root);
 
-        //we load the image of the user into the profile btn
-        //we get the uri from database user info 'profilePicture'
-        db.collection("users")
-                .document(auth.getUid())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists()){
-                            Uri profileUri =Uri.parse(documentSnapshot.get("profilePicture",String.class));
-                            Glide.with(root.getContext())
-                                    .load(profileUri)
-                                    .into(profileBtn);
-
-                            //we load the name in the welcome msg
-                            txtWelcome.setText( getString(R.string.welcome_msg,
-                                    documentSnapshot.get("name",String.class)));
-                        }
-                    }
-                });
         profileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,5 +106,37 @@ public class MainFragment extends Fragment {
         });
 
         return root;
+    }
+
+
+    private void loadUserInfo(View root){
+        //we load the image of the user into the profile btn
+        //we get the uri from database user info 'profilePicture'
+        db.collection("users")
+                .document(auth.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(documentSnapshot.exists()){
+                            //we store the user in user atribute
+                            usuario = new Usuario();
+                            usuario.setNombre(documentSnapshot.get("name",String.class));
+                            usuario.setCorreo(documentSnapshot.get("email",String.class));
+                            usuario.setUriImg(documentSnapshot.get("profilePicture",String.class));
+
+                            Uri profileUri =Uri.parse(usuario.getUriImg());
+                            Glide.with(root.getContext())
+                                    .load(profileUri)
+                                    .into(profileBtn);
+
+                            //we load the name in the welcome msg
+                            txtWelcome.setText( getString(R.string.welcome_msg,
+                                    usuario.getNombre()));
+
+
+                        }
+                    }
+                });
     }
 }

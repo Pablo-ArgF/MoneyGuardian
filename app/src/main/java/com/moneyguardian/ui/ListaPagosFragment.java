@@ -84,12 +84,10 @@ public class ListaPagosFragment extends Fragment {
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {
-
-        ItemPagosFragment argumentoFragment = ItemPagosFragment.newInstance
+        ItemPagosFragment itemPagosFragment = ItemPagosFragment.newInstance
                 (itemPago.getNombre(), itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).addToBackStack(null).commit();
-
+                replace(R.id.fragmentContainerMain, itemPagosFragment).addToBackStack(null).commit();
     }
 }
