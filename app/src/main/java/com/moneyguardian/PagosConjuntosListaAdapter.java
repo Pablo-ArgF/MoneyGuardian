@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjuntosListaAdapter.PagosConjuntosListaViewHolder> {
 
@@ -78,9 +79,9 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
         public void bindUser(final PagoConjunto pagoConjunto, final OnItemClickListener listener) {
             name.setText(pagoConjunto.getNombre());
             money.setText(calculatePrecio(pagoConjunto));
-            String creacionPago = new SimpleDateFormat("dd-MM-yyyy").format(pagoConjunto.getFechaPago());
+            String creacionPago = new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(pagoConjunto.getFechaPago());
             fecha.setText(String.format(creacionPago));
-            // Colocamos la imagen si no es que hay
+            // Colocamos la imagen si es que hay
             if (pagoConjunto.getImagen() != null) {
                 Picasso.get().load(pagoConjunto.getImagen()).into(image);
             }
