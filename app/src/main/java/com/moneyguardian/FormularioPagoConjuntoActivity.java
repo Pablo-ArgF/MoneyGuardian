@@ -58,8 +58,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     // El botón de la imagen
     private Button BSelectImage;
 
-    // Imagen de preview
+    // Manejo de imagen
     private ImageView IVPreviewImage;
+    private boolean isImageSet;
     private Uri selectedImageUri;
     private ListView listViewUsuarios;
     private ArrayList<UsuarioParaParcelable> usuarios;
@@ -80,11 +81,14 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario_pago_conjunto);
 
+        // Manejo de imagen
+        this.isImageSet = false;
+
+        // Manejo de base de datos
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         pagoConjuntoUUID = UUID.randomUUID().toString();
-        userImageRef = FirebaseStorage.getInstance().getReference()
-                .child("pagosConjuntos/" + pagoConjuntoUUID + ".jpg");
+        userImageRef = FirebaseStorage.getInstance().getReference().child("pagosConjuntos/" + pagoConjuntoUUID + ".jpg");
 
         // TODO inicializar la lista con la BD
         usuarios = new ArrayList<>();
@@ -155,67 +159,58 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
                     // La fecha se inicializa automáticamente a la actual
                     PagoConjunto pagoConjunto = null;
-                    // Si tenemos imagen
-                    if (selectedImageUri != null) {
-                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes, selectedImageUri, dateLimite);
-                        // Si no tenemos imagen
-                    } else {
+
+                    // Si no tenemos imagen
+                    if (selectedImageUri == null) {
                         pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes, dateLimite);
+                    } else {
+                        // Si tenemos imagen
+                        pagoConjunto = new PagoConjunto(nombrePago.getText().toString(), new Date(), participantes, selectedImageUri, dateLimite);
+
+                        // Añadimos la imagen a la BD
+                        Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
+                        // Si la imagen se añade correctamente
+                        UploadTask task = ImageProcessor.processImage(imageBitmap, userImageRef, getApplicationContext());
+                        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                //we store the link to the image in the store in the db
+                                userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        db.collection("pagosConjuntos").document(pagoConjuntoUUID).update("imagen", uri).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getApplicationContext(), getString(R.string.error_upload_pago_image), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
                     }
+
+                    // Creación del Map para persistencia
 
                     // TODO existe una manera de sacar el collectionPath para que sea configurable?
                     Map<String, Object> pagoConjuntoDoc = new HashMap<>();
                     pagoConjuntoDoc.put("nombre", pagoConjunto.getNombre());
-
-                    // Añadimos la imagen a la BD
-                    Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
-                    // Si la imagen se añade correctamente
-                    UploadTask task = ImageProcessor.processImage(imageBitmap, userImageRef, getApplicationContext());
-                    task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //we store the link to the image in the store in the db
-                            userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    db.collection("pagosConjuntos")
-                                            .document(pagoConjuntoUUID)
-                                            .update("imagen", uri)
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(getApplicationContext(),
-                                                                    getString(R.string.error_upload_pago_image),
-                                                                    Toast.LENGTH_LONG)
-                                                            .show();
-                                                }
-                                            });
-                                }
-                            });
-                        }
-                    });
-
-                    pagoConjuntoDoc.put("imagen", pagoConjunto.getImagen()); // TODO cambiar
-
-
+                    pagoConjuntoDoc.put("imagen", pagoConjunto.getImagen());
                     pagoConjuntoDoc.put("fechaLimite", pagoConjunto.getFechaLimite());
                     pagoConjuntoDoc.put("fechaPago", pagoConjunto.getFechaPago());
                     Map<String, Object> nestedParticipantes = new HashMap<>();
                     pagoConjuntoDoc.put("participantes", nestedParticipantes);
-                    db.collection("pagosConjuntos").document(pagoConjuntoUUID).set(pagoConjuntoDoc)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Log.i("FIREBASE SET", "Se añadió el objeto");
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("FIRBASE SET", "Error writing document", e);
-                                }
-                            });
-
-                    //TODO Snackbar.make(findViewById(R.id.layoutFormularioPagoConjunto), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
+                    db.collection("pagosConjuntos").document(pagoConjuntoUUID).set(pagoConjuntoDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.i("FIREBASE SET", "Se añadió el objeto");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FIRBASE SET", "Error writing document", e);
+                        }
+                    });
 
                     Intent intentResult = new Intent();
                     intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
@@ -251,13 +246,16 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             return false;
         }
 
+        // La validación de la imagen solo comprueba si está colocada o no, si no lo está, es null
+        if (!this.isImageSet) {
+            selectedImageUri = null;
+        }
+
         fechaPago = findViewById(R.id.editFechaMaximaPagoConjunto);
         if (fechaPago.getText().toString().trim().isEmpty()) {
             fechaPago.setError(getString(R.string.ErrorFechaVacia));
             return false;
         }
-
-        // TODO validad icono
 
         boolean oneUserMarked = false;
         for (int i = 0; i < this.usuarios.size(); i++) {
@@ -278,35 +276,28 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         return true;
     }
 
-    ActivityResultLauncher<Intent> launchSomeActivity
-            = registerForActivityResult(
-            new ActivityResultContracts
-                    .StartActivityForResult(),
-            result -> {
-                if (result.getResultCode()
-                        == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data != null
-                            && data.getData() != null) {
-                        Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap = null;
-                        try {
-                            selectedImageBitmap
-                                    = MediaStore.Images.Media.getBitmap(
-                                    this.getContentResolver(),
-                                    selectedImageUri);
-                            this.selectedImageUri = selectedImageUri;
-                        } catch (FileNotFoundException ef) {
-                            // TODO
-                            ef.printStackTrace();
-                        } catch (IOException e) {
-                            // TODO
-                            e.printStackTrace();
-                        }
-                        IVPreviewImage.setImageBitmap(selectedImageBitmap);
-                    }
+    ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null && data.getData() != null) {
+                Uri selectedImageUri = data.getData();
+                Bitmap selectedImageBitmap = null;
+                try {
+                    selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                    this.selectedImageUri = selectedImageUri;
+                    // Para saber que la imagen está colocada y no es la default
+                    this.isImageSet = true;
+                } catch (FileNotFoundException ef) {
+                    // TODO
+                    ef.printStackTrace();
+                } catch (IOException e) {
+                    // TODO
+                    e.printStackTrace();
                 }
-            });
+                IVPreviewImage.setImageBitmap(selectedImageBitmap);
+            }
+        }
+    });
 
     /**
      * Para guardar un archivo local en Firebase

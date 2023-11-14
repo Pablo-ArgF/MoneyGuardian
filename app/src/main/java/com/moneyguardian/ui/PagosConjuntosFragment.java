@@ -20,6 +20,7 @@ import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -179,6 +180,8 @@ public class PagosConjuntosFragment extends Fragment {
         if (requestCode == GESTION_ACTIVITY) {
             // Nos aseguramos que el resultado fue OK
             if (resultCode == RESULT_OK) {
+
+                Snackbar.make(getActivity().findViewById(R.id.fragmentPagosConjuntos), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
 
                 this.pagoConjunto = data.getParcelableExtra(PAGO_CONJUNTO_CREADO);
 
