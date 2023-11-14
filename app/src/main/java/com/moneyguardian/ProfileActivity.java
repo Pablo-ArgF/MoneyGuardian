@@ -124,8 +124,6 @@ public class ProfileActivity extends AppCompatActivity {
                                 // TODO
                                 e.printStackTrace();
                             }
-                            //TODO revisar las reglas del firebase storage que es lo que esta fallando
-                            //TODO hacer que cargue la foto en la pantalla de inicio y en la del perfil al create
 
                             //we store the image into the store and link it to the user entity
                             //in the database for it to be accessed

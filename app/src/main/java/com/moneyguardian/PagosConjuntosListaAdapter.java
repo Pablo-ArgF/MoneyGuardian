@@ -15,6 +15,7 @@ import com.moneyguardian.modelo.PagoConjunto;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjuntosListaAdapter.PagosConjuntosListaViewHolder> {
@@ -38,6 +39,11 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.linea_recycler_view_pago_conjunto, parent, false);
         return new PagosConjuntosListaViewHolder(itemView);
+    }
+
+    public void updateList(List<PagoConjunto> pagos) {
+        this.listaPagosConjuntos = new ArrayList<>(pagos);
+        notifyDataSetChanged();
     }
 
     @Override
