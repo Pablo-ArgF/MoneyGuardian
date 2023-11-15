@@ -1,7 +1,5 @@
 package com.moneyguardian.ui;
 
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,10 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 
-import com.moneyguardian.ListaAmigosAdapter;
-import com.moneyguardian.ListaGruposAdapter;
+import com.moneyguardian.adapters.ListaAmigosAdapter;
+import com.moneyguardian.adapters.ListaGruposAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.GrupoUsuarios;
 import com.moneyguardian.modelo.Usuario;

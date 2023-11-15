@@ -1,32 +1,25 @@
 package com.moneyguardian.ui;
 
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.moneyguardian.PagosConjuntosListaAdapter;
+import com.moneyguardian.adapters.PagosConjuntosListaAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class PagosConjuntosFragment extends Fragment {
 

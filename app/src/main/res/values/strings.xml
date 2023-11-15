@@ -56,4 +56,7 @@
     <string name="amigos_menu">Amigos</string>
     <string name="pagos_conjuntos_menu">Pagos conjuntos</string>
     <string name="titulo_seccion_amigos">Amigos</string>
+    <string name="search_label_friends">Busca amigos</string>
+    <string name="search_hint">Buscar usuarios</string>
+    <string name="moneyGuardian">MoneyGuardian</string>
 </resources>

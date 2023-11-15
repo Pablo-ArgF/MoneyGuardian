@@ -13,10 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.moneyguardian.ItemListaAdapter;
+import com.moneyguardian.adapters.ItemListaAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;

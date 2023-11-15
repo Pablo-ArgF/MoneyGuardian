@@ -1,4 +1,4 @@
-package com.moneyguardian;
+package com.moneyguardian.adapters;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
 
 import java.util.LinkedList;
@@ -76,7 +77,7 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
         public AmigoViewHolder(View itemView) {
             super(itemView);
 
-            nombre= (TextView)itemView.findViewById(R.id.nombreAmigo);
+            nombre= (TextView)itemView.findViewById(R.id.nombreSolicitante);
             deleteButton = (ImageButton) itemView.findViewById(R.id.btnBorrarAmigo);
         }
 

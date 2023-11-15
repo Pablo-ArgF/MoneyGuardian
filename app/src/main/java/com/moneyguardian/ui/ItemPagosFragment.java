@@ -11,12 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.moneyguardian.ListaBalanceItemAdapter;
+import com.moneyguardian.adapters.ListaBalanceItemAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class ItemPagosFragment extends Fragment {
 

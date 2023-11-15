@@ -9,12 +9,12 @@
     android:orientation="horizontal"
     >
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgUsuarioSolicitud"
         android:layout_width="48dp"
         android:layout_height="72dp"
         android:contentDescription="@string/app_name"
-        app:srcCompat="@mipmap/ic_launcher" />
+        app:srcCompat="@mipmap/ic_launcher"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,13 +35,21 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <ImageButton
-            android:id="@+id/btnBorrarAmigo"
+            android:id="@+id/btnDenegarSolicitud"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/circle_button"
             android:backgroundTint="@color/red"
-            android:src="@android:drawable/ic_menu_delete" />
+            android:src="@drawable/equis" />
+        <ImageButton
+            android:id="@+id/btnAceptarSolicitud"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/circle_button"
+            android:backgroundTint="@color/green"
+            android:src="@drawable/baseline_done_24" />
 
     </LinearLayout>
 
