@@ -15,13 +15,24 @@ public class PushNotificationService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
-        String title = message.getNotification().getTitle();
-        String text = message.getNotification().getBody();
-        /**NotificationChannel channel = new NotificationChannel(
-            CHANNEL_ID, "Heads up notification", NotificationManager.IMPORTANCE_HIGH
-        );
-        **/
-        
+        if (message.getData().size() > 0) {
+            // Aquí se pueden hacer jobs, como hacer que se añadan mensjaes, etc
+            //if (/* Check if data needs to be processed by long running job */ true) {
+                // For long-running tasks (10 seconds or more) use WorkManager.
+                //scheduleJob();
+            //} else {
+                // Handle message within 10 seconds
+                //handleNow();
+            //}
+            
+
+        }
+
         super.onMessageReceived(message);
+    }
+
+    @Override
+    public void onDeletedMessages() {
+        super.onDeletedMessages();
     }
 }
