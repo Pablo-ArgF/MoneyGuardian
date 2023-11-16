@@ -85,8 +85,6 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
         private ImageButton denegarBtn;
         private ImageButton aceptarBtn;
 
-        // Meter la imagen aqui también si se mete en el usuario
-
         public SolicitudViewHolder(View itemView) {
             super(itemView);
 

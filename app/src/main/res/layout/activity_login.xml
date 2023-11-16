@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".userAuth.LoginActivity">
 
-    <!-- TextView for heading -->
-
-    <!-- Edit text for email -->
-
-    <!-- Edit text for password -->
-
-    <!-- Button for Login with text "Login" -->
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -31,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
         app:layout_constraintVertical_bias="0.037" />
 
     <EditText
@@ -68,10 +61,10 @@
         app:iconTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.746"
+        app:layout_constraintHorizontal_bias="0.743"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.802" />
+        app:layout_constraintVertical_bias="0.788" />
 
     <TextView
         android:id="@+id/textView7"
@@ -143,15 +136,17 @@
         app:layout_constraintTop_toBottomOf="@+id/loginText"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-----------------------  o  -----------------------"
+    <View
+        android:id="@+id/divider"
+        android:layout_width="300dp"
+        android:layout_height="2dp"
+        android:layout_margin="10dp"
+        android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/googleBtn"
-        app:layout_constraintVertical_bias="0.059" />
+        app:layout_constraintVertical_bias="0.038" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,7 +25,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:id="@+id/tituloListaGrupos"
@@ -59,7 +61,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:id="@+id/tituloListaAmigos"
@@ -70,11 +74,12 @@
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/btnNuevoAmigo"
+                android:id="@+id/btnGestionAmigos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/nuevo_amigo" />
+                android:backgroundTint="@color/green"
+                android:text="@string/gestionar_amigos" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

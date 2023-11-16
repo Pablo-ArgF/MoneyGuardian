@@ -2,63 +2,122 @@ package com.moneyguardian;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SolicitudesAmistadFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.adapters.ListaSolicitudAmistadAdapter;
+import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.util.AmistadesUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SolicitudesAmistadFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth auth = FirebaseAuth.getInstance();
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private RecyclerView recyclerSolicitudes;
+    private RecyclerView recyclerEnviarSolicitud;
 
     public SolicitudesAmistadFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SolicitudesAmistadFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SolicitudesAmistadFragment newInstance(String param1, String param2) {
-        SolicitudesAmistadFragment fragment = new SolicitudesAmistadFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_solicitudes_amistad, container, false);
+        View root = inflater.inflate(R.layout.fragment_solicitudes_amistad, container, false);
+        recyclerSolicitudes = root.findViewById(R.id.recyclerListaPeticiones);
+        recyclerEnviarSolicitud = root.findViewById(R.id.recyclerListaAmigosEnviar);
+
+
+        //we add the layout manager to the friend list
+        RecyclerView.LayoutManager solicitudesLayoutManager = new LinearLayoutManager(container.getContext());
+        recyclerSolicitudes.setLayoutManager(solicitudesLayoutManager);
+
+        //we add the layout manager to the friend list
+        RecyclerView.LayoutManager enviarLayoutManager = new LinearLayoutManager(container.getContext());
+        recyclerEnviarSolicitud.setLayoutManager(enviarLayoutManager);
+
+        cargarSolicitudesAmistad();
+
+        return root;
+    }
+
+    private void cargarSolicitudesAmistad() {
+        //cargamos solicitudes de amistad
+        List<Usuario> solicitantes = new ArrayList<>();
+        db.collection("users").document(auth.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        //obtenemos las referencias de los usuarios que le piden solicitud
+                        ArrayList<DocumentReference> refsSolicitantes = (ArrayList<DocumentReference>)  documentSnapshot.get("friendRequests");
+                        //iteramos por la lista de referencias de usuarios que nos solicitan
+                        for(DocumentReference ref : refsSolicitantes){
+                            ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document != null && document.exists()) {
+                                            //convertimos este usuario en un Usuario y lo añadimos a la lista
+                                            String name = document.get("name",String.class);
+                                            String email = document.get("email",String.class);
+                                            String uriImg = document.get("profilePicture",String.class);
+                                            String id = ref.getId();
+
+                                            solicitantes.add(new Usuario(id,name, email, uriImg,null,null));
+                                            //if all added, update the adapter to show them
+                                            if(solicitantes.size() == refsSolicitantes.size()){
+                                                ListaSolicitudAmistadAdapter adapter = new ListaSolicitudAmistadAdapter(solicitantes,
+                                                        new ListaSolicitudAmistadAdapter.OnItemClickListener() {
+                                                            @Override
+                                                            public void onAceptarUsuario(Usuario item) {
+                                                                //TODO
+                                                                Log.i("a","que bien");
+                                                            }
+
+                                                            @Override
+                                                            public void onDenegarUsuario(Usuario item) {
+                                                                //TODO
+                                                                Log.i("a","que mal");
+                                                            }
+                                                        });
+
+                                                recyclerSolicitudes.setAdapter(adapter);
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
     }
 }

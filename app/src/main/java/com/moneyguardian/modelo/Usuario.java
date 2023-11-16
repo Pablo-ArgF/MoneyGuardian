@@ -10,6 +10,7 @@ import java.util.Objects;
 
 public class Usuario implements Parcelable {
 
+    private String id;
     private String nombre;
     private String correo;
     private List<Usuario> amigos;
@@ -31,7 +32,8 @@ public class Usuario implements Parcelable {
         }
     };
 
-    public Usuario(String nombre, String correo,String imgUri, List<Usuario> amigos, List<PagoConjunto> misPagosConjuntos) {
+    public Usuario(String id, String nombre, String correo,String imgUri, List<Usuario> amigos, List<PagoConjunto> misPagosConjuntos) {
+        this.id = id;
         this.nombre = nombre;
         this.correo = correo;
         this.amigos = amigos;
@@ -43,6 +45,7 @@ public class Usuario implements Parcelable {
     }
 
     protected Usuario(Parcel in) {
+        id = in.readString();
         nombre = in.readString();
         correo = in.readString();
         uriImg = in.readString();
@@ -82,6 +85,14 @@ public class Usuario implements Parcelable {
         this.amigos = amigos;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public List<PagoConjunto> getMisPagosConjuntos() {
         return misPagosConjuntos;
     }
@@ -97,6 +108,7 @@ public class Usuario implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(nombre);
         dest.writeString(correo);
         dest.writeTypedList(amigos);
@@ -109,7 +121,6 @@ public class Usuario implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return nombre.equals(usuario.nombre) && correo.equals(usuario.correo)
-                && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
+        return id.equals(usuario.id);
     }
 }

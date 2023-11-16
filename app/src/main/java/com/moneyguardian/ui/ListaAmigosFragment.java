@@ -3,6 +3,7 @@ package com.moneyguardian.ui;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,7 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.moneyguardian.SolicitudesAmistadFragment;
 import com.moneyguardian.adapters.ListaAmigosAdapter;
 import com.moneyguardian.adapters.ListaGruposAdapter;
 import com.moneyguardian.R;
@@ -42,6 +45,7 @@ public class ListaAmigosFragment extends Fragment {
     private RecyclerView listaGruposView;
 
     private ListaAmigosAdapter amigosAdapter;
+    private Button btnGestionAmigos;
 
 
     public ListaAmigosFragment() {
@@ -68,19 +72,6 @@ public class ListaAmigosFragment extends Fragment {
 
     }
 
-    public void clickonAmigo (Usuario amigo){
-        Log.i("Click adapter","Item Clicked "+amigo.getNombre());
-
-        //Paso el modo de apertura
-        /*
-        //TODO meter aqui si se quiere logica al clickar un amigo
-        Intent intent=new Intent (MainRecyclerActivity.this, ShowMovie.class);
-        intent.putExtra(PELICULA_SELECCIONADA, peli);
-
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-        */
-    }
-
     public void clickonDeleteAmigo (Usuario amigo){
         Log.i("Click adapter","Item Clicked to be removed "+amigo.getNombre());
 
@@ -100,14 +91,14 @@ public class ListaAmigosFragment extends Fragment {
         String[] correos = {"john.doe@example.com", "alice.johnson@example.com", "bob.smith@example.com", "emma.brown@example.com", "david.davis@example.com", "olivia.wilson@example.com", "michael.lee@example.com", "sophia.white@example.com", "james.harris@example.com", "ava.robinson@example.com"};
 
         for (int i = 0; i < nombres.length; i++) {
-            Usuario usuario = new Usuario(nombres[i], correos[i],null, null, null);
+            Usuario usuario = new Usuario("a",nombres[i], correos[i],null, null, null);
             listaAmigos.add(usuario);
         }
 
         amigosAdapter = new ListaAmigosAdapter(listaAmigos,new ListaAmigosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Usuario item) {
-                clickonAmigo(item);
+                //
             }
 
             @Override
@@ -119,9 +110,12 @@ public class ListaAmigosFragment extends Fragment {
     }
 
     private void cargarListaGruposAmigos() {
+        //TODO cambiar esto por llamada bd
+
+
         String[] nombresGrupos = {"Amigos de la Universidad", "Familiares", "Compañeros de Trabajo", "Vecinos", "Amigos de la Infancia", "Equipo de Deportes", "Amigos de Club de Lectura", "Compañeros de Clase", "Vecinos de la Calle A", "Amigos de Juegos en Línea"};
         List usuarios = IntStream.range(0, 30)
-                .mapToObj(i -> new Usuario("Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com",null, null, null))
+                .mapToObj(i -> new Usuario("a","Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com",null, null, null))
                 .collect(Collectors.toList());
         List<List<Usuario>> miembrosGrupos = Arrays.asList(usuarios.subList(0, 3), usuarios.subList(3, 6), usuarios.subList(6, 9), usuarios.subList(9, 12), usuarios.subList(12, 15), usuarios.subList(15, 18), usuarios.subList(18, 21), usuarios.subList(21, 24), usuarios.subList(24, 27), usuarios.subList(27, 30));
 
@@ -161,6 +155,7 @@ public class ListaAmigosFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_lista_amigos, container, false);
         listaGruposView = root.findViewById(R.id.recyclerListaGruposAmigos);
         listaAmigosView = root.findViewById(R.id.recyclerListaAmigos);
+        btnGestionAmigos = root.findViewById(R.id.btnGestionAmigos);
 
         listaGruposView.setHasFixedSize(true);
 
@@ -176,6 +171,15 @@ public class ListaAmigosFragment extends Fragment {
         //cargamos los datos en la vista
         cargarListaGruposAmigos();
         cargarListaAmigos();
+
+        //listener al boton de gestion de amigos
+        btnGestionAmigos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                        new SolicitudesAmistadFragment()).addToBackStack(null).commit();
+            }
+        });
         return root;
     }
 
