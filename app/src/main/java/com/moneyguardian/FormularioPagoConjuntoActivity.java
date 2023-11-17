@@ -200,6 +200,10 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     pagoConjuntoDoc.put("fechaPago", pagoConjunto.getFechaPago());
                     Map<String, Object> nestedParticipantes = new HashMap<>();
                     pagoConjuntoDoc.put("participantes", nestedParticipantes);
+                    // OJO: el usuario pagador debe ir dentro de un Map para poder realizar la query en Firestore
+                    List<String> userId = new ArrayList<String>();
+                    userId.add(mAuth.getCurrentUser().getUid());
+                    pagoConjuntoDoc.put("pagador", userId);
                     db.collection("pagosConjuntos").document(pagoConjuntoUUID).set(pagoConjuntoDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {

@@ -129,38 +129,39 @@ public class PagosConjuntosFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        CollectionReference usersRef = db.collection("pagosConjuntos");
-
+        CollectionReference pagosRef = db.collection("pagosConjuntos");
+        Log.i("User", auth.getCurrentUser().getUid());
         ArrayList<PagoConjunto> pagos = new ArrayList<>();
+        pagosRef.
+                whereArrayContains("pagador", auth.getCurrentUser().getUid()).
+                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String nombre = (String) document.getData().get("nombre");
+                                Uri imagen = null;
+                                if (document.getData().get("imagen") != null) {
+                                    imagen = Uri.parse((String) document.getData().get("imagen"));
+                                }
+                                Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
+                                Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
+                                pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
+                                /**
+                                 * TODO
+                                 List<UsuarioParaParcelable> participantes;
+                                 List<ItemPagoConjunto> items;
+                                 **/
+                                Log.i("Firebase GET", document.getData().toString());
+                            }
 
-        db.collection("pagosConjuntos").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        String nombre = (String) document.getData().get("nombre");
-                        Uri imagen = null;
-                        if (document.getData().get("imagen") != null) {
-                            imagen = Uri.parse((String) document.getData().get("imagen"));
+                            pagosConjuntosListaAdapter.updateList(pagos);
+
+                        } else {
+                            Log.i("Error", "Error getting documents: ", task.getException());
                         }
-                        Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
-                        Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
-                        pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
-                        /**
-                         * TODO
-                         List<UsuarioParaParcelable> participantes;
-                         List<ItemPagoConjunto> items;
-                         **/
-                        Log.i("Firebase GET", document.getData().toString());
                     }
-
-                    pagosConjuntosListaAdapter.updateList(pagos);
-
-                } else {
-                    Log.i("Error", "Error getting documents: ", task.getException());
-                }
-            }
-        });
+                });
     }
 
 
