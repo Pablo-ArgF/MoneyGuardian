@@ -3,33 +3,18 @@ package com.moneyguardian.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
 import java.util.List;
-import java.util.Objects;
 
 public class Usuario implements Parcelable {
 
     private String nombre;
     private String correo;
-    private List<Usuario> amigos;
+    private List<UsuarioParaParcelable> amigos;
     private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
     // Consider adding a field for 'Foto' if needed
 
 
-    public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
-        @Override
-        public Usuario createFromParcel(Parcel in) {
-            return new Usuario(in);
-        }
-
-        @Override
-        public Usuario[] newArray(int size) {
-            return new Usuario[size];
-        }
-    };
-
-    public Usuario(String nombre, String correo, List<Usuario> amigos, List<PagoConjunto> misPagosConjuntos) {
+    public Usuario(String nombre, String correo, List<UsuarioParaParcelable> amigos, List<PagoConjunto> misPagosConjuntos) {
         this.nombre = nombre;
         this.correo = correo;
         this.amigos = amigos;
@@ -42,9 +27,34 @@ public class Usuario implements Parcelable {
     protected Usuario(Parcel in) {
         nombre = in.readString();
         correo = in.readString();
-        amigos = in.createTypedArrayList(Usuario.CREATOR);
+        amigos = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
         misPagosConjuntos = in.createTypedArrayList(PagoConjunto.CREATOR);
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nombre);
+        dest.writeString(correo);
+        dest.writeTypedList(amigos);
+        dest.writeTypedList(misPagosConjuntos);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
+        @Override
+        public Usuario createFromParcel(Parcel in) {
+            return new Usuario(in);
+        }
+
+        @Override
+        public Usuario[] newArray(int size) {
+            return new Usuario[size];
+        }
+    };
 
     public String getNombre() {
         return nombre;
@@ -62,11 +72,11 @@ public class Usuario implements Parcelable {
         this.correo = correo;
     }
 
-    public List<Usuario> getAmigos() {
+    public List<UsuarioParaParcelable> getAmigos() {
         return amigos;
     }
 
-    public void setAmigos(List<Usuario> amigos) {
+    public void setAmigos(List<UsuarioParaParcelable> amigos) {
         this.amigos = amigos;
     }
 
@@ -79,26 +89,16 @@ public class Usuario implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(nombre);
-        dest.writeString(correo);
-        dest.writeTypedList(amigos);
-        dest.writeTypedList(misPagosConjuntos);
-        // Write 'Foto' if it's a Parcelable or some other type
-        // Example: dest.writeParcelable(foto, flags);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
         return nombre.equals(usuario.nombre) && correo.equals(usuario.correo)
                 && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " " + correo;
     }
 }
