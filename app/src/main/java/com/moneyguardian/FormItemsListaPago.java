@@ -189,8 +189,6 @@ public class FormItemsListaPago extends AppCompatActivity {
                                     new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            //TODO:Guardar el item en la base de datos
-
 
                                             ItemPagoConjunto itemPago = new ItemPagoConjunto(
                                                     name.getText().toString(), usersSelected);
@@ -276,26 +274,32 @@ public class FormItemsListaPago extends AppCompatActivity {
         userId.add(mAuth.getCurrentUser().getUid());
         pagoConjuntoDoc.put("pagador", userId);
 
-        Map<String, Object> itemsPagoConj = new HashMap<>();
+        List<Map<String, Object>> listaDeItemsPago = new ArrayList<>();
+        Map<String, Object> itemsPagoConj;
         Map<String, Double> usersWithMoney;
         for(ItemPagoConjunto item : pagoConjunto.getItems()){
             usersWithMoney = new HashMap<>();
+            itemsPagoConj = new HashMap<>();
             for(Map.Entry<UsuarioParaParcelable, Double> u : item.getPagos().entrySet()) {
                 usersWithMoney.put(u.getKey().getNombre(), u.getValue());
             }
             itemsPagoConj.put(item.getNombre(),usersWithMoney);
+            listaDeItemsPago.add(itemsPagoConj);
         }
 
+        itemsPagoConj = new HashMap<>();
         usersWithMoney = new HashMap<>();
         for(Map.Entry<UsuarioParaParcelable, Double> u : itemPago.getPagos().entrySet()){
             usersWithMoney.put(u.getKey().getNombre(),u.getValue());
         }
         itemsPagoConj.put(itemPago.getNombre(),usersWithMoney);
+        listaDeItemsPago.add(itemsPagoConj);
 
-        pagoConjuntoDoc.put("itemsPago",itemsPagoConj);
+
+        pagoConjuntoDoc.put("itemsPago",listaDeItemsPago);
 
         db.collection("pagosConjuntos").document(pagoConjunto.getId())
-                .set(itemsPagoConj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                .set(pagoConjuntoDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.i("FIREBASE SET", "Se añadió el objeto");

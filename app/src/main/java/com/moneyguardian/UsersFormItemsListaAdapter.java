@@ -74,9 +74,9 @@ public class UsersFormItemsListaAdapter extends
                         holder.moneyToPay.setText(dfZero.format(moneyLeftToPay));
                         if(moneyLeftToPay != 0.0){
                             if(user.equals(usuarioSeleccionado)){
-                                usuariosSeleccionados.put(user,cantidad-moneyLeftToPay);
+                                usuariosSeleccionados.put(user, Math.round((cantidad-moneyLeftToPay)*100.0)/100.0);
                             }else{
-                                usuariosSeleccionados.put(user,-moneyLeftToPay);
+                                usuariosSeleccionados.put(user, Math.round(-moneyLeftToPay*100.0)/100.0);
                             }
                         }
                         holder.moneyToPay.setEnabled(true);
@@ -119,9 +119,9 @@ public class UsersFormItemsListaAdapter extends
                     double moneyToPay = Double.parseDouble(holder.moneyToPay.getText().toString());
                     if(moneyToPay != 0.0) {
                         if(user.equals(usuarioSeleccionado)){
-                            usuariosSeleccionados.put(user,cantidad-moneyToPay);
+                            usuariosSeleccionados.put(user, Math.round((cantidad-moneyToPay)*100.0)/100.0);
                         }else{
-                            usuariosSeleccionados.put(user,-moneyToPay);
+                            usuariosSeleccionados.put(user,Math.round(-moneyToPay*100.0)/100.0);
                         }
 
                     }
@@ -157,7 +157,9 @@ public class UsersFormItemsListaAdapter extends
             totalPagado += Math.round(u.getValue() * 100.0)/100.0;
         }
 
-        return totalPagado == 0;
+        totalPagado =  Math.round(totalPagado * 100.0)/100.0;
+
+        return  totalPagado <= 0.1;
     }
 
     private void updateHolders(){
@@ -170,9 +172,9 @@ public class UsersFormItemsListaAdapter extends
         }
         for(Map.Entry<UsuarioParaParcelable,Double> u : getUsersSelected().entrySet()){
             if(!u.getKey().equals(usuarioSeleccionado)) {
-                getUsersSelected().put(u.getKey(), -cantidadPorUser);
+                getUsersSelected().put(u.getKey(),  Math.round(-cantidadPorUser*100.0)/100.0);
             }else{
-                getUsersSelected().put(u.getKey(), cantidad - cantidadPorUser);
+                getUsersSelected().put(u.getKey(),  Math.round((cantidad - cantidadPorUser)*100.0)/100.0);
             }
         }
     }

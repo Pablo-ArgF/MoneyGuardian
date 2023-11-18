@@ -127,7 +127,7 @@ public class ListaPagosFragment extends Fragment {
                     }
                 });
         listItemsPagosView.setAdapter(lpAdapter);
-        cargarDatos();
+        //cargarDatos();
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {
@@ -166,18 +166,28 @@ public class ListaPagosFragment extends Fragment {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()){
                             DocumentSnapshot document = task.getResult();
-                                Map<String, Map<String, Double>> items = (Map<String, Map<String, Double>>) document.getData().get("itemsPago");
+                            List<Map<String, Map<String, Double>>> items = (List<Map<String, Map<String, Double>>>) document.getData().get("itemsPago");
+                            if(items != null && items.size() != 0) {
+                                for (int i = 0;i < items.size();i++) {
+                                    for (Map.Entry<String, Map<String, Double>> item : items.get(i).entrySet()) {
+                                        HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+                                        for (Map.Entry<String, Double> users : item.getValue().entrySet()) {
+                                            cantidadesConUsers.put(new UsuarioParaParcelable(users.getKey()), Double.parseDouble(users.getValue().toString()));
+                                        }
 
-                                for(Map.Entry<String, Map<String, Double>> item : items.entrySet()){
-                                    HashMap<UsuarioParaParcelable,Double> cantidadesConUsers = new HashMap<>();
-                                    for(Map.Entry<String, Double> users : item.getValue().entrySet()){
-                                        cantidadesConUsers.put(new UsuarioParaParcelable(users.getKey()),Double.parseDouble(users.getValue().toString()));
+                                        listaPagos.add(new ItemPagoConjunto(item.getKey(), cantidadesConUsers));
                                     }
-
-                                    listaPagos.add(new ItemPagoConjunto(item.getKey(),cantidadesConUsers));
                                 }
+                            }
 
-                                lpAdapter.notifyDataSetChanged();
+                            lpAdapter = new ItemListaAdapter(listaPagos,
+                                    new ItemListaAdapter.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(ItemPagoConjunto itemPago) {
+                                            clickonItem(itemPago);
+                                        }
+                                    });
+                            listItemsPagosView.setAdapter(lpAdapter);
                         }else{
                             Log.i("Error", "Error getting documents: ", task.getException());
                         }

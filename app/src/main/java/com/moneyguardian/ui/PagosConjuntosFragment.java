@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PagosConjuntosFragment extends Fragment {
 
@@ -146,7 +148,27 @@ public class PagosConjuntosFragment extends Fragment {
                                 }
                                 Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
                                 Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
-                                pagos.add(new PagoConjunto(document.getId(),nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
+
+                                List<Map<String, Map<String,Double>>> itemsPagoSinTransform =
+                                        (List<Map<String, Map<String, Double>>>)
+                                                document.getData().get("itemsPago");
+
+                                List<ItemPagoConjunto> itemsPago = new ArrayList<>();
+
+
+                                for (int i = 0; i < itemsPagoSinTransform.size(); i++) {
+                                    for (Map.Entry<String, Map<String, Double>> item :
+                                            itemsPagoSinTransform.get(i).entrySet()) {
+                                        HashMap<UsuarioParaParcelable, Double> usuariosConDinero = new HashMap<>();
+                                        for(Map.Entry<String, Double> usuarios : item.getValue().entrySet()){
+                                            usuariosConDinero.put(new UsuarioParaParcelable(usuarios.getKey()),usuarios.getValue());
+                                        }
+
+                                        itemsPago.add(new ItemPagoConjunto(item.getKey(), usuariosConDinero));
+                                    }
+                                }
+
+                                pagos.add(new PagoConjunto(document.getId(),nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite,itemsPago));
                                 /**
                                  * TODO
                                  List<UsuarioParaParcelable> participantes;
