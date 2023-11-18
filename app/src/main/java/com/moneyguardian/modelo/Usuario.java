@@ -13,7 +13,7 @@ public class Usuario implements Parcelable {
     private String id;
     private String nombre;
     private String correo;
-    private List<Usuario> amigos;
+    private List<Usuario> amigos; //contains an array of references to the rest of users
     private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
     private String uriImg;
 

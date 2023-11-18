@@ -12,11 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
-import com.moneyguardian.util.AmistadesUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +36,17 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
     public ListaSolicitudAmistadAdapter(List<Usuario> listaSolicitudes, OnItemClickListener listener) {
         this.listaSolicitudes = listaSolicitudes;
         this.listener = listener;
+    }
+
+    /**
+     * Updates the adapter to remove the user passed as parameter
+     * @param user to be removed from the request list
+     */
+    public void removeRequest(Usuario user){
+        int index = listaSolicitudes.indexOf(user);
+        //we remove user
+        this.listaSolicitudes.remove(user);
+        notifyItemRemoved(index);
     }
 
 
@@ -68,7 +76,7 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
         Log.i("Lista","Visualiza elemento: "+amigo);
         // llama al método de nuestro holder para asignar valores a los componentes
         // además, pasamos el listener del evento onClick
-        holder.bindUser(amigo,context, listener);
+        holder.bindUser(amigo,context, listener,this);
     }
 
     @Override
@@ -95,7 +103,9 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
         }
 
         // asignar valores a los componentes
-        public void bindUser(final Usuario solicitante, final Context context, final OnItemClickListener listener) {
+        public void bindUser(final Usuario solicitante, final Context context,
+                             final OnItemClickListener listener,
+                             ListaSolicitudAmistadAdapter adapter) {
             nombre.setText(solicitante.getNombre());
             //cargamos la imagen del usuario
             Glide.with(context)
@@ -106,6 +116,7 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
                 public void onClick(View v) {
                     // Handle the delete button click, e.g., call a method to delete the item
                     listener.onDenegarUsuario(solicitante);
+                    adapter.removeRequest(solicitante);
                 }
             });
             aceptarBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +124,7 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
                 public void onClick(View v) {
                     // Handle the delete button click, e.g., call a method to delete the item
                     listener.onAceptarUsuario(solicitante);
+                    adapter.removeRequest(solicitante);
                 }
             });
 

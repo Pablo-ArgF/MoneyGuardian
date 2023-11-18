@@ -13,13 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.SolicitudesAmistadFragment;
 import com.moneyguardian.adapters.ListaAmigosAdapter;
 import com.moneyguardian.adapters.ListaGruposAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.GrupoUsuarios;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.util.AmistadesUtil;
+import com.moneyguardian.util.UsuarioMapper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +55,9 @@ public class ListaAmigosFragment extends Fragment {
     private ListaAmigosAdapter amigosAdapter;
     private Button btnGestionAmigos;
 
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
+
 
     public ListaAmigosFragment() {
         // Required empty public constructor
@@ -68,7 +79,10 @@ public class ListaAmigosFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
+        listaAmigos = new ArrayList<>();
 
     }
 
@@ -76,8 +90,7 @@ public class ListaAmigosFragment extends Fragment {
         Log.i("Click adapter","Item Clicked to be removed "+amigo.getNombre());
 
         // Handle delete button click
-
-        //TODO BD- creo que aqui va la logica de borrar amigos en bd
+        AmistadesUtil.borrarAmigo(amigo);
         int index = listaAmigos.indexOf(amigo);
         this.amigosAdapter.deleteAmigo(amigo);
         listaAmigos.remove(amigo);
@@ -85,28 +98,49 @@ public class ListaAmigosFragment extends Fragment {
     }
 
     private void cargarListaAmigos() {
-        listaAmigos = new LinkedList<>();
-        // Dummy data
-        String[] nombres = {"John Doe", "Alice Johnson", "Bob Smith", "Emma Brown", "David Davis", "Olivia Wilson", "Michael Lee", "Sophia White", "James Harris", "Ava Robinson"};
-        String[] correos = {"john.doe@example.com", "alice.johnson@example.com", "bob.smith@example.com", "emma.brown@example.com", "david.davis@example.com", "olivia.wilson@example.com", "michael.lee@example.com", "sophia.white@example.com", "james.harris@example.com", "ava.robinson@example.com"};
+        //we load current user info related to friends
+        db.collection("users")
+                .document(auth.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        List<DocumentReference> friendRefs =
+                                (List<DocumentReference>) documentSnapshot.get("friends");
+                        //we load all the friends
+                        friendRefs.forEach(f ->
+                        {
+                            f.get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            //we map this element to a user and we add it to the list
+                                            //of friends
+                                            listaAmigos.add(UsuarioMapper.mapBasics(documentSnapshot));
 
-        for (int i = 0; i < nombres.length; i++) {
-            Usuario usuario = new Usuario("a",nombres[i], correos[i],null, null, null);
-            listaAmigos.add(usuario);
-        }
 
-        amigosAdapter = new ListaAmigosAdapter(listaAmigos,new ListaAmigosAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Usuario item) {
-                //
-            }
+                                            //if finished, load the adapter with the userswe hace
+                                            if(listaAmigos.size() == friendRefs.size()){
+                                                amigosAdapter = new ListaAmigosAdapter(listaAmigos,
+                                                        new ListaAmigosAdapter.OnItemClickListener() {
+                                                    @Override
+                                                    public void onItemClick(Usuario item) {
+                                                        //
+                                                    }
 
-            @Override
-            public void onDeleteClick(Usuario item) {
-                clickonDeleteAmigo(item);
-            }
-        });
-        listaAmigosView.setAdapter(amigosAdapter);
+                                                    @Override
+                                                    public void onDeleteClick(Usuario item) {
+                                                        clickonDeleteAmigo(item);
+                                                    }
+                                                });
+                                                listaAmigosView.setAdapter(amigosAdapter);
+
+                                            }
+                                        }
+                                    });
+                        });
+                    }
+                });
     }
 
     private void cargarListaGruposAmigos() {
@@ -157,7 +191,7 @@ public class ListaAmigosFragment extends Fragment {
         listaAmigosView = root.findViewById(R.id.recyclerListaAmigos);
         btnGestionAmigos = root.findViewById(R.id.btnGestionAmigos);
 
-        listaGruposView.setHasFixedSize(true);
+
 
         //we add the layout manager to the group list
         RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(container.getContext());

@@ -98,15 +98,13 @@ public class SolicitudesAmistadFragment extends Fragment {
                                                 ListaSolicitudAmistadAdapter adapter = new ListaSolicitudAmistadAdapter(solicitantes,
                                                         new ListaSolicitudAmistadAdapter.OnItemClickListener() {
                                                             @Override
-                                                            public void onAceptarUsuario(Usuario item) {
-                                                                //TODO
-                                                                Log.i("a","que bien");
+                                                            public void onAceptarUsuario(Usuario user) {
+                                                                AmistadesUtil.aceptarSolicitudAmistad(user);
                                                             }
 
                                                             @Override
-                                                            public void onDenegarUsuario(Usuario item) {
-                                                                //TODO
-                                                                Log.i("a","que mal");
+                                                            public void onDenegarUsuario(Usuario user) {
+                                                                AmistadesUtil.denegarSolicitudAmistad(user);
                                                             }
                                                         });
 

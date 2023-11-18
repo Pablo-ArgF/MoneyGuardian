@@ -22,6 +22,7 @@ import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.userAuth.LoginActivity;
+import com.moneyguardian.util.UsuarioMapper;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -101,11 +102,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if(documentSnapshot.exists()){
-                            //we store the user in user atribute
-                            usuario = new Usuario();
-                            usuario.setNombre(documentSnapshot.get("name",String.class));
-                            usuario.setCorreo(documentSnapshot.get("email",String.class));
-                            usuario.setUriImg(documentSnapshot.get("profilePicture",String.class));
+                            usuario = UsuarioMapper.mapBasics(documentSnapshot);
 
                             Uri profileUri =Uri.parse(usuario.getUriImg());
                             Glide.with(root.getContext())
