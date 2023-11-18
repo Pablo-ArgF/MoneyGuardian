@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 public class UsuarioParaParcelable implements Parcelable {
 
     private String nombre;
@@ -58,5 +60,18 @@ public class UsuarioParaParcelable implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UsuarioParaParcelable that = (UsuarioParaParcelable) o;
+        return Objects.equals(nombre, that.nombre) && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, email);
     }
 }

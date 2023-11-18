@@ -1,8 +1,8 @@
 package com.moneyguardian;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Parcel;
-import android.util.Pair;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -13,9 +13,15 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.moneyguardian.modelo.GrupoUsuarios;
+import com.moneyguardian.modelo.ItemPagoConjunto;
+import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,10 +35,26 @@ public class ExampleInstrumentedTest {
     private Usuario usuario;
     private final String testName = "Test";
     private final String testEmail = "test@test.com";
+    private PagoConjunto pagoConjunto;
+    private final Date testDate = new Date();
+    private final Uri imagen = Uri.parse("test");
+    private final List<UsuarioParaParcelable> testParticipants = new ArrayList<>();
+    private final List<ItemPagoConjunto> testItems = new ArrayList<>();
+    private ItemPagoConjunto itemPagoConjunto;
+    private final HashMap<UsuarioParaParcelable, Integer> testPagos = new HashMap<>();
+
+    private GrupoUsuarios grupoUsuarios;
+    private final List<Usuario> testUsuarios = new ArrayList<>();
+
 
     @Before
-    public void build() {
+    public void setUp() {
         usuario = new Usuario();
+        pagoConjunto = new PagoConjunto(testName, testDate, testParticipants, imagen, testDate);
+        // Initialize the ItemPagoConjunto object using the constructor
+        itemPagoConjunto = new ItemPagoConjunto(testName, testPagos);
+        // Initialize the GrupoUsuarios object using the constructor
+        grupoUsuarios = new GrupoUsuarios(testName, testUsuarios);
     }
 
 
@@ -66,6 +88,79 @@ public class ExampleInstrumentedTest {
         assertTrue(createdFromParcel.getCorreo().equals(testEmail));
         assertTrue(createdFromParcel.getAmigos().isEmpty());
         assertTrue(createdFromParcel.getMisPagosConjuntos().isEmpty());
+    }
+
+    @Test
+    public void pagoConjunto_ParcelableWriteRead() {
+        // Write the data.
+        Parcel parcel = Parcel.obtain();
+        pagoConjunto.writeToParcel(parcel, pagoConjunto.describeContents());
+
+        // After writing, reset the parcel for reading.
+        parcel.setDataPosition(0);
+
+        // Read the data.
+        PagoConjunto createdFromParcel = PagoConjunto.CREATOR.createFromParcel(parcel);
+
+        // Verify the received data.
+        assertEquals(testName, createdFromParcel.getNombre());
+        assertEquals(testDate, createdFromParcel.getFechaPago());
+        assertTrue(createdFromParcel.getParticipantes().isEmpty());
+        assertTrue(createdFromParcel.getItems().isEmpty());
+    }
+
+    @Test
+    public void pagoConjuntoNotEmpty_ParcelableWriteRead() {
+        UsuarioParaParcelable usuario = new UsuarioParaParcelable(testName, testEmail);
+        testParticipants.add(usuario);
+        // Write the data.
+        Parcel parcel = Parcel.obtain();
+        pagoConjunto.writeToParcel(parcel, pagoConjunto.describeContents());
+
+        // After writing, reset the parcel for reading.
+        parcel.setDataPosition(0);
+
+        // Read the data.
+        PagoConjunto createdFromParcel = PagoConjunto.CREATOR.createFromParcel(parcel);
+
+        // Verify the received data.
+        assertTrue(!createdFromParcel.getParticipantes().isEmpty());
+        assertEquals(createdFromParcel.getParticipantes().get(0), usuario);
+    }
+
+
+    @Test
+    public void itemPagoConjunto_ParcelableWriteRead() {
+        // Write the data.
+        Parcel parcel = Parcel.obtain();
+        itemPagoConjunto.writeToParcel(parcel, itemPagoConjunto.describeContents());
+
+        // After writing, reset the parcel for reading.
+        parcel.setDataPosition(0);
+
+        // Read the data.
+        ItemPagoConjunto createdFromParcel = ItemPagoConjunto.CREATOR.createFromParcel(parcel);
+
+        // Verify the received data.
+        assertEquals(testName, createdFromParcel.getNombre());
+        assertTrue(createdFromParcel.getPagos().isEmpty());
+    }
+
+    @Test
+    public void grupoUsuarios_ParcelableWriteRead() {
+        // Write the data.
+        Parcel parcel = Parcel.obtain();
+        grupoUsuarios.writeToParcel(parcel, grupoUsuarios.describeContents());
+
+        // After writing, reset the parcel for reading.
+        parcel.setDataPosition(0);
+
+        // Read the data.
+        GrupoUsuarios createdFromParcel = GrupoUsuarios.CREATOR.createFromParcel(parcel);
+
+        // Verify the received data.
+        assertEquals(testName, createdFromParcel.getNombre());
+        assertTrue(createdFromParcel.getUsuarios().isEmpty());
     }
 
 }
