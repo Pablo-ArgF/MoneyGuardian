@@ -163,4 +163,24 @@ public class ExampleInstrumentedTest {
         assertTrue(createdFromParcel.getUsuarios().isEmpty());
     }
 
+    @Test
+    public void grupoUsuariosNotEmpty_ParcelableWriteRead() {
+        Usuario usuario = new Usuario(testName, testEmail, new ArrayList<>(), new ArrayList<>());
+        testUsuarios.add(usuario);
+
+        // Write the data.
+        Parcel parcel = Parcel.obtain();
+        grupoUsuarios.writeToParcel(parcel, grupoUsuarios.describeContents());
+
+        // After writing, reset the parcel for reading.
+        parcel.setDataPosition(0);
+
+        // Read the data.
+        GrupoUsuarios createdFromParcel = GrupoUsuarios.CREATOR.createFromParcel(parcel);
+
+        // Verify the received data.
+        assertTrue(!createdFromParcel.getUsuarios().isEmpty());
+        assertEquals(createdFromParcel.getUsuarios().get(0), usuario);
+    }
+
 }
