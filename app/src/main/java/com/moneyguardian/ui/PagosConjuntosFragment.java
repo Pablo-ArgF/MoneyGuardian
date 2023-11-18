@@ -146,7 +146,7 @@ public class PagosConjuntosFragment extends Fragment {
                                 }
                                 Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
                                 Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
-                                pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
+                                pagos.add(new PagoConjunto(document.getId(),nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
                                 /**
                                  * TODO
                                  List<UsuarioParaParcelable> participantes;

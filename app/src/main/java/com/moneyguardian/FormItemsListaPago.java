@@ -1,5 +1,6 @@
 package com.moneyguardian;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,13 +22,20 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.modelo.ItemPagoConjunto;
+import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.DecimalFilterForInput;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class FormItemsListaPago extends AppCompatActivity {
 
@@ -37,12 +46,15 @@ public class FormItemsListaPago extends AppCompatActivity {
     EditText name;
     CheckBox moneyChangeActivatedCheckBox;
     private List<UsuarioParaParcelable> usuariosDelPago;
-    private List<UsuarioParaParcelable> usersNeedToPay;
     private double cantidadTotal;
 
     private boolean checkBoxesActivated;
     private boolean changeMoneyActivated;
     private UsuarioParaParcelable usuarioSeleccionado;
+    private PagoConjunto pagoConjunto;
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +66,8 @@ public class FormItemsListaPago extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         totalMoney = (EditText) findViewById(R.id.editTextTotalMoneyItemPago);
         btnCreateNewItemPago = (Button) findViewById(R.id.btnCreteItemPago);
         name = (EditText) findViewById(R.id.formItemPagoNameTextField);
@@ -66,28 +80,31 @@ public class FormItemsListaPago extends AppCompatActivity {
                 new LinearLayoutManager(getApplicationContext());
         usersToAdd.setLayoutManager(layoutManager);
 
-        usuariosDelPago = getIntent().getExtras().getParcelableArrayList("USERS_OF_PAYMENT");
-        usersNeedToPay = new ArrayList<>(usuariosDelPago);
+        pagoConjunto = getIntent().getExtras().getParcelable("PAGO");
+        //TODO:Usuarios de la base de datos
+        //usuariosDelPago = pagoConjunto.getParticipantes();
+        usuariosDelPago = new ArrayList<>();
+        usuariosDelPago.add(new UsuarioParaParcelable("Pepe", "pepe@gmail.com"));
+        usuariosDelPago.add(new UsuarioParaParcelable("Pepa", "pepa@gmail.com"));
+        usuariosDelPago.add(new UsuarioParaParcelable("Pipi", "pipi@gmail.com"));
 
         UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                new UsersFormItemsListaAdapter(usersNeedToPay, cantidadTotal,checkBoxesActivated
+                new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,checkBoxesActivated
                                                         ,usuarioSeleccionado,changeMoneyActivated);
 
         usersToAdd.setAdapter(usersFormItemsListaAdapter);
 
         whoPaysSpinner = (Spinner) findViewById(R.id.spinnerWhoPays);
         ArrayAdapter<UsuarioParaParcelable> adapterSpinner = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,usersNeedToPay);
+                android.R.layout.simple_spinner_dropdown_item,usuariosDelPago);
         whoPaysSpinner.setAdapter(adapterSpinner);
         whoPaysSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                usersNeedToPay = new ArrayList<>(usuariosDelPago);
-                usersNeedToPay.remove(position);
                 usuarioSeleccionado = usuariosDelPago.get(position);
 
                 UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                        new UsersFormItemsListaAdapter(usersNeedToPay, cantidadTotal,
+                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
                                     checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
                 usersToAdd.setAdapter(usersFormItemsListaAdapter);
 
@@ -121,8 +138,37 @@ public class FormItemsListaPago extends AppCompatActivity {
 
 
                 UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                        new UsersFormItemsListaAdapter(usersNeedToPay, cantidadTotal,
+                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
                                     checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
+                usersToAdd.setAdapter(usersFormItemsListaAdapter);
+            }
+        });
+        totalMoney.setFilters(new InputFilter[]{new DecimalFilterForInput(2)});
+
+        totalMoney.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkBoxesActivated = !s.toString().isEmpty();
+                if(s.toString().isEmpty()){
+                    cantidadTotal = 0;
+                }else{
+                    cantidadTotal = Double.parseDouble(s.toString());
+                }
+
+
+                UsersFormItemsListaAdapter usersFormItemsListaAdapter =
+                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
+                                checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
                 usersToAdd.setAdapter(usersFormItemsListaAdapter);
             }
         });
@@ -148,6 +194,8 @@ public class FormItemsListaPago extends AppCompatActivity {
 
                                             ItemPagoConjunto itemPago = new ItemPagoConjunto(
                                                     name.getText().toString(), usersSelected);
+
+                                            saveInDataBase(itemPago);
 
                                             Intent intent = new Intent();
                                             intent.putExtra("NEW_ITEM",itemPago);
@@ -208,11 +256,56 @@ public class FormItemsListaPago extends AppCompatActivity {
                 changeMoneyActivated = moneyChangeActivatedCheckBox.isChecked();
 
                 UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                        new UsersFormItemsListaAdapter(usersNeedToPay, cantidadTotal,
+                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
                                 checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
                 usersToAdd.setAdapter(usersFormItemsListaAdapter);
             }
         });
+
+    }
+
+    private void saveInDataBase(ItemPagoConjunto itemPago) {
+        Map<String, Object> pagoConjuntoDoc = new HashMap<>();
+        pagoConjuntoDoc.put("nombre", pagoConjunto.getNombre());
+        pagoConjuntoDoc.put("imagen", pagoConjunto.getImagen());
+        pagoConjuntoDoc.put("fechaLimite", pagoConjunto.getFechaLimite());
+        pagoConjuntoDoc.put("fechaPago", pagoConjunto.getFechaPago());
+        Map<String, Object> nestedParticipantes = new HashMap<>();
+        pagoConjuntoDoc.put("participantes", nestedParticipantes);
+        List<String> userId = new ArrayList<String>();
+        userId.add(mAuth.getCurrentUser().getUid());
+        pagoConjuntoDoc.put("pagador", userId);
+
+        Map<String, Object> itemsPagoConj = new HashMap<>();
+        Map<String, Double> usersWithMoney;
+        for(ItemPagoConjunto item : pagoConjunto.getItems()){
+            usersWithMoney = new HashMap<>();
+            for(Map.Entry<UsuarioParaParcelable, Double> u : item.getPagos().entrySet()) {
+                usersWithMoney.put(u.getKey().getNombre(), u.getValue());
+            }
+            itemsPagoConj.put(item.getNombre(),usersWithMoney);
+        }
+
+        usersWithMoney = new HashMap<>();
+        for(Map.Entry<UsuarioParaParcelable, Double> u : itemPago.getPagos().entrySet()){
+            usersWithMoney.put(u.getKey().getNombre(),u.getValue());
+        }
+        itemsPagoConj.put(itemPago.getNombre(),usersWithMoney);
+
+        pagoConjuntoDoc.put("itemsPago",itemsPagoConj);
+
+        db.collection("pagosConjuntos").document(pagoConjunto.getId())
+                .set(itemsPagoConj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i("FIREBASE SET", "Se añadió el objeto");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FIRBASE SET", "Error writing document", e);
+                    }
+                });
 
     }
 

@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +18,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.FormItemsListaPago;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
 import com.moneyguardian.ItemListaAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListaPagosFragment extends Fragment {
 
@@ -42,8 +53,11 @@ public class ListaPagosFragment extends Fragment {
     private PagoConjunto pagoConjunto;
 
     public static final int GESTION_ACTIVITY = 2;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     RecyclerView listItemsPagosView;
+    private ItemListaAdapter lpAdapter;
 
     public static ListaPagosFragment newInstance(PagoConjunto param1) {
         ListaPagosFragment fragment = new ListaPagosFragment();
@@ -87,7 +101,7 @@ public class ListaPagosFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
-                intent.putExtra("USERS_OF_PAYMENT",new ArrayList<>(pagoConjunto.getParticipantes()));
+                intent.putExtra("PAGO",pagoConjunto);
                 startActivityForResult(intent, GESTION_ACTIVITY);
             }
         });
@@ -105,7 +119,7 @@ public class ListaPagosFragment extends Fragment {
                 new LinearLayoutManager(view.getContext().getApplicationContext());
         listItemsPagosView.setLayoutManager(layoutManager);
 
-        ItemListaAdapter lpAdapter = new ItemListaAdapter(listaPagos,
+        lpAdapter = new ItemListaAdapter(listaPagos,
                 new ItemListaAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(ItemPagoConjunto itemPago) {
@@ -113,6 +127,7 @@ public class ListaPagosFragment extends Fragment {
                     }
                 });
         listItemsPagosView.setAdapter(lpAdapter);
+        cargarDatos();
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {
@@ -133,18 +148,40 @@ public class ListaPagosFragment extends Fragment {
 
         if (requestCode == GESTION_ACTIVITY) {
             if(resultCode == RESULT_OK) {
+                cargarDatos();
 
-                this.listaPagos.add(itemNuevo);
-
-                ItemListaAdapter lpAdapter = new ItemListaAdapter(listaPagos,
-                        new ItemListaAdapter.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(ItemPagoConjunto itemPago) {
-                                clickonItem(itemPago);
-                            }
-                        });
-                listItemsPagosView.setAdapter(lpAdapter);
             }
         }
+    }
+
+    public void cargarDatos(){
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        listaPagos = new ArrayList<>();
+
+        db.collection("pagosConjuntos").
+                document(pagoConjunto.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                                Map<String, Map<String, Double>> items = (Map<String, Map<String, Double>>) document.getData().get("itemsPago");
+
+                                for(Map.Entry<String, Map<String, Double>> item : items.entrySet()){
+                                    HashMap<UsuarioParaParcelable,Double> cantidadesConUsers = new HashMap<>();
+                                    for(Map.Entry<String, Double> users : item.getValue().entrySet()){
+                                        cantidadesConUsers.put(new UsuarioParaParcelable(users.getKey()),Double.parseDouble(users.getValue().toString()));
+                                    }
+
+                                    listaPagos.add(new ItemPagoConjunto(item.getKey(),cantidadesConUsers));
+                                }
+
+                                lpAdapter.notifyDataSetChanged();
+                        }else{
+                            Log.i("Error", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 }

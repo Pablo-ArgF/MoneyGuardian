@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = new Intent(MainActivity.this, SocialActivity.class);
+        startActivity(intent);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO revisar porque al borrar la cuenta a veces hace login
         if(user == null){
             //if no user -> send to login page
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
 
         }

@@ -73,7 +73,11 @@ public class UsersFormItemsListaAdapter extends
                         double moneyLeftToPay = controlEqMoneyWhenEdited();
                         holder.moneyToPay.setText(dfZero.format(moneyLeftToPay));
                         if(moneyLeftToPay != 0.0){
-                            usuariosSeleccionados.put(user,-moneyLeftToPay);
+                            if(user.equals(usuarioSeleccionado)){
+                                usuariosSeleccionados.put(user,cantidad-moneyLeftToPay);
+                            }else{
+                                usuariosSeleccionados.put(user,-moneyLeftToPay);
+                            }
                         }
                         holder.moneyToPay.setEnabled(true);
                     }else{
@@ -114,8 +118,12 @@ public class UsersFormItemsListaAdapter extends
                 }else{
                     double moneyToPay = Double.parseDouble(holder.moneyToPay.getText().toString());
                     if(moneyToPay != 0.0) {
-                        usuariosSeleccionados.put(user,
-                                -moneyToPay);
+                        if(user.equals(usuarioSeleccionado)){
+                            usuariosSeleccionados.put(user,cantidad-moneyToPay);
+                        }else{
+                            usuariosSeleccionados.put(user,-moneyToPay);
+                        }
+
                     }
                 }
             }
@@ -144,12 +152,12 @@ public class UsersFormItemsListaAdapter extends
 
     public boolean allMoneyIspaid(){
         double totalPagado = 0.0;
-        for (UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder h : holders){
-            if(h.participantesPayment.isChecked() && !h.moneyToPay.getText().toString().isEmpty()){
-                totalPagado += Double.parseDouble(h.moneyToPay.getText().toString());
-            }
+
+        for(Map.Entry<UsuarioParaParcelable, Double> u : usuariosSeleccionados.entrySet()){
+            totalPagado += Math.round(u.getValue() * 100.0)/100.0;
         }
-        return totalPagado - cantidad == 0.0;
+
+        return totalPagado == 0;
     }
 
     private void updateHolders(){
@@ -163,6 +171,8 @@ public class UsersFormItemsListaAdapter extends
         for(Map.Entry<UsuarioParaParcelable,Double> u : getUsersSelected().entrySet()){
             if(!u.getKey().equals(usuarioSeleccionado)) {
                 getUsersSelected().put(u.getKey(), -cantidadPorUser);
+            }else{
+                getUsersSelected().put(u.getKey(), cantidad - cantidadPorUser);
             }
         }
     }

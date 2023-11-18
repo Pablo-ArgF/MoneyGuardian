@@ -13,6 +13,9 @@ public class UsuarioParaParcelable implements Parcelable {
         this.email = email;
     }
 
+    public UsuarioParaParcelable(String nombre) {
+        this.nombre = nombre;
+    }
 
     protected UsuarioParaParcelable(Parcel in) {
         nombre = in.readString();

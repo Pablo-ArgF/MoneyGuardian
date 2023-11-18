@@ -61,8 +61,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recicledViewUsersToSelect"
-        android:layout_width="354dp"
-        android:layout_height="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="173dp"
         android:layout_below="@+id/checkBoxChangeMoney"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -70,7 +70,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="53dp" />
+        android:layout_marginBottom="80dp" />
 
     <Button
         android:id="@+id/btnCreteItemPago"
@@ -84,14 +84,14 @@
 
     <Spinner
         android:id="@+id/spinnerWhoPays"
-        android:layout_width="wrap_content"
-        android:layout_height="53dp"
+        android:layout_width="205dp"
+        android:layout_height="51dp"
         android:layout_below="@+id/TVPagador"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="18dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="104dp" />
+        android:layout_marginEnd="137dp" />
 
     <TextView
         android:id="@+id/TVPagador"
@@ -104,7 +104,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="102dp"
         android:text="@string/TVPagador"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <CheckBox
         android:id="@+id/checkBoxChangeMoney"
