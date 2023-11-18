@@ -25,8 +25,8 @@ public class PagoConjunto implements Parcelable {
         this.items = items;
     }
 
-    public PagoConjunto(String nombre, Date fecha, List<UsuarioParaParcelable> participantes, Uri imagen) {
-        this(nombre, fecha, participantes, new ArrayList<ItemPagoConjunto>());
+    public PagoConjunto(String nombre, Date fecha, List<UsuarioParaParcelable> participantes, Uri imagen, Date fechaLimite) {
+        this(nombre, fecha, participantes, fechaLimite);
         this.imagen = imagen;
     }
 
@@ -43,14 +43,23 @@ public class PagoConjunto implements Parcelable {
     protected PagoConjunto(Parcel in) {
         nombre = in.readString();
         imagen = in.readParcelable(Uri.class.getClassLoader());
+        fechaLimite = (Date) in.readSerializable(); // OJO, no se puede poner esta linea
+        fechaPago = (Date) in.readSerializable(); // ni esta antes de leer las listas
+        // No se por qué, pero si se leen antes las listas que las fechas
+        // al parsear la lista de items una de ellas va a generarse con un tamaño enorme
+        // y dará error de heap y un nullpointer (por el metodo de calcular pago), porque la inicializa
+        // con tamaño > 0 aunque esté vacía
         participantes = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
         items = in.createTypedArrayList(ItemPagoConjunto.CREATOR);
+
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeParcelable(imagen, flags);
+        dest.writeSerializable(fechaLimite);
+        dest.writeSerializable(fechaPago);
         dest.writeTypedList(participantes);
         dest.writeTypedList(items);
     }

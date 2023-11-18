@@ -3,18 +3,32 @@ package com.moneyguardian.ui;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
 import com.moneyguardian.PagosConjuntosListaAdapter;
 import com.moneyguardian.R;
@@ -41,8 +55,15 @@ public class PagosConjuntosFragment extends Fragment {
     // Modelo de datos
 
     private ArrayList<PagoConjunto> listaPagosConjuntos = new ArrayList<>();
+    private PagosConjuntosListaAdapter pagosConjuntosListaAdapter;
     private PagoConjunto pagoConjunto;
     private RecyclerView listaPagosConjuntosView;
+
+    // Firebase
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
+    private FirebaseStorage storage;
+
 
     public PagosConjuntosFragment() {
         // Required empty public constructor
@@ -74,9 +95,10 @@ public class PagosConjuntosFragment extends Fragment {
         listaPagosConjuntosView.setLayoutManager(layoutManager);
 
 
-        listaPagosConjuntos = cargarDatos();
+        listaPagosConjuntos = new ArrayList<>();
+        cargarDatos();
 
-        PagosConjuntosListaAdapter pagosConjuntosListaAdapter =
+        pagosConjuntosListaAdapter =
                 new PagosConjuntosListaAdapter(listaPagosConjuntos,
                         new PagosConjuntosListaAdapter.OnItemClickListener() {
                             @Override
@@ -101,99 +123,72 @@ public class PagosConjuntosFragment extends Fragment {
         return root;
     }
 
-    private ArrayList<PagoConjunto> cargarDatos() {
+    private void cargarDatos() {
 
-        Usuario u1 = new Usuario("Usuario1", "usuario1@gmail.com", null, null);
-        Usuario u2 = new Usuario("Usuario2", "usuario2@gmail.com", null, null);
-        Usuario u3 = new Usuario("Usuario3", "usuario3@gmail.com", null, null);
-        Usuario u4 = new Usuario("Usuario4", "usuario4@gmail.com", null, null);
-        UsuarioParaParcelable un1 = new UsuarioParaParcelable("Usuario1", "usuario1@gmail.com");
-        UsuarioParaParcelable un2 = new UsuarioParaParcelable("Usuario2", "usuario2@gmail.com");
-        UsuarioParaParcelable un3 = new UsuarioParaParcelable("Usuario3", "usuario3@gmail.com");
-        UsuarioParaParcelable un4 = new UsuarioParaParcelable("Usuario4", "usuario4@gmail.com");
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
+        CollectionReference pagosRef = db.collection("pagosConjuntos");
+        Log.i("User", auth.getCurrentUser().getUid());
+        ArrayList<PagoConjunto> pagos = new ArrayList<>();
+        pagosRef.
+                whereArrayContains("pagador", auth.getCurrentUser().getUid()).
+                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String nombre = (String) document.getData().get("nombre");
+                                Uri imagen = null;
+                                if (document.getData().get("imagen") != null) {
+                                    imagen = Uri.parse((String) document.getData().get("imagen"));
+                                }
+                                Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
+                                Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
+                                pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
+                                /**
+                                 * TODO
+                                 List<UsuarioParaParcelable> participantes;
+                                 List<ItemPagoConjunto> items;
+                                 **/
+                                Log.i("Firebase GET", document.getData().toString());
+                            }
 
+                            pagosConjuntosListaAdapter.updateList(pagos);
 
-        u1.setAmigos(Arrays.asList(un2, un3, un4));
-        u2.setAmigos(Arrays.asList(un1, un3));
-        u3.setAmigos(Arrays.asList(un1, un2, un4));
-        u4.setAmigos(Arrays.asList(un1, un3));
-
-        HashMap<UsuarioParaParcelable, Double> userPays1 = new HashMap<UsuarioParaParcelable, Double>();
-        userPays1.put(un1, 200.0);
-        userPays1.put(un2, -100.0);
-        userPays1.put(un3, -25.0);
-        userPays1.put(un4, -75.0);
-        HashMap<UsuarioParaParcelable, Double> userPays2 = new HashMap<UsuarioParaParcelable, Double>();
-        userPays2.put(un1, 200.0);
-        userPays2.put(un2, -200.0);
-        HashMap<UsuarioParaParcelable, Double> userPays3 = new HashMap<UsuarioParaParcelable, Double>();
-        userPays3.put(un1, -100.0);
-        userPays3.put(un2, 150.0);
-        userPays3.put(un3, -50.0);
-        HashMap<UsuarioParaParcelable, Double> userPays4 = new HashMap<UsuarioParaParcelable, Double>();
-        userPays4.put(un3, 25.0);
-        userPays4.put(un4, -25.0);
-        HashMap<UsuarioParaParcelable, Double> userPays5 = new HashMap<UsuarioParaParcelable, Double>();
-        userPays5.put(un2, -100.0);
-        userPays5.put(un3, 200.0);
-        userPays5.put(un4, -100.0);
-
-        ItemPagoConjunto ip1 = new ItemPagoConjunto("Item Pago 1", userPays1);
-        ItemPagoConjunto ip2 = new ItemPagoConjunto("Item Pago 2", userPays2);
-        ItemPagoConjunto ip3 = new ItemPagoConjunto("Item Pago 3", userPays3);
-        ItemPagoConjunto ip4 = new ItemPagoConjunto("Item Pago 4", userPays4);
-        ItemPagoConjunto ip5 = new ItemPagoConjunto("Item Pago 5", userPays5);
-
-        PagoConjunto pg1 = new PagoConjunto("Pago Conjunto 1",
-                new Date(), Arrays.asList(un1, un2, un3, un4), Arrays.asList(ip1, ip2, ip3));
-        PagoConjunto pg2 = new PagoConjunto("Pago Conjunto 2",
-                new Date(), Arrays.asList(un3, un4), Arrays.asList(ip4));
-        PagoConjunto pg3 = new PagoConjunto("Pago Conjunto 3",
-                new Date(), Arrays.asList(un2, un3, un4), Arrays.asList(ip5));
-
-        u1.setMisPagosConjuntos(Arrays.asList(pg1));
-        u2.setMisPagosConjuntos(Arrays.asList(pg1, pg3));
-        u3.setMisPagosConjuntos(Arrays.asList(pg1, pg3, pg2));
-        u4.setMisPagosConjuntos(Arrays.asList(pg1, pg3, pg2));
-
-        ArrayList<PagoConjunto> result = new ArrayList<>();
-        result.add(pg1);
-        result.add(pg2);
-        result.add(pg3);
-
-        return result;
+                        } else {
+                            Log.i("Error", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
 
     // Click del item del adapter
     public void clickonItem(PagoConjunto pagoConjunto) {
-        ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance
-                (pagoConjunto);
+        ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance(pagoConjunto);
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).commit();
+                replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).addToBackStack(null).commit();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Comprobamos a qué petición se está respondiendo
-        // TODO comprobar error del requestCode
+
         if (requestCode == GESTION_ACTIVITY) {
             // Nos aseguramos que el resultado fue OK
             if (resultCode == RESULT_OK) {
-                // TODO esta dando el error aquí
+
+                Snackbar.make(getActivity().findViewById(R.id.fragmentPagosConjuntos), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
+
                 this.pagoConjunto = data.getParcelableExtra(PAGO_CONJUNTO_CREADO);
 
-                // Refrescar el RecyclerView
-                // Añadimos a la lista de peliculas la peli nueva
-                this.listaPagosConjuntos.add(this.pagoConjunto);
-
-                PagosConjuntosListaAdapter listaPagosConjuntosAdapter = new PagosConjuntosListaAdapter(this.listaPagosConjuntos, (pago) -> {
-                    clickonItem(pago);
-                });
-                listaPagosConjuntosView.setAdapter(listaPagosConjuntosAdapter);
+                // Refrescar el RecyclerView, lo ponemos a 0 y cargamos los datos de la BD
+                this.listaPagosConjuntos = new ArrayList<>();
+                cargarDatos();
             }
         }
     }
