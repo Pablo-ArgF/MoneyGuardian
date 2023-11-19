@@ -64,4 +64,8 @@
     <string name="hint_search_friends">Busca un nombre de usuario</string>
     <string name="tus_solicitudes">Tus solicitudes</string>
     <string name="send_friend_request">Envía una solicitud</string>
+    <string name="no_friends_msg">Aún no tienes amigos, ve a \'Gestionar amigos\' y envía una solicitud de amistad</string>
+    <string name="question_remove_friend">¿Desea eliminar este amigo?</string>
+    <string name="confirm_remove_friend">Eliminar</string>
+    <string name="cancel">Cancelar</string>
 </resources>

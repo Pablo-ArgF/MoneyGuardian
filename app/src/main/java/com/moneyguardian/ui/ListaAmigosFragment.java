@@ -1,5 +1,7 @@
 package com.moneyguardian.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,6 +58,7 @@ public class ListaAmigosFragment extends Fragment {
 
     private FirebaseFirestore db;
     private FirebaseAuth auth;
+    private LinearLayout msgNoFriends;
 
 
     public ListaAmigosFragment() {
@@ -89,17 +93,44 @@ public class ListaAmigosFragment extends Fragment {
         super.onResume();
         cargarListaAmigos();
         cargarListaGruposAmigos();
+        updateUIFriends();
     }
 
     public void clickonDeleteAmigo (Usuario amigo){
         Log.i("Click adapter","Item Clicked to be removed "+amigo.getNombre());
 
-        // Handle delete button click
-        AmistadesUtil.borrarAmigo(amigo);
-        int index = listaAmigos.indexOf(amigo);
-        this.amigosAdapter.deleteAmigo(amigo);
-        listaAmigos.remove(amigo);
-        this.amigosAdapter.notifyItemRemoved(index);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(R.string.question_remove_friend)
+                .setPositiveButton(R.string.confirm_remove_friend, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // CONFIRM
+                        // Handle delete button click
+                        AmistadesUtil.borrarAmigo(amigo);
+                        int index = listaAmigos.indexOf(amigo);
+                        amigosAdapter.deleteAmigo(amigo);
+                        listaAmigos.remove(amigo);
+                        amigosAdapter.notifyItemRemoved(index);
+                        updateUIFriends();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // CANCEL
+                        //Do nothing
+                    }
+                }).create().show();
+    }
+
+    private void updateUIFriends() {
+        if(amigosAdapter.getItemCount() == 0)
+        {
+            msgNoFriends.setVisibility(View.VISIBLE);
+            listaAmigosView.setVisibility(View.INVISIBLE);
+        }
+        else{
+            msgNoFriends.setVisibility(View.INVISIBLE);
+            listaAmigosView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void cargarListaAmigos() {
@@ -125,6 +156,7 @@ public class ListaAmigosFragment extends Fragment {
                                         //of friends
                                         Usuario usuario = UsuarioMapper.mapBasics(documentSnapshot);
                                         amigosAdapter.addAmigo(usuario);
+                                        updateUIFriends();
                                     }
                                 });
 
@@ -181,6 +213,8 @@ public class ListaAmigosFragment extends Fragment {
         listaGruposView = root.findViewById(R.id.recyclerListaGruposAmigos);
         listaAmigosView = root.findViewById(R.id.recyclerListaAmigos);
         btnGestionAmigos = root.findViewById(R.id.btnGestionAmigos);
+        msgNoFriends = root.findViewById(R.id.msgNoFriends);
+
 
 
 
@@ -211,6 +245,8 @@ public class ListaAmigosFragment extends Fragment {
         //cargamos los datos en la vista
         cargarListaGruposAmigos();
         cargarListaAmigos();
+        //si no hay amigos enseñamos el mensaje
+        updateUIFriends();
 
         //listener al boton de gestion de amigos
         btnGestionAmigos.setOnClickListener(new View.OnClickListener() {
