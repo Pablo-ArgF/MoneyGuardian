@@ -3,7 +3,6 @@ package com.moneyguardian.ui;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.moneyguardian.SolicitudesAmistadFragment;
 import com.moneyguardian.adapters.ListaAmigosAdapter;
 import com.moneyguardian.adapters.ListaGruposAdapter;
 import com.moneyguardian.R;
@@ -86,6 +84,13 @@ public class ListaAmigosFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        cargarListaAmigos();
+        cargarListaGruposAmigos();
+    }
+
     public void clickonDeleteAmigo (Usuario amigo){
         Log.i("Click adapter","Item Clicked to be removed "+amigo.getNombre());
 
@@ -98,6 +103,7 @@ public class ListaAmigosFragment extends Fragment {
     }
 
     private void cargarListaAmigos() {
+        this.listaAmigos.clear();
         //we load current user info related to friends
         db.collection("users")
                 .document(auth.getUid())
@@ -107,38 +113,23 @@ public class ListaAmigosFragment extends Fragment {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         List<DocumentReference> friendRefs =
                                 (List<DocumentReference>) documentSnapshot.get("friends");
+
+
                         //we load all the friends
-                        friendRefs.forEach(f ->
-                        {
-                            f.get()
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            //we map this element to a user and we add it to the list
-                                            //of friends
-                                            listaAmigos.add(UsuarioMapper.mapBasics(documentSnapshot));
+                        for(int i = 0 ; i< friendRefs.size() ; i++) {
+                            friendRefs.get(i).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        //we map this element to a user and we add it to the list
+                                        //of friends
+                                        Usuario usuario = UsuarioMapper.mapBasics(documentSnapshot);
+                                        amigosAdapter.addAmigo(usuario);
+                                    }
+                                });
 
+                        }
 
-                                            //if finished, load the adapter with the userswe hace
-                                            if(listaAmigos.size() == friendRefs.size()){
-                                                amigosAdapter = new ListaAmigosAdapter(listaAmigos,
-                                                        new ListaAmigosAdapter.OnItemClickListener() {
-                                                    @Override
-                                                    public void onItemClick(Usuario item) {
-                                                        //
-                                                    }
-
-                                                    @Override
-                                                    public void onDeleteClick(Usuario item) {
-                                                        clickonDeleteAmigo(item);
-                                                    }
-                                                });
-                                                listaAmigosView.setAdapter(amigosAdapter);
-
-                                            }
-                                        }
-                                    });
-                        });
                     }
                 });
     }
@@ -200,6 +191,21 @@ public class ListaAmigosFragment extends Fragment {
         //we add the layout manager to the friend list
         RecyclerView.LayoutManager friendLayoutManager = new LinearLayoutManager(container.getContext());
         listaAmigosView.setLayoutManager(friendLayoutManager);
+
+        //we create the adapter
+        amigosAdapter = new ListaAmigosAdapter(listaAmigos,
+                new ListaAmigosAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Usuario item) {
+                        //
+                    }
+
+                    @Override
+                    public void onDeleteClick(Usuario item) {
+                        clickonDeleteAmigo(item);
+                    }
+                });
+        listaAmigosView.setAdapter(amigosAdapter);
 
 
         //cargamos los datos en la vista

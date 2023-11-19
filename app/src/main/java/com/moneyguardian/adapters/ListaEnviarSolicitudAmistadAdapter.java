@@ -26,6 +26,29 @@ public class ListaEnviarSolicitudAmistadAdapter extends RecyclerView.Adapter<Lis
     private OnItemClickListener listener;
     private Context context;
 
+    public void addUsuario(Usuario u) {
+        if(listaUsuarios.contains(u))
+            return;
+        this.listaUsuarios.add(u);
+        notifyItemInserted(listaUsuarios.size() -1);
+    }
+
+    /**
+     * This method is called once we have sent a request to one of the users in the list.
+     * The user will be deleted from the list
+     * @param u user to be deleted from the list
+     */
+    public void RemoveUsuario(Usuario u) {
+        int index = listaUsuarios.indexOf(u);
+        listaUsuarios.remove(index);
+        notifyItemRemoved(index);
+    }
+
+    public void clearUsuarios() {
+        notifyItemRangeRemoved(0,listaUsuarios.size());
+        listaUsuarios.clear();
+    }
+
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
         void onEnviarSolicitud(Usuario item);
@@ -79,7 +102,7 @@ public class ListaEnviarSolicitudAmistadAdapter extends RecyclerView.Adapter<Lis
             super(itemView);
 
             nombre= (TextView)itemView.findViewById(R.id.nombreSolicitante);
-            enviarBtn = (ImageButton) itemView.findViewById(R.id.btnDenegarSolicitud);
+            enviarBtn = (ImageButton) itemView.findViewById(R.id.btnEnviarSolicitud);
             userImg = (CircleImageView) itemView.findViewById(R.id.imgUsuarioSolicitud);
         }
 

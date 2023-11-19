@@ -59,4 +59,9 @@
     <string name="search_hint">Buscar usuarios</string>
     <string name="moneyGuardian">MoneyGuardian</string>
     <string name="gestionar_amigos">Gestionar amigos</string>
+    <string name="msg_friend_request_sent_to">Solicitud de amistad enviada a \'%1$s\'</string>
+    <string name="no_friend_requests">No tienes solicitudes de amistad</string>
+    <string name="hint_search_friends">Busca un nombre de usuario</string>
+    <string name="tus_solicitudes">Tus solicitudes</string>
+    <string name="send_friend_request">Envía una solicitud</string>
 </resources>

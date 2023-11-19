@@ -46,6 +46,13 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
         listaAmigos.remove(amigo);
     }
 
+    public void addAmigo(Usuario amigo){
+        if(listaAmigos.contains(amigo))
+            return;
+        listaAmigos.add(amigo);
+        notifyItemInserted(listaAmigos.size()-1);
+    }
+
     @NonNull
     @Override
     public AmigoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

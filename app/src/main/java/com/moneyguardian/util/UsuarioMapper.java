@@ -17,6 +17,7 @@ public class UsuarioMapper {
      */
     public static Usuario mapBasics(DocumentSnapshot ref){
         Usuario usuario = new Usuario();
+        usuario.setId(ref.getId());
         usuario.setNombre(ref.get("name",String.class));
         usuario.setCorreo(ref.get("email",String.class));
         usuario.setUriImg(ref.get("profilePicture",String.class));

@@ -27,6 +27,11 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
     private OnItemClickListener listener;
     private Context context;
 
+    public void addSolicitante(Usuario u) {
+        this.listaSolicitudes.add(u);
+        notifyItemInserted(listaSolicitudes.size() -1);
+    }
+
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
         void onAceptarUsuario(Usuario item);

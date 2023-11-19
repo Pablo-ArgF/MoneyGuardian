@@ -89,7 +89,22 @@ public class AmistadesUtil {
                 });
     }
 
+    /**
+     * Deletes the friend from the friend list and from the list of the other user
+     * @param amigo friend to be removed
+     */
     public static void borrarAmigo(Usuario amigo) {
-        //TODO
+        db.collection("users")
+                .document(auth.getUid())
+                .update("friends", FieldValue.arrayRemove(db.collection("users").document(amigo.getId())))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        //we remove from the friend list
+                        db.collection("users")
+                                .document(amigo.getId())
+                                .update("friends", FieldValue.arrayRemove(db.collection("users").document(auth.getUid())));
+                    }
+                });
     }
 }
