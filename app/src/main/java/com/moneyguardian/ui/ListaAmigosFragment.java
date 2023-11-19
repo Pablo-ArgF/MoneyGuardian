@@ -55,10 +55,14 @@ public class ListaAmigosFragment extends Fragment {
 
     private ListaAmigosAdapter amigosAdapter;
     private Button btnGestionAmigos;
+    private Button btnAddGroup;
 
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private LinearLayout msgNoFriends;
+    private LinearLayout msgNoGroups;
+    private ListaGruposAdapter gruposAdapter;
+
 
 
     public ListaAmigosFragment() {
@@ -133,6 +137,18 @@ public class ListaAmigosFragment extends Fragment {
         }
     }
 
+    private void updateUIGroups() {
+        if(gruposAdapter.getItemCount() == 0)
+        {
+            msgNoGroups.setVisibility(View.VISIBLE);
+            listaGruposView.setVisibility(View.INVISIBLE);
+        }
+        else{
+            msgNoGroups.setVisibility(View.INVISIBLE);
+            listaGruposView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void cargarListaAmigos() {
         this.listaAmigos.clear();
         //we load current user info related to friends
@@ -184,11 +200,9 @@ public class ListaAmigosFragment extends Fragment {
         }
 
 
-        ListaGruposAdapter gruposAdapter = new ListaGruposAdapter(listaGrupos,
-                (grupo) ->{
-                    clickonGrupo(grupo);
-                });
-        listaGruposView.setAdapter(gruposAdapter);
+
+
+        updateUIGroups();
     }
 
     private void clickonGrupo(GrupoUsuarios grupo) {
@@ -213,9 +227,9 @@ public class ListaAmigosFragment extends Fragment {
         listaGruposView = root.findViewById(R.id.recyclerListaGruposAmigos);
         listaAmigosView = root.findViewById(R.id.recyclerListaAmigos);
         btnGestionAmigos = root.findViewById(R.id.btnGestionAmigos);
+        btnAddGroup = root.findViewById(R.id.btnNuevoGrupoAmigos);
         msgNoFriends = root.findViewById(R.id.msgNoFriends);
-
-
+        msgNoGroups = root.findViewById(R.id.msgNoGroups);
 
 
         //we add the layout manager to the group list
@@ -241,6 +255,12 @@ public class ListaAmigosFragment extends Fragment {
                 });
         listaAmigosView.setAdapter(amigosAdapter);
 
+        gruposAdapter = new ListaGruposAdapter(new ArrayList<>(),
+                (grupo) ->{
+                    clickonGrupo(grupo);
+                });
+        listaGruposView.setAdapter(gruposAdapter);
+
 
         //cargamos los datos en la vista
         cargarListaGruposAmigos();
@@ -254,6 +274,24 @@ public class ListaAmigosFragment extends Fragment {
             public void onClick(View v) {
                 getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
                         new SolicitudesAmistadFragment()).addToBackStack(null).commit();
+            }
+        });
+
+        //por ahora cargamos un listado falso de grupos al apretar para ver la funcionalidad
+        btnAddGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] nombresGrupos = {"Amigos de la Universidad", "Familiares", "Compañeros de Trabajo", "Vecinos", "Amigos de la Infancia", "Equipo de Deportes", "Amigos de Club de Lectura", "Compañeros de Clase", "Vecinos de la Calle A", "Amigos de Juegos en Línea"};
+                List usuarios = IntStream.range(0, 30)
+                        .mapToObj(i -> new Usuario("a","Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com",null, null, null))
+                        .collect(Collectors.toList());
+                List<List<Usuario>> miembrosGrupos = Arrays.asList(usuarios.subList(0, 3), usuarios.subList(3, 6), usuarios.subList(6, 9), usuarios.subList(9, 12), usuarios.subList(12, 15), usuarios.subList(15, 18), usuarios.subList(18, 21), usuarios.subList(21, 24), usuarios.subList(24, 27), usuarios.subList(27, 30));
+
+                for (int i = 0; i < nombresGrupos.length; i++) {
+                    GrupoUsuarios grupo = new GrupoUsuarios(nombresGrupos[i], miembrosGrupos.get(i));
+                    gruposAdapter.addGrupo(grupo);
+                }
+                updateUIGroups();
             }
         });
         return root;

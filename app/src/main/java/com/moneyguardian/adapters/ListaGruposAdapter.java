@@ -21,6 +21,11 @@ public class ListaGruposAdapter extends RecyclerView.Adapter<ListaGruposAdapter.
     private List<GrupoUsuarios> listaGrupos = new LinkedList<>();
     private OnItemClickListener listener;
 
+    public void addGrupo(GrupoUsuarios grupo) {
+        this.listaGrupos.add(grupo);
+        notifyItemInserted(listaGrupos.size() - 1);
+    }
+
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
         void onItemClick(GrupoUsuarios item);

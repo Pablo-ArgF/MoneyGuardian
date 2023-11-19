@@ -57,6 +57,36 @@
             app:layout_constraintTop_toBottomOf="@+id/tituloFragmentAmigos"
             app:layout_constraintVertical_bias="0.031" />
 
+        <LinearLayout
+            android:id="@+id/msgNoGroups"
+            android:layout_width="match_parent"
+            android:layout_height="253dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnNuevoGrupoAmigos"
+            app:layout_constraintVertical_bias="0.0">
+
+            <ImageView
+                android:id="@+id/imgNoGroups"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/amigos_icon" />
+
+            <TextView
+                android:id="@+id/txtNoGroups"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text="@string/no_groups_msg"
+                android:textAlignment="center"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerListaGruposAmigos"
             android:layout_width="match_parent"
