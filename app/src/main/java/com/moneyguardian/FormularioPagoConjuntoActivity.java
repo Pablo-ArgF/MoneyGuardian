@@ -26,15 +26,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.firestore.FieldPath;
 import com.moneyguardian.adapter.UsuarioArrayAdapter;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
@@ -64,6 +73,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private ListView listViewUsuarios;
     private ArrayList<UsuarioParaParcelable> usuarios;
+    private ArrayList<String> usuariosUUIDs;
     private UsuarioArrayAdapter usuarioArrayAdapter;
 
     // Valores del pago conjunto
@@ -90,11 +100,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         pagoConjuntoUUID = UUID.randomUUID().toString();
         userImageRef = FirebaseStorage.getInstance().getReference().child("pagosConjuntos/" + pagoConjuntoUUID + ".jpg");
 
-        // TODO inicializar la lista con la BD
-        usuarios = new ArrayList<>();
-        usuarios.add(new UsuarioParaParcelable("Pepe", "pepe@gmail.com"));
-        usuarios.add(new UsuarioParaParcelable("Pepa", "pepa@gmail.com"));
-        usuarios.add(new UsuarioParaParcelable("Pipi", "pipi@gmail.com"));
+        //Inicializar la lista con la BD
+        this.cargarAmigos();
 
         BSelectImage = findViewById(R.id.buttonSeleccionarImagenNuevoPagoConjunto);
         IVPreviewImage = findViewById(R.id.imagePreviewNuevoPagoConjunto);
@@ -226,6 +233,62 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         });
 
     }
+
+    private void cargarAmigos() {
+        this.usuarios = new ArrayList<>();
+        this.usuariosUUIDs = new ArrayList<>();
+        DocumentReference amigosRef = db.collection("users/").
+                document(mAuth.getCurrentUser().getUid());
+        amigosRef.get().addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful()) {
+                    Log.i("User", task.getResult().toString());
+                    DocumentSnapshot result = (DocumentSnapshot) task.getResult();
+                    // result: Usuario -> Usuario.get("friends"): String[]
+                    ArrayList<DocumentReference> amigos = (ArrayList<DocumentReference>) result.getData().get("friends");
+                    if (amigos != null) {
+                        for (DocumentReference amigo : amigos) {
+                            String id = amigo.getId();
+                            Log.i("USERS3", id);
+                            DocumentReference amigoReference = db.collection("users/").document(id);
+                            // Guardamos la referencia al amigo
+                            usuariosUUIDs.add(id);
+                            amigoReference.get().addOnCompleteListener(getAmigoListener);
+                        }
+                    } else {
+                        throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosAmigos));
+                    }
+
+                } else {
+                    // TODO: handle error?
+
+                }
+            }
+        });
+    }
+
+
+    private OnCompleteListener<DocumentSnapshot> getAmigoListener = new OnCompleteListener<DocumentSnapshot>() {
+
+        @Override
+        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            if (task.isSuccessful()) {
+                DocumentSnapshot queryResult = task.getResult();
+                // Guardamos el usuario para la UI y parcelable
+                usuarios.add(new UsuarioParaParcelable((String) queryResult.get("name"),
+                        (String) queryResult.get("email"), (String) queryResult.get("profilePicture")));
+                // Ahora, para actualizar la lista,
+                // necesitamos volver a crear el adapter y asignarselo a la list view
+                // POR CADA USUARIO AÑADIDO, tal vez haya una manera de optimizar este código...
+                usuarioArrayAdapter = new UsuarioArrayAdapter(getApplicationContext(),
+                        android.R.layout.simple_list_item_multiple_choice, usuarios);
+                listViewUsuarios.setAdapter(usuarioArrayAdapter);
+                usuarioArrayAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+
 
     private void imageChooser() {
 
