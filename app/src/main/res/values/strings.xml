@@ -69,4 +69,5 @@
     <string name="confirm_remove_friend">Eliminar</string>
     <string name="cancel">Cancelar</string>
     <string name="no_groups_msg">No perteneces a ningún grupo, pulsa \'Nuevo grupo\' para crear tu primer grupo</string>
+    <string name="moneyguardian">MoneyGuardian</string>
 </resources>

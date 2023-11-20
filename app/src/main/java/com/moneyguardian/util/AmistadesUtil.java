@@ -44,6 +44,11 @@ public class AmistadesUtil {
                                     eliminarDeListaSolicitudes(usuario);
                                 }
                             });
+                        //we remove current user from friend requests if exists
+                        db.collection("users")
+                                .document(usuario.getId())
+                                .update("friendRequests", FieldValue.arrayRemove(
+                                        db.collection("users").document(auth.getUid())));
                     }
                 });
     }

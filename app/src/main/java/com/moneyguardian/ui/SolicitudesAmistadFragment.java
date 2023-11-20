@@ -49,6 +49,7 @@ public class SolicitudesAmistadFragment extends Fragment {
     private ImageButton btnReloadRequests;
     private ListaSolicitudAmistadAdapter solicitudesAdapter;
     private ArrayList<Usuario> listFriends;
+    private ArrayList<Usuario> listRequests = new ArrayList<>();
 
     public SolicitudesAmistadFragment() {
         // Required empty public constructor
@@ -141,8 +142,11 @@ public class SolicitudesAmistadFragment extends Fragment {
                                 //we load all the users
                                 for(DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()){
                                     Usuario u = UsuarioMapper.mapBasics(doc);
+                                    //we can not add ourselves nor people that are already are friends with
+                                    //we also delete the ones that already sent us a request
                                     if(!u.getId().equals(auth.getUid())
-                                        && !listFriends.contains(u)) //we can not add ourselves nor someone that is already a friend
+                                            && !listFriends.contains(u)
+                                            && !listRequests.contains(u))
                                         enviarAdapter.addUsuario(u);
                                 }
                             }
@@ -169,8 +173,11 @@ public class SolicitudesAmistadFragment extends Fragment {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for(DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()){
                             Usuario u = UsuarioMapper.mapBasics(doc);
+                            //we can not add ourselves nor people that are already are friends with
+                            //we also delete the ones that already sent us a request
                             if(!u.getId().equals(auth.getUid())
-                                    && !listFriends.contains(u)) //we can not add ourselves nor people that are already friends
+                                    && !listFriends.contains(u)
+                                    && !listRequests.contains(u))
                                 enviarAdapter.addUsuario(u);
                         }
                     }
@@ -203,8 +210,9 @@ public class SolicitudesAmistadFragment extends Fragment {
     }
 
     private void cargarSolicitudesAmistad() {
-        //cargamos solicitudes de amistad
-        List<Usuario> solicitantes = new ArrayList<>();
+        listRequests.clear();
+        //actualizamos el adaptes para eliminar todas los posibles elementos que tuviera
+        solicitudesAdapter.clear();
         db.collection("users").document(auth.getUid())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -226,6 +234,7 @@ public class SolicitudesAmistadFragment extends Fragment {
                                             //convertimos este usuario en un Usuario y lo añadimos a la lista
                                             Usuario u = UsuarioMapper.mapBasics(task.getResult());
                                             solicitudesAdapter.addSolicitante(u);
+                                            listRequests.add(u);
                                         }
                                     }
                                 }

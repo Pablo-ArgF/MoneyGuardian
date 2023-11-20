@@ -32,6 +32,11 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
         notifyItemInserted(listaSolicitudes.size() -1);
     }
 
+    public void clear() {
+        notifyItemRangeRemoved(0,listaSolicitudes.size());
+        listaSolicitudes.clear();
+    }
+
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
         void onAceptarUsuario(Usuario item);
