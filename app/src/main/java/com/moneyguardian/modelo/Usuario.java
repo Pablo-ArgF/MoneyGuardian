@@ -15,11 +15,12 @@ public class Usuario implements Parcelable {
     private List<UsuarioParaParcelable> amigos;
     private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
     private String uriImg;
+    private String id;
 
 
 
 
-    public Usuario(String nombre, String correo, List<UsuarioParaParcelable> amigos, List<PagoConjunto> misPagosConjuntos) {
+    public Usuario(String id, String nombre, String correo,String imgUri, List<UsuarioParaParcelable> amigos, List<PagoConjunto> misPagosConjuntos) {
         this.nombre = nombre;
         this.correo = correo;
         this.amigos = amigos;
@@ -116,8 +117,7 @@ public class Usuario implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return nombre.equals(usuario.nombre) && correo.equals(usuario.correo)
-                && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
+        return id.equals(usuario.getId());
     }
 
     @Override
