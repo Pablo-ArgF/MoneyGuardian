@@ -148,8 +148,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validarPagoConjunto()) {
-                    Log.i("Estado Pago Conjunto", "Validado");
-
                     List<UsuarioParaParcelable> participantes = new ArrayList<UsuarioParaParcelable>();
                     // Rellenamos la lista de usuarios
                     for (int i = 0; i < usuarios.size(); i++) {
@@ -246,14 +244,12 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task task) {
                 if (task.isSuccessful()) {
-                    Log.i("User", task.getResult().toString());
                     DocumentSnapshot result = (DocumentSnapshot) task.getResult();
                     // result: Usuario -> Usuario.get("friends"): String[]
                     ArrayList<DocumentReference> amigos = (ArrayList<DocumentReference>) result.getData().get("friends");
                     if (amigos != null) {
                         for (DocumentReference amigo : amigos) {
                             String id = amigo.getId();
-                            Log.i("USERS3", id);
                             DocumentReference amigoReference = db.collection("users/").document(id);
                             // Guardamos la referencia al amigo como un DocumentReference
                             usuariosUUIDs.add(amigoReference);
@@ -306,7 +302,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         // Esto no funciona
         // Log.i("Checkbox", String.valueOf(listViewUsuarios.getCheckedItemPositions().get(0)));
         // Esto si
-        Log.i("Checkbox 2", String.valueOf(usuarioArrayAdapter.isChecked(0)));
+        //Log.i("Checkbox 2", String.valueOf(usuarioArrayAdapter.isChecked(0)));
 
         // Validar datos
 
