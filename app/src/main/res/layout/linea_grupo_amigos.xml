@@ -9,7 +9,7 @@
     >
 
     <ImageView
-        android:id="@+id/imgAmigoEnBalance"
+        android:id="@+id/imgUsuarioSolicitud"
         android:layout_width="48dp"
         android:layout_height="72dp"
         android:contentDescription="@string/app_name"
@@ -29,7 +29,8 @@
             android:text="@string/nombreGrupo"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:ellipsize="end"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:layout_marginLeft="10dp"/>
 
         <!--Evitamos que sea más largo que la pantalla con los 2 ultimos items-->
         <TextView
@@ -40,6 +41,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:ellipsize="end"
             android:maxLines="1"
+            android:layout_marginLeft="10dp"
             />
 
     </LinearLayout>

@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.view.View;
 
+import com.moneyguardian.adapters.UsersFormItemsListaAdapter;
 import com.moneyguardian.modelo.Usuario;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.moneyguardian;
+package com.moneyguardian.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.R;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 

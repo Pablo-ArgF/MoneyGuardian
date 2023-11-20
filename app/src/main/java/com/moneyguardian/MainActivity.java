@@ -1,21 +1,26 @@
 package com.moneyguardian;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.ui.ListaAmigosFragment;
+import com.moneyguardian.ui.MainFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 import com.moneyguardian.userAuth.LoginActivity;
 
@@ -23,52 +28,81 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CircleImageView profileBtn;
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
+
+    private MainFragment fragmentMain;
+    private PagosConjuntosFragment fragmentPagosConjuntos;
+    private ListaAmigosFragment amigosFragment;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        fragmentMain = new MainFragment();
+        fragmentPagosConjuntos = new PagosConjuntosFragment();
+        amigosFragment = new ListaAmigosFragment();
 
-        FirebaseUser user = auth.getCurrentUser();
-        //TODO revisar porque al borrar la cuenta a veces hace login
-        if(user == null){
-            //if no user -> send to login page
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
+        //we load main fragment
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+               fragmentMain).commit();
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottonnav);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                item -> {
+                    int id = item.getItemId();
+                    if(id == R.id.home_menu_btn) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                                fragmentMain).commit();
+                        return true;
+                    }
+                    if(id == R.id.lista_menu_btn){
+                        //TODO implement lista view
+                        return false;
+                    }
+                    if(id == R.id.amigos_menu_btn){
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                                amigosFragment).commit();
+                        return true;
+                    }
+                    if(id == R.id.pagos_conjuntos_menu_btn){
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                                fragmentPagosConjuntos).commit();
+                        return true;
+                    }
+                    return false;
+                }
+        );
+    }
+
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.home_menu_btn) {
+            startActivity(new Intent(this, MainActivity.class));
+            return true;
+        }
+        if(id == R.id.lista_menu_btn){
+            //TODO implement lista view
+            return false;
+        }
+        if(id == R.id.amigos_menu_btn){
+            startActivity(new Intent(this, SocialActivity.class));
+            return true;
+        }
+        if(id == R.id.pagos_conjuntos_menu_btn){
+            startActivity(new Intent(this,SocialActivity.class));
+            return true;
         }
 
-        profileBtn = findViewById(R.id.profileButton);
-
-        //we load the image of the user into the profile btn
-        //we get the uri from database user info 'profilePicture'
-        db.collection("users")
-                        .document(auth.getUid())
-                                .get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                if(documentSnapshot.exists()){
-                                    Uri profileUri =Uri.parse(documentSnapshot.get("profilePicture",String.class));
-                                    Glide.with(getApplicationContext())
-                                            .load(profileUri)
-                                            .into(profileBtn);
-                                }
-                            }
-                        });
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(i);
-            }
-        });
-
-
-    }
+        return super.onOptionsItemSelected(item);
+    }*/
 }
