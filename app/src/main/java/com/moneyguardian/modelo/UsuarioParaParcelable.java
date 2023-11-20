@@ -9,22 +9,38 @@ public class UsuarioParaParcelable implements Parcelable {
 
     private String nombre;
     private String email;
+    private String imageURI;
 
     public UsuarioParaParcelable(String nombre, String email) {
         this.nombre = nombre;
         this.email = email;
     }
 
+    public UsuarioParaParcelable(String nombre, String email, String imageURI) {
+        this(nombre, email);
+        this.imageURI = imageURI;
+    }
+
 
     protected UsuarioParaParcelable(Parcel in) {
         nombre = in.readString();
         email = in.readString();
+        imageURI = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeString(email);
+        dest.writeString(imageURI);
+    }
+
+    public String getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 
     @Override

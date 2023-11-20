@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -49,13 +50,12 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
         if (currentUser != null) {
             TextView nombre = currentItemView.findViewById(R.id.nombreUsuario);
             TextView correo = currentItemView.findViewById(R.id.correoUsuario);
-            ImageView imag = currentItemView.findViewById(R.id.imagenUsuario);
+            ImageView image = currentItemView.findViewById(R.id.imagenUsuario);
             nombre.setText(currentUser.getNombre());
             correo.setText(currentUser.getEmail());
-            // TODO Picasso.with(context)
-            //.load(subjectData.Image)
-            //.into(imag);
-            // TODO numbersImage.setImageResource(currentUser.getImage());
+            if (currentUser.getImageURI() != null) {
+                Picasso.get().load(currentUser.getImageURI()).into(image);
+            }
 
             CheckBox cBox = (CheckBox) currentItemView.findViewById(R.id.checkBoxUsuarios);
             cBox.setTag(Integer.valueOf(position)); // set the tag so we can identify the correct row in the listener

@@ -130,7 +130,6 @@ public class PagosConjuntosFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
 
         CollectionReference pagosRef = db.collection("pagosConjuntos");
-        Log.i("User", auth.getCurrentUser().getUid());
         ArrayList<PagoConjunto> pagos = new ArrayList<>();
         pagosRef.
                 whereArrayContains("pagador", auth.getCurrentUser().getUid()).
@@ -146,15 +145,13 @@ public class PagosConjuntosFragment extends Fragment {
                                 }
                                 Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
                                 Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
-                                pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
-                                /**
-                                 * TODO
-                                 List<UsuarioParaParcelable> participantes;
-                                 List<ItemPagoConjunto> items;
-                                 **/
-                                Log.i("Firebase GET", document.getData().toString());
-                            }
 
+                                // TODO separar
+                                if(nombre == null || fechaLimite == null || fechaPago == null){
+                                    throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
+                                }
+                                pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
+                            }
                             pagosConjuntosListaAdapter.updateList(pagos);
 
                         } else {
