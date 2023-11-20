@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.moneyguardian.adapters.ListaBalanceItemAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 
 import java.util.HashMap;
 
@@ -23,13 +24,13 @@ public class ItemPagosFragment extends Fragment {
     private static final String USERS_AND_PAYMENTS = "balance";
 
     private String nombreItem;
-    private HashMap<Usuario,Integer> mapBalance = new HashMap<>();
+    private HashMap<UsuarioParaParcelable,Integer> mapBalance = new HashMap<>();
 
     private TextView tvNombreItem;
     private RecyclerView rvBalance;
 
     public static ItemPagosFragment newInstance(String param1,
-                                                HashMap<Usuario,Integer> param3) {
+                                                HashMap<UsuarioParaParcelable,Integer> param3) {
         ItemPagosFragment fragment = new ItemPagosFragment();
         Bundle args = new Bundle();
         args.putString(NAME, param1);
@@ -44,7 +45,7 @@ public class ItemPagosFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             nombreItem = getArguments().getString(NAME);
-            mapBalance = (HashMap<Usuario, Integer>) getArguments().get(USERS_AND_PAYMENTS);
+            mapBalance = (HashMap<UsuarioParaParcelable, Integer>) getArguments().get(USERS_AND_PAYMENTS);
         }
     }
 

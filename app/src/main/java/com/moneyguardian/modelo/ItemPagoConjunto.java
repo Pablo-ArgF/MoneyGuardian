@@ -12,14 +12,23 @@ import java.util.Map;
 public class ItemPagoConjunto implements Parcelable {
     private String nombre;
     // Consider adding a field for 'Foto' or 'Icono' if needed
-    private HashMap<Usuario, Integer> pagos;
+    private HashMap<UsuarioParaParcelable, Integer> pagos;
 
-    // Constructor, getters, and setters...
-
-    public ItemPagoConjunto(String nombre, HashMap<Usuario, Integer> pagos) {
+    public ItemPagoConjunto(String nombre, HashMap<UsuarioParaParcelable, Integer> pagos) {
         this.nombre = nombre;
         this.pagos = pagos;
-        // Initialize the Map if you want to track payments by users
+    }
+
+
+    protected ItemPagoConjunto(Parcel in) {
+        nombre = in.readString();
+        pagos = in.readHashMap(HashMap.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nombre);
+        dest.writeMap(pagos);
     }
 
     @Override
@@ -27,17 +36,7 @@ public class ItemPagoConjunto implements Parcelable {
         return 0;
     }
 
-    // Parcelable implementation
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(nombre);
-        // Write 'Foto' or 'Icono' if they are Parcelable or some other type
-        // Example: dest.writeParcelable(foto, flags);
-        // Write the 'pagos' Map
-        dest.writeMap(pagos);
-    }
-
-    public static final Parcelable.Creator<ItemPagoConjunto> CREATOR = new Parcelable.Creator<ItemPagoConjunto>() {
+    public static final Creator<ItemPagoConjunto> CREATOR = new Creator<ItemPagoConjunto>() {
         @Override
         public ItemPagoConjunto createFromParcel(Parcel in) {
             return new ItemPagoConjunto(in);
@@ -49,14 +48,6 @@ public class ItemPagoConjunto implements Parcelable {
         }
     };
 
-    private ItemPagoConjunto(Parcel in) {
-        nombre = in.readString();
-        // Read 'Foto' or 'Icono' if they are Parcelable or some other type
-        // Example: foto = in.readParcelable(Foto.class.getClassLoader());
-        // Read the 'pagos' Map
-        pagos = in.readHashMap(HashMap.class.getClassLoader());
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -65,18 +56,18 @@ public class ItemPagoConjunto implements Parcelable {
         this.nombre = nombre;
     }
 
-    public HashMap<Usuario, Integer> getPagos() {
+    public HashMap<UsuarioParaParcelable, Integer> getPagos() {
         return pagos;
     }
 
-    public void setPagos(HashMap<Usuario, Integer> pagos) {
+    public void setPagos(HashMap<UsuarioParaParcelable, Integer> pagos) {
         this.pagos = pagos;
     }
 
     public int getMoney(){
         int total = 0;
 
-        for(Usuario u : pagos.keySet()){
+        for(UsuarioParaParcelable u : pagos.keySet()){
             total += abs(pagos.getOrDefault(u,0));
         }
 

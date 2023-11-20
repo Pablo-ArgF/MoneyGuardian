@@ -91,6 +91,6 @@ public class SocialActivity extends AppCompatActivity {
             throw new IllegalStateException("Unexpected value: " + item.getItemId());
         }
 
-
+        ;
     };
 }

@@ -14,8 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneyguardian.adapters.ItemListaAdapter;
+import com.moneyguardian.FormItemsListaPago;
+import com.moneyguardian.FormularioPagoConjuntoActivity;
+import com.moneyguardian.ItemListaAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
+import com.moneyguardian.modelo.PagoConjunto;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +30,24 @@ public class ListaPagosFragment extends Fragment {
     private static final String LISTA_PAGOS = "ListaPagos";
     private static final String NAME_PAGO = "Nombre";
     private static final String IMAGEN = "Imagen";
+    private static final String PAGO_CONJUNTO = "Pago Conjunto";
     private String imagen;
     private String namePago;
     private List<ItemPagoConjunto> listaPagos;
+    private Button btnAddNewItem;
+
+    private PagoConjunto pagoConjunto;
+
+    public static final int GESTION_ACTIVITY = 2;
 
     RecyclerView listItemsPagosView;
 
-    public static ListaPagosFragment newInstance(List<ItemPagoConjunto> param1, String param2) {
+    public static ListaPagosFragment newInstance(PagoConjunto param1) {
         ListaPagosFragment fragment = new ListaPagosFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(LISTA_PAGOS, new ArrayList<>(param1));
-        args.putString(NAME_PAGO, param2);
+        args.putParcelable(PAGO_CONJUNTO, param1);
+        args.putParcelableArrayList(LISTA_PAGOS, new ArrayList<>(param1.getItems()));
+        args.putString(NAME_PAGO, param1.getNombre());
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,6 +56,7 @@ public class ListaPagosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            pagoConjunto = getArguments().getParcelable(PAGO_CONJUNTO);
             listaPagos = getArguments().getParcelableArrayList(LISTA_PAGOS);
             namePago = getArguments().getString(NAME_PAGO);
             imagen = getArguments().getString(IMAGEN);
@@ -59,6 +72,17 @@ public class ListaPagosFragment extends Fragment {
         TextView tvName = root.findViewById(R.id.namePagos);
         tvName.setText(namePago);
         ImageView ivImagen = root.findViewById(R.id.iconPago);
+        btnAddNewItem = root.findViewById(R.id.btnNewItemPago);
+
+        btnAddNewItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
+                intent.putExtra("USERS_OF_PAYMENT",new ArrayList<>(pagoConjunto.getParticipantes()));
+                startActivityForResult(intent, GESTION_ACTIVITY);
+            }
+        });
+
 
         return root;
     }
@@ -83,10 +107,12 @@ public class ListaPagosFragment extends Fragment {
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {
-        ItemPagosFragment itemPagosFragment = ItemPagosFragment.newInstance
+
+        ItemPagosFragment argumentoFragment = ItemPagosFragment.newInstance
                 (itemPago.getNombre(), itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragmentContainerMain, itemPagosFragment).addToBackStack(null).commit();
+                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).addToBackStack(null).commit();
+
     }
 }

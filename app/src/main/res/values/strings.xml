@@ -10,12 +10,34 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="titulo_lista_de_amigos">Lista de amigos</string>
+    <string name="nuevo_amigo">Nuevo amigo</string>
     <string name="nuevo_grupo_amigos">Nuevo grupo</string>
     <string name="titulo_grupos_de_amigos">Grupos de amigos</string>
     <string name="amigo">amigo</string>
     <string name="nombreGrupo">nombre del grupo</string>
     <string name="participantesGrupo">user1, user2, user 3, user 4, user 5, user 6, user 7, user 8, user 9, user 10</string>
     <string name="NuevoItemPago">Crear nuevo item</string>
+    <string name="NuevoItemPago">Crear Nuevo</string>
+    <string name="NuevoPagoConjunto">Nuevo Pago Conjunto</string>
+    <string name="nombre">Nombre</string>
+    <string name="NombrePagoConjunto">Nombre pago conjunto</string>
+    <string name="IconoPagoConjunto">Icono del pago conjunto</string>
+    <string name="Opcional">(Opcional)</string>
+    <string name="Seleccionarr">Seleccionar</string>
+    <string name="UsuariosNuevoPagoConjunto">Participantes</string>
+    <string name="Añadir">Añadir\n</string>
+    <string name="Crear">Crear</string>
+    <string name="ErrorNombreVacio">El nombre no puede estar vacío</string>
+    <string name="PagoConjuntoCreado">El pago se ha creado</string>
+    <string name="FechaLimite">Fecha límite para pagar</string>
+    <string name="AñadirFecha">Añadir Fecha</string>
+    <string name="ErrorFechaVacia">Se debe elegir una fecha límite</string>
+    <string name="formListaPagosName">Nombre del Item de Pago</string>
+    <string name="acceptBtn">Aceptar</string>
+    <string name="formListaPagosCantidadTotal">Cantidad Total: </string>
+    <string name="formListaPagosHintCantidadTotal">Total</string>
+    <string name="TVPagador">Escoja la Persona que Paga:</string>
+    <string name="changeMoneyPerPerson">Editar Cantidad por Persona</string>
     <string name="registrarse">Registrarse</string>
     <string name="correo">Correo</string>
     <string name="contrase_a">Contraseña</string>
@@ -70,4 +92,7 @@
     <string name="cancel">Cancelar</string>
     <string name="no_groups_msg">No perteneces a ningún grupo, pulsa \'Nuevo grupo\' para crear tu primer grupo</string>
     <string name="moneyguardian">MoneyGuardian</string>
+    <string name="error_upload_pago_image">Se ha producido un error al intentar subir la imagen.</string>
+    <string name="ErrorBaseDatosPago">Se ha producido un error intentando obtener el Pago</string>
+    <string name="ErrorBaseDatosAmigos">Se ha producido un error intentando obtener los amigos del usuario.</string>
 </resources>
