@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class SolicitudesAmistadFragment extends Fragment {
     private LinearLayout noRequestView;
     private ImageButton btnReloadRequests;
     private ListaSolicitudAmistadAdapter solicitudesAdapter;
+    private ArrayList<Usuario> listFriends;
 
     public SolicitudesAmistadFragment() {
         // Required empty public constructor
@@ -69,6 +71,10 @@ public class SolicitudesAmistadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        
+        //we get the list of friends from bundle
+        this.listFriends = getArguments().getParcelableArrayList("friends");
+        
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_solicitudes_amistad, container, false);
         recyclerSolicitudes = root.findViewById(R.id.recyclerListaPeticiones);
@@ -135,7 +141,8 @@ public class SolicitudesAmistadFragment extends Fragment {
                                 //we load all the users
                                 for(DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()){
                                     Usuario u = UsuarioMapper.mapBasics(doc);
-                                    if(!u.getId().equals(auth.getUid())) //we can not add ourselves
+                                    if(!u.getId().equals(auth.getUid())
+                                        && !listFriends.contains(u)) //we can not add ourselves nor someone that is already a friend
                                         enviarAdapter.addUsuario(u);
                                 }
                             }
@@ -162,7 +169,8 @@ public class SolicitudesAmistadFragment extends Fragment {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for(DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()){
                             Usuario u = UsuarioMapper.mapBasics(doc);
-                            if(!u.getId().equals(auth.getUid())) //we can not add ourselves
+                            if(!u.getId().equals(auth.getUid())
+                                    && !listFriends.contains(u)) //we can not add ourselves nor people that are already friends
                                 enviarAdapter.addUsuario(u);
                         }
                     }

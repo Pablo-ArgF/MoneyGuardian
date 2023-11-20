@@ -272,8 +272,13 @@ public class ListaAmigosFragment extends Fragment {
         btnGestionAmigos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SolicitudesAmistadFragment fragmentFriendManagement = new SolicitudesAmistadFragment();
+                //we pass as arguments the list of friends
+                Bundle args = new Bundle();
+                args.putParcelableArrayList("friends",  new ArrayList<>(listaAmigos));
+                fragmentFriendManagement.setArguments(args);
                 getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
-                        new SolicitudesAmistadFragment()).addToBackStack(null).commit();
+                        fragmentFriendManagement).addToBackStack(null).commit();
             }
         });
 
