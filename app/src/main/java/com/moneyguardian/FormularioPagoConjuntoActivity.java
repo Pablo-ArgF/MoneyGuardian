@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -73,7 +74,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private ListView listViewUsuarios;
     private ArrayList<UsuarioParaParcelable> usuarios;
-    private ArrayList<String> usuariosUUIDs;
+    private ArrayList<DocumentReference> usuariosUUIDs;
     private UsuarioArrayAdapter usuarioArrayAdapter;
 
     // Valores del pago conjunto
@@ -205,7 +206,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     pagoConjuntoDoc.put("imagen", pagoConjunto.getImagen());
                     pagoConjuntoDoc.put("fechaLimite", pagoConjunto.getFechaLimite());
                     pagoConjuntoDoc.put("fechaPago", pagoConjunto.getFechaPago());
-                    Map<String, Object> nestedParticipantes = new HashMap<>();
+                    // Guardamos los participantes como una lista de referencias
+                    ArrayList<DocumentReference> nestedParticipantes = new ArrayList<DocumentReference>();
+                    nestedParticipantes.addAll(usuariosUUIDs);
                     pagoConjuntoDoc.put("participantes", nestedParticipantes);
                     // OJO: el usuario pagador debe ir dentro de un Map para poder realizar la query en Firestore
                     List<String> userId = new ArrayList<String>();
@@ -252,8 +255,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                             String id = amigo.getId();
                             Log.i("USERS3", id);
                             DocumentReference amigoReference = db.collection("users/").document(id);
-                            // Guardamos la referencia al amigo
-                            usuariosUUIDs.add(id);
+                            // Guardamos la referencia al amigo como un DocumentReference
+                            usuariosUUIDs.add(amigoReference);
                             amigoReference.get().addOnCompleteListener(getAmigoListener);
                         }
                     } else {

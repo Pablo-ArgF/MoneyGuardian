@@ -67,4 +67,6 @@
     <string name="error_update_profilePicture">Error al actualizar la imagen de perfil, intentelo de nuevo</string>
     <string name="default_profilePicture"><![CDATA[https://firebasestorage.googleapis.com/v0/b/moneguardian-app.appspot.com/o/users%2Fdefault.jpg?alt=media&token=17124997-ff7c-4894-a86b-f04e190b4614]]></string>
     <string name="error_upload_pago_image">Se ha producido un error al intentar subir la imagen.</string>
+    <string name="ErrorBaseDatosPago">Se ha producido un error intentando obtener el Pago</string>
+    <string name="ErrorBaseDatosAmigos">Se ha producido un error intentando obtener los amigos del usuario.</string>
 </resources>
