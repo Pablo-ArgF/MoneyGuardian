@@ -35,14 +35,12 @@ import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.DecimalFilterForInput;
-import com.moneyguardian.UsersFormItemsListaAdapter;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class FormItemsListaPago extends AppCompatActivity {
 
