@@ -76,8 +76,6 @@ public class ItemPagoConjunto implements Parcelable {
     }
 
     public String getUser() {
-
         return "Usuario que pago";
-
     }
 }
