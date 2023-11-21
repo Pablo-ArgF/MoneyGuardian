@@ -1,5 +1,8 @@
 package com.moneyguardian.ui;
 
+
+
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -149,6 +153,9 @@ public class SolicitudesAmistadFragment extends Fragment {
                                             && !listRequests.contains(u))
                                         enviarAdapter.addUsuario(u);
                                 }
+                                //we hide the keyboard
+                                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(searchbar.getWindowToken(), 0);
                             }
                         });
                 //we clear the recycler
