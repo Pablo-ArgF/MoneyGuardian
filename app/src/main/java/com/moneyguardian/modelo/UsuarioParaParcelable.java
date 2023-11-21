@@ -8,6 +8,25 @@ public class UsuarioParaParcelable implements Parcelable {
     private String nombre;
     private String email;
     private String imageURI;
+    private String id;
+
+    public UsuarioParaParcelable() {
+    }
+
+    public UsuarioParaParcelable(String nombre, String email, String imageURI, String id) {
+        this.nombre = nombre;
+        this.email = email;
+        this.imageURI = imageURI;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public UsuarioParaParcelable(String nombre, String email) {
         this.nombre = nombre;

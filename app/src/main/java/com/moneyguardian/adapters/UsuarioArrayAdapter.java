@@ -1,4 +1,4 @@
-package com.moneyguardian.adapter;
+package com.moneyguardian.adapters;
 
 import android.content.Context;
 import android.util.Log;

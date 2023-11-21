@@ -22,14 +22,20 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.DecimalFilterForInput;
+import com.moneyguardian.UsersFormItemsListaAdapter;
+import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,12 +87,29 @@ public class FormItemsListaPago extends AppCompatActivity {
         usersToAdd.setLayoutManager(layoutManager);
 
         pagoConjunto = getIntent().getExtras().getParcelable("PAGO");
-        //TODO:Usuarios de la base de datos
-        //usuariosDelPago = pagoConjunto.getParticipantes();
-        usuariosDelPago = new ArrayList<>();
-        usuariosDelPago.add(new UsuarioParaParcelable("Pepe", "pepe@gmail.com"));
-        usuariosDelPago.add(new UsuarioParaParcelable("Pepa", "pepa@gmail.com"));
-        usuariosDelPago.add(new UsuarioParaParcelable("Pipi", "pipi@gmail.com"));
+
+        db.collection("pagosConjuntos")
+                .document(pagoConjunto.getId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            List< DocumentReference> users = (List< DocumentReference >) task.getResult().get("participantes");
+                            users.forEach(user ->
+                            {
+                                user.get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot d) {
+                                                usuariosDelPago.add(UsuarioMapper.mapBasicsParcelable(d));
+                                            }
+                                        });
+                            });
+                        }
+                    }
+                });
 
         UsersFormItemsListaAdapter usersFormItemsListaAdapter =
                 new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,checkBoxesActivated
