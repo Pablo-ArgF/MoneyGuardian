@@ -1,31 +1,72 @@
 package com.moneyguardian.modelo;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class PagoConjunto implements Parcelable {
     private String nombre;
     private Date fechaPago;
-    // Consider adding a field for 'Foto' or 'Icono' if needed
-    private List<Usuario> participantes;
+    private Date fechaLimite;
+    private Uri imagen = null;
+    private List<UsuarioParaParcelable> participantes;
     private List<ItemPagoConjunto> items;
 
-    public PagoConjunto(String nombre, Date fechaPago, List<Usuario> participantes, List<ItemPagoConjunto> items) {
+    public PagoConjunto(String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes, List<ItemPagoConjunto> items) {
         this.nombre = nombre;
         this.fechaPago = fechaPago;
         this.participantes = participantes;
         this.items = items;
     }
 
+    public PagoConjunto(String nombre, Date fecha, List<UsuarioParaParcelable> participantes, Uri imagen, Date fechaLimite) {
+        this(nombre, fecha, participantes, fechaLimite);
+        this.imagen = imagen;
+    }
+
+    public PagoConjunto(String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes) {
+        this(nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+    }
+
+    public PagoConjunto(String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes, Date fechaLimite) {
+        this(nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+        this.fechaLimite = fechaLimite;
+    }
+
 
     protected PagoConjunto(Parcel in) {
         nombre = in.readString();
-        participantes = in.createTypedArrayList(Usuario.CREATOR);
+        imagen = in.readParcelable(Uri.class.getClassLoader());
+        fechaLimite = (Date) in.readSerializable(); // OJO, no se puede poner esta linea
+        fechaPago = (Date) in.readSerializable(); // ni esta antes de leer las listas
+        // No se por qué, pero si se leen antes las listas que las fechas
+        // al parsear la lista de items una de ellas va a generarse con un tamaño enorme
+        // y dará error de heap y un nullpointer (por el metodo de calcular pago), porque la inicializa
+        // con tamaño > 0 aunque esté vacía
+        participantes = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
+        items = in.createTypedArrayList(ItemPagoConjunto.CREATOR);
+
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nombre);
+        dest.writeParcelable(imagen, flags);
+        dest.writeSerializable(fechaLimite);
+        dest.writeSerializable(fechaPago);
+        dest.writeTypedList(participantes);
+        dest.writeTypedList(items);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<PagoConjunto> CREATOR = new Creator<PagoConjunto>() {
@@ -39,21 +80,6 @@ public class PagoConjunto implements Parcelable {
             return new PagoConjunto[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(nombre);
-        dest.writeSerializable(fechaPago); // Write Date as serializable
-        dest.writeTypedList(participantes);
-        dest.writeTypedList(items);
-        // Write 'Foto' or 'Icono' if they are Parcelable or some other type
-        // Example: dest.writeParcelable(foto, flags);
-    }
 
     public String getNombre() {
         return nombre;
@@ -71,11 +97,19 @@ public class PagoConjunto implements Parcelable {
         this.fechaPago = fechaPago;
     }
 
-    public List<Usuario> getParticipantes() {
+    public List<UsuarioParaParcelable> getParticipantes() {
         return participantes;
     }
 
-    public void setParticipantes(List<Usuario> participantes) {
+    public Uri getImagen() {
+        return this.imagen;
+    }
+
+    public void setImagen(Uri imagen) {
+        this.imagen = imagen;
+    }
+
+    public void setParticipantes(List<UsuarioParaParcelable> participantes) {
         this.participantes = participantes;
     }
 
@@ -86,4 +120,13 @@ public class PagoConjunto implements Parcelable {
     public void setItems(List<ItemPagoConjunto> items) {
         this.items = items;
     }
+
+    public void setFechaLimite(Date fechaLimite) {
+        this.fechaLimite = fechaLimite;
+    }
+
+    public Date getFechaLimite() {
+        return this.fechaLimite;
+    }
+
 }
