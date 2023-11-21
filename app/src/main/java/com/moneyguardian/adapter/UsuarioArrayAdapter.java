@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.moneyguardian.R;
-import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.squareup.picasso.Picasso;
 
@@ -41,7 +40,7 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
 
         // Inflamos el layout si la vista es null
         if (currentItemView == null) {
-            currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.usuario_list_view, parent, false);
+            currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.linea_usuario_list_view, parent, false);
         }
 
         // Posición de la vista desde el array adapter
