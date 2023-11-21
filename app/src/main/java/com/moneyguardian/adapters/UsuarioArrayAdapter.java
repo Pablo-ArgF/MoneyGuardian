@@ -21,6 +21,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
 
     private boolean[] checked;
@@ -50,7 +52,7 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
         if (currentUser != null) {
             TextView nombre = currentItemView.findViewById(R.id.nombreUsuario);
             TextView correo = currentItemView.findViewById(R.id.correoUsuario);
-            ImageView image = currentItemView.findViewById(R.id.imagenUsuario);
+            CircleImageView image = currentItemView.findViewById(R.id.imagenUsuario);
             nombre.setText(currentUser.getNombre());
             correo.setText(currentUser.getEmail());
             if (currentUser.getImageURI() != null) {

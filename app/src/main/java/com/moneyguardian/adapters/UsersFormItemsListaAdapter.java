@@ -59,6 +59,11 @@ public class UsersFormItemsListaAdapter extends
         return new UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder(itemView);
     }
 
+    public void addUser(UsuarioParaParcelable user){
+        usuariosDelPago.add(user);
+        notifyItemInserted(usuariosDelPago.size()-1);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder holder,
                                  int position) {

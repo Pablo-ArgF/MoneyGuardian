@@ -3,6 +3,7 @@ package com.moneyguardian.ui;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -32,8 +35,10 @@ import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
+import com.moneyguardian.util.UsuarioMapper;
 import com.squareup.picasso.Picasso;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +58,6 @@ public class ListaPagosFragment extends Fragment {
     private PagoConjunto pagoConjunto;
 
     public static final int GESTION_ACTIVITY = 2;
-    private FirebaseAuth auth;
     private FirebaseFirestore db;
 
     RecyclerView listItemsPagosView;
@@ -65,6 +69,7 @@ public class ListaPagosFragment extends Fragment {
         args.putParcelable(PAGO_CONJUNTO, param1);
         args.putParcelableArrayList(LISTA_PAGOS, new ArrayList<>(param1.getItems()));
         args.putString(NAME_PAGO, param1.getNombre());
+        args.putParcelable(IMAGEN, param1.getImagen());
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,6 +100,8 @@ public class ListaPagosFragment extends Fragment {
         TextView tvName = root.findViewById(R.id.namePagos);
         tvName.setText(namePago);
         ImageView ivImagen = root.findViewById(R.id.iconPago);
+        if(imagen != null)
+            Picasso.get().load(Uri.parse(imagen)).into(ivImagen);
         btnAddNewItem = root.findViewById(R.id.btnNewItemPago);
 
         btnAddNewItem.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +162,6 @@ public class ListaPagosFragment extends Fragment {
     }
 
     public void cargarDatos(){
-        auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         listaPagos = new ArrayList<>();
@@ -194,4 +200,5 @@ public class ListaPagosFragment extends Fragment {
                     }
                 });
     }
+
 }

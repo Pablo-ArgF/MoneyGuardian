@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
@@ -61,6 +62,7 @@ public class FormItemsListaPago extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private List< DocumentReference> participantes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,32 +90,11 @@ public class FormItemsListaPago extends AppCompatActivity {
 
         pagoConjunto = getIntent().getExtras().getParcelable("PAGO");
 
-        db.collection("pagosConjuntos")
-                .document(pagoConjunto.getId())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful())
-                        {
-                            List< DocumentReference> users = (List< DocumentReference >) task.getResult().get("participantes");
-                            users.forEach(user ->
-                            {
-                                user.get()
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot d) {
-                                                usuariosDelPago.add(UsuarioMapper.mapBasicsParcelable(d));
-                                            }
-                                        });
-                            });
-                        }
-                    }
-                });
+        usuariosDelPago = new ArrayList<>();
 
         UsersFormItemsListaAdapter usersFormItemsListaAdapter =
                 new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,checkBoxesActivated
-                                                        ,usuarioSeleccionado,changeMoneyActivated);
+                        ,usuarioSeleccionado,changeMoneyActivated);
 
         usersToAdd.setAdapter(usersFormItemsListaAdapter);
 
@@ -128,7 +109,7 @@ public class FormItemsListaPago extends AppCompatActivity {
 
                 UsersFormItemsListaAdapter usersFormItemsListaAdapter =
                         new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
-                                    checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
+                                checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
                 usersToAdd.setAdapter(usersFormItemsListaAdapter);
 
             }
@@ -138,6 +119,48 @@ public class FormItemsListaPago extends AppCompatActivity {
 
             }
         });
+
+        db.collection("pagosConjuntos")
+                .document(pagoConjunto.getId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            List< DocumentReference> users =
+                                    (List< DocumentReference >) task.getResult().get("participantes");
+
+                            participantes = users;
+
+                            users.forEach(user ->
+                            {
+                                user.get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot d) {
+                                            adapterSpinner.add(UsuarioMapper.mapBasicsParcelable(d));
+                                        }
+                                    });
+                            });
+
+                            List< String > pagador =
+                                    (List< String >) task.getResult().get("pagador");
+                            db.collection("users").document(pagador.get(0)).get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        adapterSpinner.add(UsuarioMapper.mapBasicsParcelable(task.getResult()));
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+
+
 
         totalMoney.addTextChangedListener(new TextWatcher() {
             @Override
@@ -286,43 +309,15 @@ public class FormItemsListaPago extends AppCompatActivity {
     }
 
     private void saveInDataBase(ItemPagoConjunto itemPago) {
-        Map<String, Object> pagoConjuntoDoc = new HashMap<>();
-        pagoConjuntoDoc.put("nombre", pagoConjunto.getNombre());
-        pagoConjuntoDoc.put("imagen", pagoConjunto.getImagen());
-        pagoConjuntoDoc.put("fechaLimite", pagoConjunto.getFechaLimite());
-        pagoConjuntoDoc.put("fechaPago", pagoConjunto.getFechaPago());
-        Map<String, Object> nestedParticipantes = new HashMap<>();
-        pagoConjuntoDoc.put("participantes", nestedParticipantes);
-        List<String> userId = new ArrayList<String>();
-        userId.add(mAuth.getCurrentUser().getUid());
-        pagoConjuntoDoc.put("pagador", userId);
-
-        List<Map<String, Object>> listaDeItemsPago = new ArrayList<>();
-        Map<String, Object> itemsPagoConj;
-        Map<String, Double> usersWithMoney;
-        for(ItemPagoConjunto item : pagoConjunto.getItems()){
-            usersWithMoney = new HashMap<>();
-            itemsPagoConj = new HashMap<>();
-            for(Map.Entry<UsuarioParaParcelable, Double> u : item.getPagos().entrySet()) {
-                usersWithMoney.put(u.getKey().getNombre(), u.getValue());
-            }
-            itemsPagoConj.put(item.getNombre(),usersWithMoney);
-            listaDeItemsPago.add(itemsPagoConj);
-        }
-
-        itemsPagoConj = new HashMap<>();
-        usersWithMoney = new HashMap<>();
+        Map<String, Object> itemsPagoConj = new HashMap<>();
+        Map<String, Double> usersWithMoney = new HashMap<>();
         for(Map.Entry<UsuarioParaParcelable, Double> u : itemPago.getPagos().entrySet()){
-            usersWithMoney.put(u.getKey().getNombre(),u.getValue());
+            usersWithMoney.put(u.getKey().getId(),u.getValue());
         }
         itemsPagoConj.put(itemPago.getNombre(),usersWithMoney);
-        listaDeItemsPago.add(itemsPagoConj);
-
-
-        pagoConjuntoDoc.put("itemsPago",listaDeItemsPago);
 
         db.collection("pagosConjuntos").document(pagoConjunto.getId())
-                .set(pagoConjuntoDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                .update("itemsPago", FieldValue.arrayUnion(itemsPagoConj)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.i("FIREBASE SET", "Se añadió el objeto");

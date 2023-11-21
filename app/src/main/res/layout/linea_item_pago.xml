@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     >
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgUsuarioSolicitud"
         android:layout_width="48dp"
         android:layout_height="72dp"
