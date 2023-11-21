@@ -161,6 +161,8 @@ public class ListaAmigosFragment extends Fragment {
                         List<DocumentReference> friendRefs =
                                 (List<DocumentReference>) documentSnapshot.get("friends");
 
+                        if(friendRefs == null)
+                            return;
 
                         //we load all the friends
                         for(int i = 0 ; i< friendRefs.size() ; i++) {

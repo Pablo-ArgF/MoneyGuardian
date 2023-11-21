@@ -227,6 +227,8 @@ public class SolicitudesAmistadFragment extends Fragment {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         //obtenemos las referencias de los usuarios que le piden solicitud
                         ArrayList<DocumentReference> refsSolicitantes = (ArrayList<DocumentReference>)  documentSnapshot.get("friendRequests");
+                        if(refsSolicitantes == null)
+                            return;
 
                         updateEmptyRequestsView(refsSolicitantes.size());
 
