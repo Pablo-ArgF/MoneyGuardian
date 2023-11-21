@@ -9,8 +9,9 @@
 
     <ImageView
         android:id="@+id/imagenUsuario"
-        android:layout_width="84dp"
+        android:layout_width="111dp"
         android:layout_height="84dp"
+        android:adjustViewBounds="true"
         android:padding="16dp"
         app:srcCompat="@android:drawable/ic_menu_gallery"
         tools:ignore="ContentDescription" />
@@ -27,7 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="bottom|left"
-            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:ignore="RtlHardcoded" />
@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:gravity="top|left"
-            android:textColor="@color/white"
             android:textSize="14sp"
             tools:ignore="RtlHardcoded" />
 

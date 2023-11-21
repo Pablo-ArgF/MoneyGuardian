@@ -32,7 +32,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
 import com.moneyguardian.R;
+import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -145,34 +147,32 @@ public class PagosConjuntosFragment extends Fragment {
                                 Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
                                 Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
 
-                                List<Map<String, Map<String,Double>>> itemsPagoSinTransform =
+                                List<Map<String, Map<String, Double>>> itemsPagoSinTransform =
                                         (List<Map<String, Map<String, Double>>>)
                                                 document.getData().get("itemsPago");
 
                                 List<ItemPagoConjunto> itemsPago = new ArrayList<>();
 
+                                if (itemsPagoSinTransform != null) {
+                                    for (int i = 0; i < itemsPagoSinTransform.size(); i++) {
+                                        for (Map.Entry<String, Map<String, Double>> item :
+                                                itemsPagoSinTransform.get(i).entrySet()) {
+                                            HashMap<UsuarioParaParcelable, Double> usuariosConDinero = new HashMap<>();
+                                            for (Map.Entry<String, Double> usuarios : item.getValue().entrySet()) {
+                                                usuariosConDinero.put(new UsuarioParaParcelable(usuarios.getKey()), usuarios.getValue());
+                                            }
 
-                                for (int i = 0; i < itemsPagoSinTransform.size(); i++) {
-                                    for (Map.Entry<String, Map<String, Double>> item :
-                                            itemsPagoSinTransform.get(i).entrySet()) {
-                                        HashMap<UsuarioParaParcelable, Double> usuariosConDinero = new HashMap<>();
-                                        for(Map.Entry<String, Double> usuarios : item.getValue().entrySet()){
-                                            usuariosConDinero.put(new UsuarioParaParcelable(usuarios.getKey()),usuarios.getValue());
+                                            itemsPago.add(new ItemPagoConjunto(item.getKey(), usuariosConDinero));
                                         }
-
-                                        itemsPago.add(new ItemPagoConjunto(item.getKey(), usuariosConDinero));
                                     }
                                 }
-
-                                pagos.add(new PagoConjunto(document.getId(),nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite,itemsPago));
-
-                                Log.i("Firebase GET", document.getData().toString());
-
-                                // TODO separar
-                                if(nombre == null || fechaLimite == null || fechaPago == null){
+                                if (nombre == null || fechaLimite == null || fechaPago == null) {
                                     throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
                                 }
-                                pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
+
+                                pagos.add(new PagoConjunto(document.getId(), nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite, itemsPago));
+
+                                Log.i("Firebase GET", document.getData().toString());
                             }
 
                             pagosConjuntosListaAdapter.updateList(pagos);

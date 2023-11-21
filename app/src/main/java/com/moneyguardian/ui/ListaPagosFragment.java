@@ -27,7 +27,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.FormItemsListaPago;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
-import com.moneyguardian.ItemListaAdapter;
+import com.moneyguardian.adapters.ItemListaAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
@@ -136,7 +136,7 @@ public class ListaPagosFragment extends Fragment {
                 (itemPago.getNombre(), itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).addToBackStack(null).commit();
+                replace(R.id.fragmentContainerMain, argumentoFragment).addToBackStack(null).commit();
 
     }
 

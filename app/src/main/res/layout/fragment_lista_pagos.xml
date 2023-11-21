@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.ListaPagosFragment">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -15,47 +15,48 @@
             android:id="@+id/iconPago"
             android:layout_width="54dp"
             android:layout_height="51dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="0dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_launcher_background"></ImageView>
+            app:layout_constraintBottom_toTopOf="@+id/mainListPagosRecycler"
+            app:layout_constraintEnd_toStartOf="@+id/namePagos"
+            app:layout_constraintHorizontal_bias="0.731"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.586"></ImageView>
 
         <TextView
             android:id="@+id/namePagos"
             android:layout_width="286dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="11dp"
-            android:layout_toEndOf="@+id/iconPago"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/mainListPagosRecycler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.848"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.531" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mainListPagosRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="506dp"
-            android:layout_below="@+id/iconPago"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="0dp">
+            android:layout_width="374dp"
+            android:layout_height="513dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnNewItemPago"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.486"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.832">
 
         </androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/btnNewItemPago"
-            android:layout_width="wrap_content"
-            android:layout_height="53dp"
-            android:layout_below="@+id/mainListPagosRecycler"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="100dp"
-            android:layout_marginBottom="5dp"
-            android:text="@string/NuevoItemPago" />
+            android:layout_width="177dp"
+            android:layout_height="51dp"
+            android:text="@string/NuevoItemPago"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.947" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
