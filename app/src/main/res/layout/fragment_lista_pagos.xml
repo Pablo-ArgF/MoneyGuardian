@@ -7,54 +7,56 @@
     android:layout_height="match_parent"
     tools:context=".ui.ListaPagosFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/iconPago"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            app:layout_constraintBottom_toTopOf="@+id/mainListPagosRecycler"
+            app:layout_constraintEnd_toStartOf="@+id/namePagos"
+            app:layout_constraintHorizontal_bias="0.731"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.586"></ImageView>
+
+        <TextView
+            android:id="@+id/namePagos"
+            android:layout_width="286dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp">
-
-            <ImageView
-                android:id="@+id/iconPago"
-                android:layout_width="3dp"
-                android:layout_height="46dp"
-                android:layout_weight="1"
-            ></ImageView>
-
-            <TextView
-                android:id="@+id/namePagos"
-                android:layout_width="286dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView"
-                android:textSize="20sp" />
-
-        </LinearLayout>
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/mainListPagosRecycler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.848"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.531" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mainListPagosRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="553dp" />
+            android:layout_width="374dp"
+            android:layout_height="513dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnNewItemPago"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.486"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.832">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="68dp">
+        </androidx.recyclerview.widget.RecyclerView>
 
-            <Button
-                android:id="@+id/btnNewItemPago"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/NuevoItemPago"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btnNewItemPago"
+            android:layout_width="177dp"
+            android:layout_height="51dp"
+            android:text="@string/NuevoItemPago"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.947" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
