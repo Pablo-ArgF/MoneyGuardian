@@ -40,16 +40,17 @@
             android:layout_height="35dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/circle_button"
-            android:backgroundTint="@color/red"
-            android:src="@drawable/equis" />
+            android:src="@drawable/equis"
+            android:tint="@color/red" />
+
         <ImageButton
             android:id="@+id/btnAceptarSolicitud"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/circle_button"
-            android:backgroundTint="@color/green"
-            android:src="@drawable/baseline_done_24" />
+            android:src="@drawable/baseline_done_24"
+            android:tint="@color/green" />
 
     </LinearLayout>
 
