@@ -155,6 +155,7 @@ public class SignInActivity  extends AppCompatActivity {
         user.put("email", mAuth.getCurrentUser().getEmail());
         user.put("profilePicture", getString(R.string.default_profilePicture));
         user.put("friends",new ArrayList<>());
+        user.put("friendRequests",new ArrayList<>());
 
         db.collection("users")
                 .document(mAuth.getUid())
