@@ -2,22 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="410dp"
-    android:layout_height="72dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     >
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imgFriend"
+        android:id="@+id/imgUsuarioSolicitud"
         android:layout_width="48dp"
         android:layout_height="72dp"
         android:contentDescription="@string/app_name"
-        app:srcCompat="@mipmap/ic_launcher" />
+        app:srcCompat="@mipmap/ic_launcher"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <TextView
@@ -25,8 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/amigo"
@@ -34,13 +35,21 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <ImageButton
-            android:id="@+id/btnBorrarAmigo"
+            android:id="@+id/btnDenegarSolicitud"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/circle_button"
             android:backgroundTint="@color/red"
-            android:src="@android:drawable/ic_menu_delete" />
+            android:src="@drawable/equis" />
+        <ImageButton
+            android:id="@+id/btnAceptarSolicitud"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/circle_button"
+            android:backgroundTint="@color/green"
+            android:src="@drawable/baseline_done_24" />
 
     </LinearLayout>
 

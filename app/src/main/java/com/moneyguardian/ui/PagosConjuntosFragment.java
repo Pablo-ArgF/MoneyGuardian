@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.moneyguardian.adapters.PagosConjuntosListaAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,15 +31,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
-import com.moneyguardian.PagosConjuntosListaAdapter;
 import com.moneyguardian.R;
-import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
-import com.moneyguardian.modelo.Usuario;
-import com.moneyguardian.modelo.UsuarioParaParcelable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -169,12 +165,14 @@ public class PagosConjuntosFragment extends Fragment {
                                 }
 
                                 pagos.add(new PagoConjunto(document.getId(),nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite,itemsPago));
-                                /**
-                                 * TODO
-                                 List<UsuarioParaParcelable> participantes;
-                                 List<ItemPagoConjunto> items;
-                                 **/
+
                                 Log.i("Firebase GET", document.getData().toString());
+
+                                // TODO separar
+                                if(nombre == null || fechaLimite == null || fechaPago == null){
+                                    throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
+                                }
+                                pagos.add(new PagoConjunto(nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite));
                             }
 
                             pagosConjuntosListaAdapter.updateList(pagos);
@@ -192,7 +190,7 @@ public class PagosConjuntosFragment extends Fragment {
         ListaPagosFragment listaPagosFragment = ListaPagosFragment.newInstance(pagoConjunto);
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, listaPagosFragment).addToBackStack(null).commit();
+                replace(R.id.fragmentContainerMain, listaPagosFragment).addToBackStack(null).commit();
     }
 
     @Override
