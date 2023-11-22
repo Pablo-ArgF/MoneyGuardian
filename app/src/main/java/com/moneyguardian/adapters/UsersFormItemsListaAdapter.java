@@ -1,5 +1,6 @@
-package com.moneyguardian;
+package com.moneyguardian.adapters;
 
+import android.net.Uri;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -14,14 +15,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.moneyguardian.R;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.DecimalFilterForInput;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UsersFormItemsListaAdapter extends
         RecyclerView.Adapter<UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder>{
@@ -199,7 +204,7 @@ public class UsersFormItemsListaAdapter extends
     public static class UsersFormItemsListaViewHolder extends RecyclerView.ViewHolder{
 
         private TextView name;
-        private ImageView photo;
+        private CircleImageView photo;
         CheckBox participantesPayment;
 
         EditText moneyToPay;
@@ -212,12 +217,12 @@ public class UsersFormItemsListaAdapter extends
             participantesPayment = itemView.findViewById(R.id.checkBoxNeedToPay);
             moneyToPay = itemView.findViewById(R.id.editTextNumberMoneyToPay);
             isEdited = false;
-            //photo= (ImageView)itemView.findViewById(R.id.imageViewAvatarIcon);
+            photo= (CircleImageView)itemView.findViewById(R.id.imageViewAvatarIcon);
         }
 
         public void bindUser(final UsuarioParaParcelable user) {
             name.setText(user.getNombre());
-            //photo.setImageIcon(user.getPhoto());
+            Picasso.get().load(Uri.parse(user.getImageURI())).into(photo);
             participantesPayment.setEnabled(false);
 
         }
