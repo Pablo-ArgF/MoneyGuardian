@@ -36,6 +36,7 @@ import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.DecimalFilterForInput;
 import com.moneyguardian.util.UsuarioMapper;
+import com.moneyguardian.adapters.UsersFormItemsListaAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
