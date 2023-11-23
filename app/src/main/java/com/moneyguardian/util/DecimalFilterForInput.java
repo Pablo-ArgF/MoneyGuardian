@@ -12,8 +12,7 @@ public class DecimalFilterForInput implements InputFilter {
     private Pattern pattern;
 
     public DecimalFilterForInput(int numbersAfterZero) {
-        this.pattern = Pattern.compile("[0-9]*+((\\.[0-9]{0," + numbersAfterZero
-                                                                                + "})?)||(\\.)?");
+        this.pattern = Pattern.compile("[0-9]*([\\.\\,][0-9]{0,"+numbersAfterZero +"})?");
     }
 
     @Override
