@@ -1,4 +1,4 @@
-package com.moneyguardian;
+package com.moneyguardian.adapters;
 
 import android.net.Uri;
 import android.text.Editable;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.moneyguardian.R;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.DecimalFilterForInput;
 import com.squareup.picasso.Picasso;
