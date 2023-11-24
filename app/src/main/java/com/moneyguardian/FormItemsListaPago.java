@@ -46,6 +46,7 @@ import java.util.UUID;
 
 public class FormItemsListaPago extends AppCompatActivity {
 
+    // TODO deberian llevar private...?
     RecyclerView usersToAdd;
     Spinner whoPaysSpinner;
     EditText totalMoney;

@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.ui.ListaAmigosFragment;
+import com.moneyguardian.ui.ListaGastosFragment;
 import com.moneyguardian.ui.MainFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 import com.moneyguardian.userAuth.LoginActivity;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private MainFragment fragmentMain;
     private PagosConjuntosFragment fragmentPagosConjuntos;
     private ListaAmigosFragment amigosFragment;
+    private ListaGastosFragment gastosFragment;
 
 
     @Override
@@ -42,30 +44,32 @@ public class MainActivity extends AppCompatActivity {
         fragmentMain = new MainFragment();
         fragmentPagosConjuntos = new PagosConjuntosFragment();
         amigosFragment = new ListaAmigosFragment();
+        gastosFragment = new ListaGastosFragment();
 
         //we load main fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
-               fragmentMain).commit();
+                fragmentMain).commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottonnav);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
                     int id = item.getItemId();
-                    if(id == R.id.home_menu_btn) {
+                    if (id == R.id.home_menu_btn) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
                                 fragmentMain).commit();
                         return true;
                     }
-                    if(id == R.id.lista_menu_btn){
-                        //TODO implement lista view
-                        return false;
+                    if (id == R.id.lista_menu_btn) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
+                                gastosFragment).commit();
+                        return true;
                     }
-                    if(id == R.id.amigos_menu_btn){
+                    if (id == R.id.amigos_menu_btn) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
                                 amigosFragment).commit();
                         return true;
                     }
-                    if(id == R.id.pagos_conjuntos_menu_btn){
+                    if (id == R.id.pagos_conjuntos_menu_btn) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
                                 fragmentPagosConjuntos).commit();
                         return true;
