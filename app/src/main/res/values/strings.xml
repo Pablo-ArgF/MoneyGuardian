@@ -98,7 +98,7 @@
     <string name="ErrorBaseDatosPago">Se ha producido un error intentando obtener el Pago</string>
     <string name="ErrorBaseDatosAmigos">Se ha producido un error intentando obtener los amigos del usuario.</string>
     <string name="ContentDescriptionAddGasto">Añadir nuevo gasto</string>
-    <string name="NombreGasto">Nombre del gasto</string>
+    <string name="NombreGasto">Nombre de la transacción</string>
     <string name="Cantidad">Cantidad</string>
-    <string name="CrearGasto">Crear nuevo gasto</string>
+    <string name="CrearGasto">Crear nueva transacción</string>
 </resources>

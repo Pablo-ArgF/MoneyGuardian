@@ -23,10 +23,16 @@ public class FormularioGastoActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String gastoUUID;
+    private boolean isIngreso = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle b = getIntent().getExtras();
+        // Recogemos la "FLAG" para ver si es un gasto o un ingreso
+        if (b != null) {
+            isIngreso = b.getBoolean("Ingreso");
+        }
         setContentView(R.layout.activity_formulario_gasto);
 
         // Manejo de base de datos
@@ -58,8 +64,8 @@ public class FormularioGastoActivity extends AppCompatActivity {
         EditText nombre = findViewById(R.id.nombreGastoNuevo);
         EditText balance = findViewById(R.id.balanceGastoNuevo);
 
-
-        Gasto gasto = new Gasto(nombre.getText().toString(), Float.valueOf(balance.getText().toString()), null);
+        float balanceFinal = (this.isIngreso ? 1 : -1) * Float.valueOf(balance.getText().toString());
+        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, null);
 
         // TODO no me fio, habría que echarle un ojo por si acaso
         DocumentReference gastoReference = db.collection("gastos/").document(gastoUUID);
