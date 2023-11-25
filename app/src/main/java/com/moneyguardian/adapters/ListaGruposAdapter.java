@@ -1,4 +1,4 @@
-package com.moneyguardian;
+package com.moneyguardian.adapters;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.moneyguardian.R;
 import com.moneyguardian.modelo.GrupoUsuarios;
 
 import java.util.LinkedList;
@@ -19,6 +20,11 @@ public class ListaGruposAdapter extends RecyclerView.Adapter<ListaGruposAdapter.
 
     private List<GrupoUsuarios> listaGrupos = new LinkedList<>();
     private OnItemClickListener listener;
+
+    public void addGrupo(GrupoUsuarios grupo) {
+        this.listaGrupos.add(grupo);
+        notifyItemInserted(listaGrupos.size() - 1);
+    }
 
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {

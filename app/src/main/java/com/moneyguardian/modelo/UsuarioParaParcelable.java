@@ -3,30 +3,64 @@ package com.moneyguardian.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
-import java.util.Objects;
-
 public class UsuarioParaParcelable implements Parcelable {
 
     private String nombre;
     private String email;
+    private String imageURI;
+    private String id;
+
+    public UsuarioParaParcelable() {
+    }
+
+    public UsuarioParaParcelable(String nombre, String email, String imageURI, String id) {
+        this.nombre = nombre;
+        this.email = email;
+        this.imageURI = imageURI;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public UsuarioParaParcelable(String nombre, String email) {
         this.nombre = nombre;
         this.email = email;
     }
 
+    public UsuarioParaParcelable(String nombre) {
+        this.nombre = nombre;
+    }
+    public UsuarioParaParcelable(String nombre, String email, String imageURI) {
+        this(nombre, email);
+        this.imageURI = imageURI;
+    }
+
 
     protected UsuarioParaParcelable(Parcel in) {
         nombre = in.readString();
         email = in.readString();
+        imageURI = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeString(email);
+        dest.writeString(imageURI);
+    }
+
+    public String getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 
     @Override
@@ -63,15 +97,7 @@ public class UsuarioParaParcelable implements Parcelable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UsuarioParaParcelable that = (UsuarioParaParcelable) o;
-        return Objects.equals(nombre, that.nombre) && Objects.equals(email, that.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nombre, email);
+    public String toString() {
+        return getNombre();
     }
 }

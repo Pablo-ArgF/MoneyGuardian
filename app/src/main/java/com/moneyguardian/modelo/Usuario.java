@@ -3,7 +3,10 @@ package com.moneyguardian.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
+import java.util.Objects;
 
 public class Usuario implements Parcelable {
 
@@ -11,20 +14,25 @@ public class Usuario implements Parcelable {
     private String correo;
     private List<UsuarioParaParcelable> amigos;
     private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
-    // Consider adding a field for 'Foto' if needed
+    private String uriImg;
+    private String id;
 
 
-    public Usuario(String nombre, String correo, List<UsuarioParaParcelable> amigos, List<PagoConjunto> misPagosConjuntos) {
+
+
+    public Usuario(String id, String nombre, String correo,String imgUri, List<UsuarioParaParcelable> amigos, List<PagoConjunto> misPagosConjuntos) {
         this.nombre = nombre;
         this.correo = correo;
         this.amigos = amigos;
         this.misPagosConjuntos = misPagosConjuntos;
+        this.uriImg = imgUri;
     }
 
     public Usuario() {
     }
 
     protected Usuario(Parcel in) {
+        id = in.readString();
         nombre = in.readString();
         correo = in.readString();
         amigos = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
@@ -56,6 +64,14 @@ public class Usuario implements Parcelable {
         }
     };
 
+    public String getUriImg() {
+        return uriImg;
+    }
+
+    public void setUriImg(String uriImg) {
+        this.uriImg = uriImg;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -80,6 +96,14 @@ public class Usuario implements Parcelable {
         this.amigos = amigos;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public List<PagoConjunto> getMisPagosConjuntos() {
         return misPagosConjuntos;
     }
@@ -93,8 +117,7 @@ public class Usuario implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return nombre.equals(usuario.nombre) && correo.equals(usuario.correo)
-                && amigos.equals(usuario.amigos) && misPagosConjuntos.equals(usuario.misPagosConjuntos);
+        return id.equals(usuario.getId());
     }
 
     @Override

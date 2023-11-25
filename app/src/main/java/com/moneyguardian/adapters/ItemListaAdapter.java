@@ -1,4 +1,4 @@
-package com.moneyguardian;
+package com.moneyguardian.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 
 import java.util.List;
@@ -66,7 +67,7 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
         // asignar valores a los componentes
         public void bindUser(final ItemPagoConjunto itemPago, final OnItemClickListener listener) {
             name.setText(itemPago.getNombre());
-            userPay.setText(itemPago.getUser());
+            //userPay.setText(itemPago.getUser());
             money.setText(itemPago.getMoney()+ "€");
 
 

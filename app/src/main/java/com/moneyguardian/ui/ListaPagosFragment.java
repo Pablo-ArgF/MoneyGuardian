@@ -1,7 +1,11 @@
 package com.moneyguardian.ui;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +19,30 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.FormItemsListaPago;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
-import com.moneyguardian.ItemListaAdapter;
+import com.moneyguardian.adapters.ItemListaAdapter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
+import com.moneyguardian.modelo.UsuarioParaParcelable;
+import com.moneyguardian.util.UsuarioMapper;
 import com.squareup.picasso.Picasso;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListaPagosFragment extends Fragment {
 
@@ -32,7 +50,7 @@ public class ListaPagosFragment extends Fragment {
     private static final String NAME_PAGO = "Nombre";
     private static final String IMAGEN = "Imagen";
     private static final String PAGO_CONJUNTO = "Pago Conjunto";
-    private String imagen;
+    private Uri imagen;
     private String namePago;
     private List<ItemPagoConjunto> listaPagos;
     private Button btnAddNewItem;
@@ -40,8 +58,10 @@ public class ListaPagosFragment extends Fragment {
     private PagoConjunto pagoConjunto;
 
     public static final int GESTION_ACTIVITY = 2;
+    private FirebaseFirestore db;
 
     RecyclerView listItemsPagosView;
+    private ItemListaAdapter lpAdapter;
 
     public static ListaPagosFragment newInstance(PagoConjunto param1) {
         ListaPagosFragment fragment = new ListaPagosFragment();
@@ -49,6 +69,7 @@ public class ListaPagosFragment extends Fragment {
         args.putParcelable(PAGO_CONJUNTO, param1);
         args.putParcelableArrayList(LISTA_PAGOS, new ArrayList<>(param1.getItems()));
         args.putString(NAME_PAGO, param1.getNombre());
+        args.putParcelable(IMAGEN, param1.getImagen());
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,9 +81,15 @@ public class ListaPagosFragment extends Fragment {
             pagoConjunto = getArguments().getParcelable(PAGO_CONJUNTO);
             listaPagos = getArguments().getParcelableArrayList(LISTA_PAGOS);
             namePago = getArguments().getString(NAME_PAGO);
-            imagen = getArguments().getString(IMAGEN);
+            imagen = getArguments().getParcelable(IMAGEN);
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //TODO:Pillar los datos de la base de datos.
     }
 
     @Override
@@ -73,13 +100,15 @@ public class ListaPagosFragment extends Fragment {
         TextView tvName = root.findViewById(R.id.namePagos);
         tvName.setText(namePago);
         ImageView ivImagen = root.findViewById(R.id.iconPago);
+        if(imagen != null)
+            Picasso.get().load(imagen).into(ivImagen);
         btnAddNewItem = root.findViewById(R.id.btnNewItemPago);
 
         btnAddNewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
-                intent.putExtra("USERS_OF_PAYMENT",new ArrayList<>(pagoConjunto.getParticipantes()));
+                intent.putExtra("PAGO",pagoConjunto);
                 startActivityForResult(intent, GESTION_ACTIVITY);
             }
         });
@@ -97,7 +126,7 @@ public class ListaPagosFragment extends Fragment {
                 new LinearLayoutManager(view.getContext().getApplicationContext());
         listItemsPagosView.setLayoutManager(layoutManager);
 
-        ItemListaAdapter lpAdapter = new ItemListaAdapter(listaPagos,
+        lpAdapter = new ItemListaAdapter(listaPagos,
                 new ItemListaAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(ItemPagoConjunto itemPago) {
@@ -105,6 +134,7 @@ public class ListaPagosFragment extends Fragment {
                     }
                 });
         listItemsPagosView.setAdapter(lpAdapter);
+        //cargarDatos();
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {
@@ -113,7 +143,62 @@ public class ListaPagosFragment extends Fragment {
                 (itemPago.getNombre(), itemPago.getPagos());
 
         getParentFragmentManager().beginTransaction().
-                replace(R.id.fragment_container_amigos_pagos, argumentoFragment).addToBackStack(null).commit();
+                replace(R.id.fragmentContainerMain, argumentoFragment).addToBackStack(null).commit();
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        assert data != null;
+        ItemPagoConjunto itemNuevo = data.getParcelableExtra("NEW_ITEM");
+
+        if (requestCode == GESTION_ACTIVITY) {
+            if(resultCode == RESULT_OK) {
+                cargarDatos();
+
+            }
+        }
+    }
+
+    public void cargarDatos(){
+        db = FirebaseFirestore.getInstance();
+
+        listaPagos = new ArrayList<>();
+
+        db.collection("pagosConjuntos").
+                document(pagoConjunto.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            List<Map<String, Map<String, Double>>> items = (List<Map<String, Map<String, Double>>>) document.getData().get("itemsPago");
+                            if(items != null && items.size() != 0) {
+                                for (int i = 0;i < items.size();i++) {
+                                    for (Map.Entry<String, Map<String, Double>> item : items.get(i).entrySet()) {
+                                        HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+                                        for (Map.Entry<String, Double> users : item.getValue().entrySet()) {
+                                            cantidadesConUsers.put(new UsuarioParaParcelable(users.getKey()), Double.parseDouble(users.getValue().toString()));
+                                        }
+
+                                        listaPagos.add(new ItemPagoConjunto(item.getKey(), cantidadesConUsers));
+                                    }
+                                }
+                            }
+
+                            lpAdapter = new ItemListaAdapter(listaPagos,
+                                    new ItemListaAdapter.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(ItemPagoConjunto itemPago) {
+                                            clickonItem(itemPago);
+                                        }
+                                    });
+                            listItemsPagosView.setAdapter(lpAdapter);
+                        }else{
+                            Log.i("Error", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
 }

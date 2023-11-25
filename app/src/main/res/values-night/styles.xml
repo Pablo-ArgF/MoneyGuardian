@@ -2,13 +2,13 @@
 <resources>
 
     <!-- Light Theme -->
-    <style name="Base.Theme.MoneyGuardian.Light" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.MoneyGuardian.Light" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/blue</item>
     </style>
 
     <!-- Dark Theme -->
-    <style name="Base.Theme.MoneyGuardian.Dark" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.MoneyGuardian.Dark" parent="Theme.Material3.DayNight">
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/blue</item>
     </style>
@@ -17,5 +17,7 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+
 
 </resources>

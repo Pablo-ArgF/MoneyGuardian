@@ -27,6 +27,7 @@ import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.SocialActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -153,6 +154,8 @@ public class SignInActivity  extends AppCompatActivity {
         user.put("name", mAuth.getCurrentUser().getEmail());
         user.put("email", mAuth.getCurrentUser().getEmail());
         user.put("profilePicture", getString(R.string.default_profilePicture));
+        user.put("friends",new ArrayList<>());
+        user.put("friendRequests",new ArrayList<>());
 
         db.collection("users")
                 .document(mAuth.getUid())
