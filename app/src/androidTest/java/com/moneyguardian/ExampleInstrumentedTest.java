@@ -41,7 +41,7 @@ public class ExampleInstrumentedTest {
     private final List<UsuarioParaParcelable> testParticipants = new ArrayList<>();
     private final List<ItemPagoConjunto> testItems = new ArrayList<>();
     private ItemPagoConjunto itemPagoConjunto;
-    private final HashMap<UsuarioParaParcelable, Integer> testPagos = new HashMap<>();
+    private final HashMap<UsuarioParaParcelable, Double> testPagos = new HashMap<>();
 
     private GrupoUsuarios grupoUsuarios;
     private final List<Usuario> testUsuarios = new ArrayList<>();
@@ -50,7 +50,7 @@ public class ExampleInstrumentedTest {
     @Before
     public void setUp() {
         usuario = new Usuario();
-        pagoConjunto = new PagoConjunto(testName, testDate, testParticipants, imagen, testDate);
+        pagoConjunto = new PagoConjunto("id", testName, testDate, testParticipants, imagen, testDate);
         // Initialize the ItemPagoConjunto object using the constructor
         itemPagoConjunto = new ItemPagoConjunto(testName, testPagos);
         // Initialize the GrupoUsuarios object using the constructor
@@ -165,7 +165,7 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void grupoUsuariosNotEmpty_ParcelableWriteRead() {
-        Usuario usuario = new Usuario(testName, testEmail, new ArrayList<>(), new ArrayList<>());
+        Usuario usuario = new Usuario("id", testName, testEmail, null, new ArrayList<>(), new ArrayList<>());
         testUsuarios.add(usuario);
 
         // Write the data.
