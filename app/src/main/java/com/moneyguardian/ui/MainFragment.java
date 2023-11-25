@@ -22,6 +22,7 @@ import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.userAuth.LoginActivity;
+import com.moneyguardian.userAuth.SignInActivity;
 import com.moneyguardian.util.UsuarioMapper;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -93,6 +94,10 @@ public class MainFragment extends Fragment {
 
 
     private void loadUserInfo(View root){
+        //we check if user is logged in, if not send to login view
+        if(auth.getUid() == null) {
+            startActivity(new Intent(getContext(),SignInActivity.class));
+        }
         //we load the image of the user into the profile btn
         //we get the uri from database user info 'profilePicture'
         db.collection("users")

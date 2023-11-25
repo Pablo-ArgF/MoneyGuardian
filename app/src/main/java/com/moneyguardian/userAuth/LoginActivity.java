@@ -1,14 +1,10 @@
 package com.moneyguardian.userAuth;
 
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,12 +25,12 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,14 +40,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
-import com.moneyguardian.SocialActivity;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText emailTextView, passwordTextView;
+    private EditText emailTextView;
+    private TextInputEditText passwordTextView;
     private Button btn_login;
     private Button btn_register;
     private Button btn_google;
@@ -237,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
 
                                     // hide the progress bar
-                                    progressbar.setVisibility(View.GONE);
+                                    progressbar.setVisibility(View.INVISIBLE);
 
                                     // if sign-in is successful
                                     // intent to home activity
@@ -256,7 +252,7 @@ public class LoginActivity extends AppCompatActivity {
                                             .show();
 
                                     // hide the progress bar
-                                    progressbar.setVisibility(View.GONE);
+                                    progressbar.setVisibility(View.INVISIBLE);
                                 }
                             }
                         });

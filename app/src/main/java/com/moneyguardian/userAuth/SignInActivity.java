@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignInActivity  extends AppCompatActivity {
-    private EditText emailTextView, passwordTextView;
+    private TextInputEditText emailTextView, passwordTextView;
     private Button btn_register;
     private ProgressBar progressbar;
     private FirebaseAuth mAuth;
@@ -63,7 +64,7 @@ public class SignInActivity  extends AppCompatActivity {
 
         // initialising all views through id defined above
         emailTextView = findViewById(R.id.email);
-        passwordTextView = findViewById(R.id.passwd);
+        passwordTextView = findViewById(R.id.password);
         btn_register = findViewById(R.id.btnregister);
         progressbar = findViewById(R.id.progressbar);
 
