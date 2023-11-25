@@ -132,9 +132,13 @@ public class ListaGastosFragment extends Fragment {
         if (buttonAddGasto.getVisibility() == View.VISIBLE) {
             buttonAddGasto.setVisibility(View.INVISIBLE);
             buttonAddIngreso.setVisibility(View.INVISIBLE);
+            buttonAddGasto.setClickable(false);
+            buttonAddIngreso.setClickable(false);
         } else {
             buttonAddGasto.setVisibility(View.VISIBLE);
             buttonAddIngreso.setVisibility(View.VISIBLE);
+            buttonAddGasto.setClickable(true);
+            buttonAddIngreso.setClickable(true);
         }
     }
 

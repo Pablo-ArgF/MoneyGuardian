@@ -101,4 +101,6 @@
     <string name="NombreGasto">Nombre de la transacción</string>
     <string name="Cantidad">Cantidad</string>
     <string name="CrearGasto">Crear nueva transacción</string>
+    <string name="addIngreso">Añadir nuevo ingreso</string>
+    <string name="addGasto">Añadir nuevo gasto</string>
 </resources>

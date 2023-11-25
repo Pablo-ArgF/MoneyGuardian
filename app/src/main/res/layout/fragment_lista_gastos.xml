@@ -42,13 +42,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:backgroundTint="@android:color/holo_red_dark"
-            android:clickable="true"
+            android:clickable="false"
             android:focusable="true"
             android:tint="@color/white"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/buttonOpenMenuGastos"
             app:layout_constraintEnd_toEndOf="@+id/buttonOpenMenuGastos"
-            app:srcCompat="@drawable/ic_money_off" />
+            app:srcCompat="@drawable/ic_money_off"
+            android:contentDescription="@string/addGasto"  />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonAddIngreso"
@@ -56,13 +57,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:clickable="true"
+            android:clickable="false"
             android:tint="@color/white"
             android:visibility="invisible"
             app:backgroundTint="@color/green"
             app:layout_constraintBottom_toTopOf="@+id/buttonAddGasto"
             app:layout_constraintEnd_toEndOf="@+id/buttonAddGasto"
-            app:srcCompat="@drawable/ic_money" />
+            app:srcCompat="@drawable/ic_money"
+            android:focusable="true"
+            android:contentDescription="@string/addIngreso" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
