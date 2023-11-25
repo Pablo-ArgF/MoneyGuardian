@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -16,6 +17,7 @@ import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.ui.ListaGastosFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -65,7 +67,8 @@ public class FormularioGastoActivity extends AppCompatActivity {
         EditText balance = findViewById(R.id.balanceGastoNuevo);
 
         float balanceFinal = (this.isIngreso ? 1 : -1) * Float.valueOf(balance.getText().toString());
-        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, null);
+        // Guardamos el pago, con la fecha actual
+        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, null, new Date());
 
         // TODO no me fio, habría que echarle un ojo por si acaso
         DocumentReference gastoReference = db.collection("gastos/").document(gastoUUID);

@@ -82,6 +82,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         private TextView nombre;
         private TextView balance;
         private CircleImageView imagenGasto;
+        private TextView fecha;
 
 
         public GastoViewHolder(@NonNull View itemView) {
@@ -90,11 +91,13 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             nombre = (TextView) itemView.findViewById(R.id.nombreGasto);
             balance = (TextView) itemView.findViewById(R.id.balanceGasto);
             imagenGasto = (CircleImageView) itemView.findViewById(R.id.imagenGasto);
+            fecha = (TextView) itemView.findViewById(R.id.textFechaGasto);
         }
 
-        // asignar valores a los componentes
         public void bindUser(final Gasto gasto, final OnItemClickListener listener) {
+            // TODO falta validar
             nombre.setText(gasto.getNombre());
+            fecha.setText(gasto.getFechaCreacion());
 
             if (gasto.getImagen() != null) {
                 Uri imageUri = Uri.parse(gasto.getImagen());
@@ -105,7 +108,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             }
 
             // Si es un gasto o un ingreso
-            String balancePago = (gasto.getBalance() > 0 ? "+" : "-") + String.valueOf(gasto.getBalance()) + "€";
+            String balancePago = (gasto.getBalance() > 0 ? "+" : "") + (gasto.getBalance()) + "€";
             balance.setText(balancePago);
             int color = gasto.getBalance() > 0 ? R.color.green : R.color.red;
             balance.setTextColor(ContextCompat.getColor(this.itemView.getContext(), color));

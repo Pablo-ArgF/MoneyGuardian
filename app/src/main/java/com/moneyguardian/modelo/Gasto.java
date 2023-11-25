@@ -6,11 +6,19 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.Timestamp;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Gasto implements Parcelable {
 
     private String nombre;
     private float balance;
     private String imagen;
+    private Date fechaCreación;
 
     public Gasto() {
 
@@ -20,6 +28,21 @@ public class Gasto implements Parcelable {
         this.nombre = nombre;
         this.balance = balance;
         this.imagen = imagen;
+    }
+
+    public Gasto(String nombre, float balance, String imagen, Date fechaCreación) {
+        this(nombre, balance, imagen);
+        this.fechaCreación = fechaCreación;
+    }
+
+    public Gasto(String nombre, float balance, String imagen, String fechaCreación) {
+        this(nombre, balance, imagen);
+        SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", new Locale("es"));
+        try {
+            this.fechaCreación = formater.parse(fechaCreación);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getNombre() {
@@ -75,4 +98,8 @@ public class Gasto implements Parcelable {
             return new Gasto[size];
         }
     };
+
+    public String getFechaCreacion() {
+        return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreación);
+    }
 }

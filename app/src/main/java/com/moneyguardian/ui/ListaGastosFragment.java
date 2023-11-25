@@ -166,7 +166,13 @@ public class ListaGastosFragment extends Fragment {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     if (documentSnapshot.exists()) {
-                                        Gasto g = documentSnapshot.toObject(Gasto.class);
+                                        // No podemos usarlo por culpa de la fecha :D
+                                        // Gasto g = documentSnapshot.toObject(Gasto.class);
+                                        String nombre = (String) documentSnapshot.get("nombre");
+                                        double balance = (double) documentSnapshot.get("balance");
+                                        String fecha = (String) documentSnapshot.get("fechaCreacion");
+                                        String imagen = (String) documentSnapshot.get("iamgen");
+                                        Gasto g = new Gasto(nombre, (float) balance, imagen, fecha);
                                         adapter.add(g);
                                     }
                                 }
