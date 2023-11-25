@@ -50,7 +50,7 @@ public class ListaPagosFragment extends Fragment {
     private static final String NAME_PAGO = "Nombre";
     private static final String IMAGEN = "Imagen";
     private static final String PAGO_CONJUNTO = "Pago Conjunto";
-    private String imagen;
+    private Uri imagen;
     private String namePago;
     private List<ItemPagoConjunto> listaPagos;
     private Button btnAddNewItem;
@@ -81,7 +81,7 @@ public class ListaPagosFragment extends Fragment {
             pagoConjunto = getArguments().getParcelable(PAGO_CONJUNTO);
             listaPagos = getArguments().getParcelableArrayList(LISTA_PAGOS);
             namePago = getArguments().getString(NAME_PAGO);
-            imagen = getArguments().getString(IMAGEN);
+            imagen = getArguments().getParcelable(IMAGEN);
         }
 
     }
@@ -101,7 +101,7 @@ public class ListaPagosFragment extends Fragment {
         tvName.setText(namePago);
         ImageView ivImagen = root.findViewById(R.id.iconPago);
         if(imagen != null)
-            Picasso.get().load(Uri.parse(imagen)).into(ivImagen);
+            Picasso.get().load(imagen).into(ivImagen);
         btnAddNewItem = root.findViewById(R.id.btnNewItemPago);
 
         btnAddNewItem.setOnClickListener(new View.OnClickListener() {

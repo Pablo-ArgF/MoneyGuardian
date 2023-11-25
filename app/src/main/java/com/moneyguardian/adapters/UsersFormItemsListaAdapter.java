@@ -81,7 +81,7 @@ public class UsersFormItemsListaAdapter extends
                 if( holder.participantesPayment.isChecked()){
                     if(changeMoneyActive){
                         double moneyLeftToPay = controlEqMoneyWhenEdited();
-                        holder.moneyToPay.setText(dfZero.format(moneyLeftToPay));
+                        holder.moneyToPay.setText(dfZero.format(moneyLeftToPay).replace(',','.'));
                         if(moneyLeftToPay != 0.0){
                             if(user.equals(usuarioSeleccionado)){
                                 usuariosSeleccionados.put(user, Math.round((cantidad-moneyLeftToPay)*100.0)/100.0);
@@ -126,7 +126,8 @@ public class UsersFormItemsListaAdapter extends
                 if(s.toString().isEmpty()){
                     usuariosSeleccionados.remove(user);
                 }else{
-                    double moneyToPay = Double.parseDouble(holder.moneyToPay.getText().toString());
+                    double moneyToPay = Double.parseDouble(holder.moneyToPay.getText()
+                            .toString().replace(',','.'));
                     if(moneyToPay != 0.0) {
                         if(user.equals(usuarioSeleccionado)){
                             usuariosSeleccionados.put(user, Math.round((cantidad-moneyToPay)*100.0)/100.0);
@@ -169,22 +170,15 @@ public class UsersFormItemsListaAdapter extends
 
         totalPagado =  Math.round(totalPagado * 100.0)/100.0;
 
-        return  totalPagado <= 0.1;
+        return  totalPagado <= 0.1 && totalPagado >= -0.1;
     }
 
     private void updateHolders(){
         for (UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder h : holders){
             if(h.participantesPayment.isChecked()){
-                h.moneyToPay.setText(dfZero.format(cantidadPorUser));
+                h.moneyToPay.setText(dfZero.format(cantidadPorUser).replace(',','.'));
             }else{
                 h.moneyToPay.setText("");
-            }
-        }
-        for(Map.Entry<UsuarioParaParcelable,Double> u : getUsersSelected().entrySet()){
-            if(!u.getKey().equals(usuarioSeleccionado)) {
-                getUsersSelected().put(u.getKey(),  Math.round(-cantidadPorUser*100.0)/100.0);
-            }else{
-                getUsersSelected().put(u.getKey(),  Math.round((cantidad - cantidadPorUser)*100.0)/100.0);
             }
         }
     }
