@@ -27,6 +27,10 @@ public class FormularioGastoActivity extends AppCompatActivity {
     private String gastoUUID;
     private boolean isIngreso = false;
 
+    // Formulario
+    EditText nombre;
+    EditText balance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +50,11 @@ public class FormularioGastoActivity extends AppCompatActivity {
         buttonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateGasto()) {
 
+                nombre = findViewById(R.id.nombreGastoNuevo);
+                balance = findViewById(R.id.balanceGastoNuevo);
+
+                if (validateGasto()) {
                     Gasto gasto = saveGasto();
 
                     Intent intentResult = new Intent();
@@ -62,15 +69,10 @@ public class FormularioGastoActivity extends AppCompatActivity {
     }
 
     private Gasto saveGasto() {
-
-        EditText nombre = findViewById(R.id.nombreGastoNuevo);
-        EditText balance = findViewById(R.id.balanceGastoNuevo);
-
         float balanceFinal = (this.isIngreso ? 1 : -1) * Float.valueOf(balance.getText().toString());
         // Guardamos el pago, con la fecha actual
-        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, null, new Date());
+        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, new Date());
 
-        // TODO no me fio, habría que echarle un ojo por si acaso
         DocumentReference gastoReference = db.collection("gastos/").document(gastoUUID);
         gastoReference.set(gasto);
 
@@ -83,7 +85,14 @@ public class FormularioGastoActivity extends AppCompatActivity {
     }
 
     private boolean validateGasto() {
-        // TODO later
+        if (nombre.getText().toString().trim().isEmpty()) {
+            nombre.setError(getString(R.string.error_empty_name));
+            return false;
+        }
+        if (balance.getText().toString().isEmpty()) {
+            balance.setError(getString(R.string.error_empty_balance));
+            return false;
+        }
         return true;
     }
 

@@ -175,8 +175,8 @@ public class ListaGastosFragment extends Fragment {
                                         String nombre = (String) documentSnapshot.get("nombre");
                                         double balance = (double) documentSnapshot.get("balance");
                                         String fecha = (String) documentSnapshot.get("fechaCreacion");
-                                        String imagen = (String) documentSnapshot.get("iamgen");
-                                        Gasto g = new Gasto(nombre, (float) balance, imagen, fecha);
+                                        String categoria = (String) documentSnapshot.get("categoria");
+                                        Gasto g = new Gasto(nombre, (float) balance, categoria, fecha);
                                         adapter.add(g);
                                     }
                                 }

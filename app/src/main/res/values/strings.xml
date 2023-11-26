@@ -103,4 +103,6 @@
     <string name="CrearGasto">Crear nueva transacción</string>
     <string name="addIngreso">Añadir nuevo ingreso</string>
     <string name="addGasto">Añadir nuevo gasto</string>
+    <string name="error_empty_name">El nombre no puede estar vacío</string>
+    <string name="error_empty_balance">El balance no puede estar vacío</string>
 </resources>
