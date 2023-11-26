@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainer;
+import androidx.fragment.app.FragmentContainerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -24,6 +29,8 @@ import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.userAuth.LoginActivity;
 import com.moneyguardian.userAuth.SignInActivity;
 import com.moneyguardian.util.UsuarioMapper;
+
+import java.util.LinkedList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,6 +47,40 @@ public class MainFragment extends Fragment {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private View root;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        /* Cuando se selecciona uno de los botones / ítems*/
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            int itemId = item.getItemId();
+
+            //TODO cambiar las new LinkedLists por la lista con datos cargados en ambas
+
+            if (itemId == R.id.menu_graph_linear) {
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.chartFragmentContainer, LinearChartFragment.newInstance(new LinkedList<>()))
+                        .commit();
+                return true;
+            }
+
+            if (itemId == R.id.menu_graph_pie) {
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.chartFragmentContainer, PieChartFragment.newInstance(new LinkedList<>()))
+                        .commit();
+                return true;
+            }
+
+
+            //Si no es nula y no entra... Algo falla.
+            throw new IllegalStateException("Unexpected value: " + item.getItemId());
+        }
+    };
+    private FragmentContainerView chartFragmentContainer;
+    private BottomNavigationView navGraphs;
 
 
     public MainFragment() {
@@ -77,6 +118,8 @@ public class MainFragment extends Fragment {
         profileBtn = root.findViewById(R.id.profileButton);
         txtWelcome = root.findViewById(R.id.txtWelcome);
         tipsLayout = root.findViewById(R.id.tipsLayout);
+        chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
+        navGraphs = root.findViewById(R.id.nav_graphs);
 
         if(usuario == null)
             loadUserInfo(root);
@@ -88,6 +131,9 @@ public class MainFragment extends Fragment {
                 startActivity(i);
             }
         });
+
+        //listener to the navigation menu for the graph selection
+        navGraphs.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         return root;
     }

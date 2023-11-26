@@ -78,35 +78,4 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.home_menu_btn) {
-            startActivity(new Intent(this, MainActivity.class));
-            return true;
-        }
-        if(id == R.id.lista_menu_btn){
-            //TODO implement lista view
-            return false;
-        }
-        if(id == R.id.amigos_menu_btn){
-            startActivity(new Intent(this, SocialActivity.class));
-            return true;
-        }
-        if(id == R.id.pagos_conjuntos_menu_btn){
-            startActivity(new Intent(this,SocialActivity.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 }

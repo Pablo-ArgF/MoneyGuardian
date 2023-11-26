@@ -14,35 +14,59 @@
         tools:context=".MainActivity">
 
 
-        <Button
-            android:id="@+id/btnGasto"
-            android:layout_width="178dp"
-            android:layout_height="70dp"
-            android:layout_marginBottom="76dp"
-            android:backgroundTint="@color/red"
-            android:text="@string/registrar_gasto"
-            android:textColor="@color/white"
+        <LinearLayout
+            android:id="@+id/chartLayout"
+            android:layout_width="384dp"
+            android:layout_height="373dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.931"
+            app:layout_constraintHorizontal_bias="0.518"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/txtWelcome"
+            app:layout_constraintVertical_bias="0.132">
 
-        <Button
-            android:id="@+id/btnIngreso"
-            android:layout_width="178dp"
-            android:layout_height="70dp"
-            android:layout_marginBottom="76dp"
-            android:backgroundTint="@color/green"
-            android:text="@string/registrar_ingreso"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnGasto"
-            app:layout_constraintHorizontal_bias="0.675"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
-            app:layout_constraintVertical_bias="1.0" />
+            <!--<com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/nav_graphs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:menu="@menu/graph_types_menu"
+                >
+
+            </com.google.android.material.bottomnavigation.BottomNavigationView>-->
+            <LinearLayout
+                android:id="@+id/menu_graphs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_lineChart"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_linear_graph"
+                    />
+
+                <Button
+                    android:id="@+id/btn_pieChart"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_pie_graph" />
+            </LinearLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/chartFragmentContainer"
+                android:layout_width="386dp"
+                android:layout_height="334dp"
+                />
+
+
+
+        </LinearLayout>
+
+
+
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileButton"
@@ -72,19 +96,6 @@
             app:layout_constraintVertical_bias="0.062" />
 
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@id/chard"
-            android:layout_width="380dp"
-            android:layout_height="300dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.483"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtWelcome"
-            app:layout_constraintVertical_bias="0.13">
-
-        </com.github.mikephil.charting.charts.PieChart>
-
         <LinearLayout
             android:id="@+id/tipsLayout"
             android:layout_width="334dp"
@@ -94,9 +105,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintVertical_bias="0.1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chard"
-            app:layout_constraintVertical_bias="0.1">
+            app:layout_constraintTop_toBottomOf="@+id/chartLayout">
 
 
             <LinearLayout
@@ -129,6 +140,38 @@
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/tips_icon" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.535"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
+            app:layout_constraintVertical_bias="1.0">
+
+            <Button
+                android:id="@+id/btnGasto"
+                android:layout_width="170dp"
+                android:layout_height="57dp"
+                android:layout_marginBottom="36dp"
+                android:backgroundTint="@color/red"
+                android:text="@string/registrar_gasto"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btnIngreso"
+                android:layout_width="170dp"
+                android:layout_height="57dp"
+                android:backgroundTint="@color/green"
+                android:text="@string/registrar_ingreso"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
