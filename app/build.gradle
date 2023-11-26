@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+
 android {
     namespace 'com.moneyguardian'
     compileSdk 34
@@ -60,5 +61,8 @@ dependencies {
 
     //for getting images from store easily
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
+
+    //graphs
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }
