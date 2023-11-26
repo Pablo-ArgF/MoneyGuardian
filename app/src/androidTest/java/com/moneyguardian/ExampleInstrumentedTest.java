@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -52,7 +53,7 @@ public class ExampleInstrumentedTest {
         usuario = new Usuario();
         pagoConjunto = new PagoConjunto("id", testName, testDate, testParticipants, imagen, testDate);
         // Initialize the ItemPagoConjunto object using the constructor
-        itemPagoConjunto = new ItemPagoConjunto(testName, testPagos);
+        itemPagoConjunto = new ItemPagoConjunto(UUID.randomUUID().toString(),testName, testPagos);
         // Initialize the GrupoUsuarios object using the constructor
         grupoUsuarios = new GrupoUsuarios(testName, testUsuarios);
     }

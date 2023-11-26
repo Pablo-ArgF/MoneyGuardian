@@ -60,7 +60,7 @@ public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceIt
         Object[] entradas = balance.entrySet().toArray();
         Map.Entry<UsuarioParaParcelable,Double> entrada = (Map.Entry<UsuarioParaParcelable,Double>)(entradas[position]);
         //TODO: Clean me pls
-        db.collection("users").document(entrada.getKey().getNombre()).get().
+        db.collection("users").document(entrada.getKey().getId()).get().
                 addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot d) {
@@ -97,7 +97,9 @@ public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceIt
         // asignar valores a los componentes
         public void bindUser(final UsuarioParaParcelable amigo, Double balance) {
             nombre.setText(amigo.getNombre());
-            Picasso.get().load(Uri.parse(amigo.getImageURI())).into(perfil);
+            if(perfil != null) {
+                Picasso.get().load(Uri.parse(amigo.getImageURI())).into(perfil);
+            }
             StringBuilder sb = new StringBuilder();
             if(balance > 0) {//color verde
                 this.balance.setTextColor(ContextCompat.getColor(this.itemView.getContext(), R.color.green));

@@ -33,8 +33,8 @@ public class UsuarioParaParcelable implements Parcelable {
         this.email = email;
     }
 
-    public UsuarioParaParcelable(String nombre) {
-        this.nombre = nombre;
+    public UsuarioParaParcelable(String id) {
+        this.id = id;
     }
     public UsuarioParaParcelable(String nombre, String email, String imageURI) {
         this(nombre, email);
@@ -43,6 +43,7 @@ public class UsuarioParaParcelable implements Parcelable {
 
 
     protected UsuarioParaParcelable(Parcel in) {
+        id = in.readString();
         nombre = in.readString();
         email = in.readString();
         imageURI = in.readString();
@@ -50,6 +51,7 @@ public class UsuarioParaParcelable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(nombre);
         dest.writeString(email);
         dest.writeString(imageURI);

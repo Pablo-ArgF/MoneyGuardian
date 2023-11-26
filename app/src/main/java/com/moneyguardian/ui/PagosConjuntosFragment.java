@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.moneyguardian.adapters.PagosConjuntosListaAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -147,37 +150,44 @@ public class PagosConjuntosFragment extends Fragment {
                                 Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
                                 Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
 
-
-
-                                List<Map<String, Map<String, Double>>> itemsPagoSinTransform =
-                                        (List<Map<String, Map<String, Double>>>)
-                                                document.getData().get("itemsPago");
-
                                 List<ItemPagoConjunto> itemsPago = new ArrayList<>();
 
-                                if (itemsPagoSinTransform != null) {
-                                    for (int i = 0; i < itemsPagoSinTransform.size(); i++) {
-                                        for (Map.Entry<String, Map<String, Double>> item :
-                                                itemsPagoSinTransform.get(i).entrySet()) {
-                                            HashMap<UsuarioParaParcelable, Double> usuariosConDinero = new HashMap<>();
-                                            for (Map.Entry<String, Double> usuarios : item.getValue().entrySet()) {
-                                                usuariosConDinero.put(new UsuarioParaParcelable(usuarios.getKey()), usuarios.getValue());
+                                Uri finalImagen = imagen;
+                                db.collection("pagosConjuntos").document(document.getId())
+                               .collection("itemsPago").orderBy("nombre").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
+
+                                        for(DocumentSnapshot itemPago : itemsPagoSnapshot){
+                                            HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+                                            String id = itemPago.getId();
+                                            String nombre = itemPago.getString("nombre");
+                                            HashMap<String, Double> cantidadesConUsersReferences =
+                                                    (HashMap<String, Double>) itemPago.
+                                                            get("UsuariosConPagos");
+
+                                            for(Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()){
+                                                cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
                                             }
 
-                                            itemsPago.add(new ItemPagoConjunto(item.getKey(), usuariosConDinero));
+
+                                            itemsPago.add(new ItemPagoConjunto(id,nombre, cantidadesConUsers));
                                         }
+
+                                        if (nombre == null || fechaLimite == null || fechaPago == null) {
+                                            throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
+                                        }
+
+                                        Log.i("Firebase GET", document.getData().toString());
+
+                                        pagos.add(new PagoConjunto(document.getId(), nombre, fechaPago, new ArrayList<>(), finalImagen, fechaLimite, itemsPago));
+                                        pagosConjuntosListaAdapter.updateList(pagos);
                                     }
-                                }
-                                if (nombre == null || fechaLimite == null || fechaPago == null) {
-                                    throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
-                                }
-
-                                pagos.add(new PagoConjunto(document.getId(), nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite, itemsPago));
-
-                                Log.i("Firebase GET", document.getData().toString());
+                                });
                             }
 
-                            pagosConjuntosListaAdapter.updateList(pagos);
+
 
                         } else {
                             Log.i("Error", "Error getting documents: ", task.getException());

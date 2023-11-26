@@ -61,9 +61,7 @@ public class FormItemsListaPago extends AppCompatActivity {
     private UsuarioParaParcelable usuarioSeleccionado;
     private PagoConjunto pagoConjunto;
 
-    private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private List< DocumentReference> participantes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +73,6 @@ public class FormItemsListaPago extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         totalMoney = (EditText) findViewById(R.id.editTextTotalMoneyItemPago);
         btnCreateNewItemPago = (Button) findViewById(R.id.btnCreteItemPago);
@@ -131,8 +128,6 @@ public class FormItemsListaPago extends AppCompatActivity {
                         {
                             List< DocumentReference> users =
                                     (List< DocumentReference >) task.getResult().get("participantes");
-
-                            participantes = users;
 
                             users.forEach(user ->
                             {
@@ -237,7 +232,7 @@ public class FormItemsListaPago extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
 
-                                            ItemPagoConjunto itemPago = new ItemPagoConjunto(
+                                            ItemPagoConjunto itemPago = new ItemPagoConjunto(UUID.randomUUID().toString(),
                                                     name.getText().toString(), usersSelected);
 
                                             saveInDataBase(itemPago);
@@ -311,14 +306,17 @@ public class FormItemsListaPago extends AppCompatActivity {
 
     private void saveInDataBase(ItemPagoConjunto itemPago) {
         Map<String, Object> itemsPagoConj = new HashMap<>();
+        itemsPagoConj.put("nombre",itemPago.getNombre());
         Map<String, Double> usersWithMoney = new HashMap<>();
         for(Map.Entry<UsuarioParaParcelable, Double> u : itemPago.getPagos().entrySet()){
             usersWithMoney.put(u.getKey().getId(),u.getValue());
         }
-        itemsPagoConj.put(itemPago.getNombre(),usersWithMoney);
 
-        db.collection("pagosConjuntos").document(pagoConjunto.getId())
-                .update("itemsPago", FieldValue.arrayUnion(itemsPagoConj)).addOnSuccessListener(new OnSuccessListener<Void>() {
+        itemsPagoConj.put("UsuariosConPagos",usersWithMoney);
+
+        db.collection("pagosConjuntos").document(pagoConjunto.getId()).
+                collection("itemsPago").document(itemPago.getId())
+                .set(itemsPagoConj).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.i("FIREBASE SET", "Se añadió el objeto");

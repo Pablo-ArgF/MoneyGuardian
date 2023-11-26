@@ -7,56 +7,69 @@
     android:layout_height="match_parent"
     tools:context=".ui.ListaPagosFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/iconPago"
-            android:layout_width="54dp"
-            android:layout_height="51dp"
-            app:layout_constraintBottom_toTopOf="@+id/mainListPagosRecycler"
-            app:layout_constraintEnd_toStartOf="@+id/namePagos"
-            app:layout_constraintHorizontal_bias="0.731"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.586"></ImageView>
+            android:layout_width="60dp"
+            android:layout_height="57dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="10dp"></ImageView>
 
         <TextView
             android:id="@+id/namePagos"
-            android:layout_width="286dp"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toTopOf="@+id/mainListPagosRecycler"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.848"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.531" />
+            android:layout_width="match_parent"
+            android:layout_height="27dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="18dp"
+            android:layout_toEndOf="@+id/iconPago"
+            android:textSize="22sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mainListPagosRecycler"
-            android:layout_width="374dp"
-            android:layout_height="513dp"
-            app:layout_constraintBottom_toTopOf="@+id/btnNewItemPago"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.486"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.832">
+            android:layout_width="wrap_content"
+            android:layout_height="450dp"
+            android:layout_above="@+id/btnNewItemPago"
+            android:layout_below="@+id/namePagos"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="13dp"
+            android:layout_marginBottom="26dp">
 
         </androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/btnNewItemPago"
-            android:layout_width="177dp"
-            android:layout_height="51dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="89dp"
+            android:layout_marginEnd="95dp"
+            android:layout_marginBottom="15dp"
             android:text="@string/NuevoItemPago"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.947" />
+            android:textSize="16sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="103dp"
+            android:clickable="true"
+            android:src="@drawable/equis" />
+
+    </RelativeLayout>
 </FrameLayout>

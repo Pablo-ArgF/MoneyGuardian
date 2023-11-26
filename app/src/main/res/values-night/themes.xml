@@ -4,5 +4,17 @@
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/blue</item>
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="floatingActionButtonStyle">@style/FabStyle</item>
     </style>
+
+    <style name="FabStyle" parent="Widget.Design.FloatingActionButton">
+        <item name="shapeAppearanceOverlay">@style/FabShapeStyle</item>
+        <item name="borderWidth">0dp</item>
+    </style>
+
+    <style name="FabShapeStyle" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">50%</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
 </resources>

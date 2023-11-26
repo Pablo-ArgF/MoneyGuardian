@@ -7,46 +7,49 @@
     android:layout_height="match_parent"
     tools:context=".ui.PagosConjuntosFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:id="@+id/layoutFragmentPagosConjuntos"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/textNombrePagoConjunto"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="170dp"
             android:text="@string/nombrePagoConjunto"
-            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.065"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.035" />
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPagosConjuntos"
-            android:layout_width="369dp"
-            android:layout_height="630dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.38"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textNombrePagoConjunto"
-            app:layout_constraintVertical_bias="0.257" />
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:layout_above="@+id/btnNewPagoConjunto"
+            android:layout_below="@+id/textNombrePagoConjunto"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="25dp" />
 
         <Button
             android:id="@+id/btnNewPagoConjunto"
-            android:layout_width="wrap_content"
+            android:layout_width="259dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="51dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="15dp"
             android:text="@string/AñadirPagoConjunto"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/recyclerPagosConjuntos"
-            app:layout_constraintStart_toStartOf="@+id/recyclerPagosConjuntos"
-            app:layout_constraintTop_toTopOf="@+id/recyclerPagosConjuntos"
-            app:layout_constraintVertical_bias="0.922" />
+            android:textSize="16sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </FrameLayout>

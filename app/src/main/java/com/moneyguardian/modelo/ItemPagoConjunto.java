@@ -10,17 +10,21 @@ import java.util.HashMap;
 
 
 public class ItemPagoConjunto implements Parcelable {
+    private String id;
     private String nombre;
     // Consider adding a field for 'Foto' or 'Icono' if needed
     private HashMap<UsuarioParaParcelable, Double> pagos;
 
-    public ItemPagoConjunto(String nombre, HashMap<UsuarioParaParcelable, Double> pagos) {
+    public ItemPagoConjunto(String id,String nombre, HashMap<UsuarioParaParcelable, Double> pagos) {
+        this.id = id;
         this.nombre = nombre;
         this.pagos = pagos;
     }
 
-    protected ItemPagoConjunto(Parcel in) {
 
+
+    protected ItemPagoConjunto(Parcel in) {
+        id = in.readString();
         nombre = in.readString();
         pagos = new HashMap<>();
         pagos = in.readHashMap(UsuarioParaParcelable.class.getClassLoader());
@@ -28,6 +32,7 @@ public class ItemPagoConjunto implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(nombre);
         dest.writeMap(pagos);
     }
@@ -49,6 +54,14 @@ public class ItemPagoConjunto implements Parcelable {
         }
     };
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -65,14 +78,14 @@ public class ItemPagoConjunto implements Parcelable {
         this.pagos = pagos;
     }
 
-    public int getMoney(){
-        int total = 0;
+    public double getMoney(){
+        double total = 0;
 
         for(UsuarioParaParcelable u : pagos.keySet()){
             total += abs(pagos.getOrDefault(u,0.0));
         }
 
-        return total;
+        return Math.round(total*100.0)/100.0;
     }
 
     public String getUser() {

@@ -89,7 +89,6 @@ public class ListaPagosFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //TODO:Pillar los datos de la base de datos.
     }
 
     @Override
@@ -134,7 +133,6 @@ public class ListaPagosFragment extends Fragment {
                     }
                 });
         listItemsPagosView.setAdapter(lpAdapter);
-        //cargarDatos();
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {
@@ -150,55 +148,13 @@ public class ListaPagosFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        assert data != null;
-        ItemPagoConjunto itemNuevo = data.getParcelableExtra("NEW_ITEM");
 
         if (requestCode == GESTION_ACTIVITY) {
             if(resultCode == RESULT_OK) {
-                cargarDatos();
-
+                assert data != null;
+                ItemPagoConjunto itemNuevo = data.getParcelableExtra("NEW_ITEM");
+                lpAdapter.addItem(itemNuevo);
             }
         }
     }
-
-    public void cargarDatos(){
-        db = FirebaseFirestore.getInstance();
-
-        listaPagos = new ArrayList<>();
-
-        db.collection("pagosConjuntos").
-                document(pagoConjunto.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            List<Map<String, Map<String, Double>>> items = (List<Map<String, Map<String, Double>>>) document.getData().get("itemsPago");
-                            if(items != null && items.size() != 0) {
-                                for (int i = 0;i < items.size();i++) {
-                                    for (Map.Entry<String, Map<String, Double>> item : items.get(i).entrySet()) {
-                                        HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
-                                        for (Map.Entry<String, Double> users : item.getValue().entrySet()) {
-                                            cantidadesConUsers.put(new UsuarioParaParcelable(users.getKey()), Double.parseDouble(users.getValue().toString()));
-                                        }
-
-                                        listaPagos.add(new ItemPagoConjunto(item.getKey(), cantidadesConUsers));
-                                    }
-                                }
-                            }
-
-                            lpAdapter = new ItemListaAdapter(listaPagos,
-                                    new ItemListaAdapter.OnItemClickListener() {
-                                        @Override
-                                        public void onItemClick(ItemPagoConjunto itemPago) {
-                                            clickonItem(itemPago);
-                                        }
-                                    });
-                            listItemsPagosView.setAdapter(lpAdapter);
-                        }else{
-                            Log.i("Error", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-    }
-
 }

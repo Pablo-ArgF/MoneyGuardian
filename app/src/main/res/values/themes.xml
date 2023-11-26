@@ -5,7 +5,18 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="colorPrimary">@color/blue</item>
+        <item name="floatingActionButtonStyle">@style/FabStyle</item>
     </style>
 
     <style name="Theme.MoneyGuardian" parent="Base.Theme.MoneyGuardian" />
+
+    <style name="FabStyle" parent="Widget.Design.FloatingActionButton">
+        <item name="shapeAppearanceOverlay">@style/FabShapeStyle</item>
+        <item name="borderWidth">0dp</item>
+    </style>
+
+    <style name="FabShapeStyle" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">50%</item>
+        <item name="shapeCornerFamily">rounded</item>
+    </style>
 </resources>

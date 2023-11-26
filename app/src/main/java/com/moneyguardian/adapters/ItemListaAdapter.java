@@ -31,7 +31,7 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
     @Override
     public ItemListaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.pago_lista_recycler, parent, false);
+                .inflate(R.layout.linea_items_pago_lista, parent, false);
         return new ItemListaViewHolder(itemView);
     }
 
@@ -48,6 +48,11 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
             return 0;
         }
         return listaItemsPago.size() ;
+    }
+
+    public void addItem(ItemPagoConjunto item){
+        listaItemsPago.add(item);
+        notifyItemInserted(listaItemsPago.size()-1);
     }
 
     public static class ItemListaViewHolder extends RecyclerView.ViewHolder{
