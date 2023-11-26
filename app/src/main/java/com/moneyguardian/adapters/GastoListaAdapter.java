@@ -1,9 +1,11 @@
 package com.moneyguardian.adapters;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -17,7 +19,9 @@ import com.moneyguardian.modelo.Gasto;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -27,7 +31,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         void onItemClick(Gasto gasto);
     }
 
-    private boolean[] checked;
+    private static Map<Gasto, Boolean> checkedGastos = new HashMap<>();
     private List<Gasto> listaGastos;
     private OnItemClickListener listener;
 
@@ -38,29 +42,20 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
 
     public void add(Gasto g) {
         this.listaGastos.add(g);
+        checkedGastos.put(g, false);
         notifyDataSetChanged();
     }
 
-    /**
-     * Listener para las checkbox
-     */
-    CompoundButton.OnCheckedChangeListener mListener = new CompoundButton.OnCheckedChangeListener() {
-
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            checked[(Integer) buttonView.getTag()] = isChecked;
-        }
-    };
-
-    public boolean isChecked(int i) {
-        return checked[i];
+    public Map<Gasto, Boolean> getCheckedGastos() {
+        return new HashMap<>(checkedGastos);
     }
-
 
     @NonNull
     @Override
     public GastoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.linea_gasto_usuario, parent, false);
+
         return new GastoListaAdapter.GastoViewHolder(itemView);
     }
 
@@ -92,6 +87,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             balance = (TextView) itemView.findViewById(R.id.balanceGasto);
             imagenGasto = (CircleImageView) itemView.findViewById(R.id.imagenGasto);
             fecha = (TextView) itemView.findViewById(R.id.textFechaGasto);
+
         }
 
         public void bindUser(final Gasto gasto, final OnItemClickListener listener) {
@@ -111,7 +107,17 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.i("GASTO", checkedGastos.get(gasto.getNombre()).toString());
                     listener.onItemClick(gasto);
+                }
+            });
+
+            CheckBox checkBox = itemView.findViewById(R.id.checkBoxGasto);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // Ponemos el contrario de si está o no cambiado
+                    checkedGastos.put(gasto, Boolean.FALSE.equals(checkedGastos.get(gasto.getNombre())));
                 }
             });
         }

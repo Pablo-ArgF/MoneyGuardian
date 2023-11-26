@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +19,7 @@ public class Gasto implements Parcelable {
     private float balance;
     private String categoria;
     private Date fechaCreacion;
+    private DocumentReference reference;
 
     public Gasto() {
 
@@ -43,6 +46,14 @@ public class Gasto implements Parcelable {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setReference(DocumentReference ref) {
+        this.reference = ref;
+    }
+
+    public DocumentReference getReference() {
+        return this.reference;
     }
 
     public String getNombre() {

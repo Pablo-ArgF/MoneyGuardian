@@ -105,4 +105,5 @@
     <string name="addGasto">Añadir nuevo gasto</string>
     <string name="error_empty_name">El nombre no puede estar vacío</string>
     <string name="error_empty_balance">El balance no puede estar vacío</string>
+    <string name="SelectAll">Seleccionar todos</string>
 </resources>
