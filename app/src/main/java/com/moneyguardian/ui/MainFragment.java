@@ -4,33 +4,37 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainer;
 import androidx.fragment.app.FragmentContainerView;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
+import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.ui.charts.LinearChartFragment;
+import com.moneyguardian.ui.charts.PieChartFragment;
 import com.moneyguardian.userAuth.LoginActivity;
 import com.moneyguardian.userAuth.SignInActivity;
+import com.moneyguardian.util.GastoMapper;
 import com.moneyguardian.util.UsuarioMapper;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -47,40 +51,12 @@ public class MainFragment extends Fragment {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private View root;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        /* Cuando se selecciona uno de los botones / ítems*/
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            int itemId = item.getItemId();
-
-            //TODO cambiar las new LinkedLists por la lista con datos cargados en ambas
-
-            if (itemId == R.id.menu_graph_linear) {
-                getParentFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.chartFragmentContainer, LinearChartFragment.newInstance(new LinkedList<>()))
-                        .commit();
-                return true;
-            }
-
-            if (itemId == R.id.menu_graph_pie) {
-                getParentFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.chartFragmentContainer, PieChartFragment.newInstance(new LinkedList<>()))
-                        .commit();
-                return true;
-            }
-
-
-            //Si no es nula y no entra... Algo falla.
-            throw new IllegalStateException("Unexpected value: " + item.getItemId());
-        }
-    };
     private FragmentContainerView chartFragmentContainer;
-    private BottomNavigationView navGraphs;
+    private Button btnMenuGraphLine;
+    private Button btnMenuGraphPie;
+    private LinearChartFragment linearChartFragment = LinearChartFragment.newInstance(new ArrayList<>());
+    private PieChartFragment pieChartFragment = PieChartFragment.newInstance(new ArrayList<>());
+
 
 
     public MainFragment() {
@@ -111,7 +87,6 @@ public class MainFragment extends Fragment {
             //if no user -> send to login page
             Intent intent = new Intent(this.getActivity(), LoginActivity.class);
             startActivity(intent);
-
         }
         View root = inflater.inflate(R.layout.fragment_main,container, false);
         this.root = root;
@@ -119,7 +94,9 @@ public class MainFragment extends Fragment {
         txtWelcome = root.findViewById(R.id.txtWelcome);
         tipsLayout = root.findViewById(R.id.tipsLayout);
         chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
-        navGraphs = root.findViewById(R.id.nav_graphs);
+        btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
+        btnMenuGraphPie = root.findViewById(R.id.btn_pieChart);
+
 
         if(usuario == null)
             loadUserInfo(root);
@@ -132,11 +109,39 @@ public class MainFragment extends Fragment {
             }
         });
 
-        //listener to the navigation menu for the graph selection
-        navGraphs.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        //by default we load the line graph
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.chartFragmentContainer, linearChartFragment)
+                .commit();
+
+        btnMenuGraphLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.chartFragmentContainer, linearChartFragment)
+                        .commit();
+            }
+        });
+
+        btnMenuGraphPie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.chartFragmentContainer, pieChartFragment)
+                        .commit();
+            }
+        });
+
+
+
 
         return root;
     }
+
+
 
 
     private void loadUserInfo(View root){
@@ -163,8 +168,46 @@ public class MainFragment extends Fragment {
                             //we load the name in the welcome msg
                             txtWelcome.setText( getString(R.string.welcome_msg,
                                     usuario.getNombre()));
+
+                            //we load the gastos of the user
+                            //we get the references for the different gastos
+                            Object obj = documentSnapshot.get("gastos");
+                            //if has gastos, load them
+                            if(obj != null){
+                                List<DocumentReference> refs = (List<DocumentReference>) obj;
+                                updateChartDatasetSize(refs.size());
+                                for(DocumentReference ref : refs){
+                                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            //we map this to a Gasto object
+                                            Gasto g = GastoMapper.map(documentSnapshot);
+                                            addEntryToGraphs(g);
+                                        }
+                                    });
+                                }
+                            }
                         }
                     }
                 });
+    }
+
+    /**
+     * adds the given gasto to all the graphs
+     * @param g
+     */
+    private void addEntryToGraphs(Gasto g) {
+        linearChartFragment.addData(g);
+        pieChartFragment.addData(g);
+    }
+
+    /**
+     * Goes one by one throug all the charts and tells them the size of data. When charts detect
+     * that all data has been received, they update
+     * @param size
+     */
+    private void updateChartDatasetSize(int size) {
+        linearChartFragment.setDatasetSize(size);
+        pieChartFragment.setDatasetSize(size);
     }
 }

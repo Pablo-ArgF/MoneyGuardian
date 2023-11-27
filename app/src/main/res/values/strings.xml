@@ -105,4 +105,6 @@
     <string name="addGasto">Añadir nuevo gasto</string>
     <string name="title_linear_graph">Linea</string>
     <string name="title_pie_graph">Tarta</string>
+    <string name="graph_legend_gastos">Gastos</string>
+    <string name="graph_legend_ingresos">Ingresos</string>
 </resources>

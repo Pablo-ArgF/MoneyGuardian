@@ -99,13 +99,10 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             nombre.setText(gasto.getNombre());
             fecha.setText(gasto.getFechaCreacion());
 
-            if (gasto.getImagen() != null) {
-                Uri imageUri = Uri.parse(gasto.getImagen());
-                Picasso.get().load(imageUri).into(imagenGasto);
-            } else {
+
                 int imageMoney = gasto.getBalance() > 0 ? R.drawable.ic_money : R.drawable.ic_money_off;
                 imagenGasto.setImageResource(imageMoney);
-            }
+
 
             // Si es un gasto o un ingreso
             String balancePago = (gasto.getBalance() > 0 ? "+" : "") + (gasto.getBalance()) + "€";

@@ -17,32 +17,44 @@ public class Gasto implements Parcelable {
 
     private String nombre;
     private float balance;
-    private String imagen;
-    private Date fechaCreación;
+    private String categoria;
+    private Date fechaCreacion;
 
     public Gasto() {
 
     }
 
-    public Gasto(String nombre, float balance, String imagen) {
+    public Gasto(String nombre, float balance, String categoria) {
         this.nombre = nombre;
         this.balance = balance;
-        this.imagen = imagen;
+        this.categoria = categoria;
     }
 
     public Gasto(String nombre, float balance, String imagen, Date fechaCreación) {
         this(nombre, balance, imagen);
-        this.fechaCreación = fechaCreación;
+        this.fechaCreacion = fechaCreación;
     }
 
     public Gasto(String nombre, float balance, String imagen, String fechaCreación) {
         this(nombre, balance, imagen);
         SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", new Locale("es"));
         try {
-            this.fechaCreación = formater.parse(fechaCreación);
+            this.fechaCreacion = formater.parse(fechaCreación);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
     public String getNombre() {
@@ -61,13 +73,7 @@ public class Gasto implements Parcelable {
         this.balance = balance;
     }
 
-    public String getImagen() {
-        return imagen;
-    }
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
 
     @Override
     public int describeContents() {
@@ -78,13 +84,14 @@ public class Gasto implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeFloat(balance);
-        dest.writeString(imagen);
+        dest.writeString(categoria);
     }
 
     protected Gasto(Parcel in) {
         nombre = in.readString();
         balance = in.readFloat();
-        imagen = in.readParcelable(Uri.class.getClassLoader());
+        categoria = in.readString();
+        fechaCreacion = in.readParcelable(Date.class.getClassLoader());
     }
 
     public static final Creator<Gasto> CREATOR = new Creator<Gasto>() {
@@ -100,6 +107,9 @@ public class Gasto implements Parcelable {
     };
 
     public String getFechaCreacion() {
-        return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreación);
+        return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreacion);
+    }
+    public Date getFechaCreacionAsDate(){
+        return fechaCreacion;
     }
 }

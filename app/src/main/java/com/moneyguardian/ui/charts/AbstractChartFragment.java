@@ -1,4 +1,4 @@
-package com.moneyguardian.ui;
+package com.moneyguardian.ui.charts;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +16,8 @@ import java.util.List;
 public abstract class AbstractChartFragment extends Fragment {
     public static final String DATOS = "DATOS";
 
-    private List<Gasto> datos;
+    List<Gasto> datos;
+    int datasetSize;
 
     public AbstractChartFragment() {
         // Required empty public constructor
@@ -28,5 +29,17 @@ public abstract class AbstractChartFragment extends Fragment {
             datos = getArguments().getParcelableArrayList(DATOS);
         }
     }
+
+    public void setDatasetSize(int size){
+        this.datasetSize = size;
+    }
+
+    public void addData(Gasto g){
+        this.datos.add(g);
+        if(this.datos.size() == datasetSize)
+            updateUI();
+    }
+
+    public abstract void updateUI();
 
 }

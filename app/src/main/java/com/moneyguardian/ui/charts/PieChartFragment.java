@@ -1,9 +1,6 @@
-package com.moneyguardian.ui;
+package com.moneyguardian.ui.charts;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +11,10 @@ import com.moneyguardian.modelo.Gasto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinearChartFragment extends AbstractChartFragment {
+public class PieChartFragment extends AbstractChartFragment {
 
-    public static LinearChartFragment newInstance(List<Gasto> param1) {
-        LinearChartFragment fragment = new LinearChartFragment();
+    public static PieChartFragment newInstance(List<Gasto> param1) {
+        PieChartFragment fragment = new PieChartFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(AbstractChartFragment.DATOS, new ArrayList<>(param1));
         fragment.setArguments(args);
@@ -28,7 +25,11 @@ public class LinearChartFragment extends AbstractChartFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_linear_chart, container, false);
+        return inflater.inflate(R.layout.fragment_pie_chart, container, false);
     }
 
+    @Override
+    public void updateUI() {
+        //TODO
+    }
 }
