@@ -125,7 +125,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                         final String selectedDate = day + " / " + (month + 1) + " / " + year;
                         etPlannedDate.setText(selectedDate);
                     }
-                });
+                }, System.currentTimeMillis() - 1000);
 
                 newFragment.show(getSupportFragmentManager(), "datePicker");
             }
@@ -158,10 +158,10 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
                     // Si no tenemos imagen
                     if (selectedImageUri == null) {
-                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID,nombrePago.getText().toString(), new Date(), participantes, dateLimite);
+                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantes, dateLimite);
                     } else {
                         // Si tenemos imagen
-                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID,nombrePago.getText().toString(), new Date(), participantes, selectedImageUri, dateLimite);
+                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantes, selectedImageUri, dateLimite);
 
                         // Añadimos la imagen a la BD
                         Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
