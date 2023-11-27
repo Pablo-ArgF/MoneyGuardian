@@ -17,7 +17,7 @@ public class DateXValueFormatter extends IndexAxisValueFormatter {
         // Convert float value to date string
         // Convert from seconds back to milliseconds to format time  to show to the user
         long emissionsMilliSince1970Time = (long) value;
-        DateFormat simple = new SimpleDateFormat("dd MMM yyyy");
+        DateFormat simple = new SimpleDateFormat("dd/MM/yy");
         // Show time in local version
         Date timeMilliseconds = new Date(emissionsMilliSince1970Time);
 

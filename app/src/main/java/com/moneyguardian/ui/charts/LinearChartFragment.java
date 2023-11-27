@@ -57,8 +57,10 @@ public class LinearChartFragment extends AbstractChartFragment {
         });
         LineData lineData = new LineData();
         LineDataSet datasetGastos = new LineDataSet(entriesGastos,getString(R.string.graph_legend_gastos));
+        datasetGastos.setColor(R.color.red);
         lineData.addDataSet(datasetGastos);
         LineDataSet datasetIngresos = new LineDataSet(entriesIngresos,getString(R.string.graph_legend_ingresos));
+        datasetIngresos.setColor(R.color.green);
         lineData.addDataSet(datasetIngresos);
 
         //format the xaxis to accept dates
@@ -67,8 +69,7 @@ public class LinearChartFragment extends AbstractChartFragment {
         xAxis.setLabelCount(datos.size());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        //xAxis.setAxisMaximum(System.currentTimeMillis());
-        //xAxis.setAxisMinimum(System.currentTimeMillis() - 100000);
+
 
         xAxis.setDrawLabels(true);
         xAxis.setDrawGridLines(true);
