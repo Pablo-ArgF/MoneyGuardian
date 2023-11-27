@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,8 +29,8 @@ import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.PagoConjunto;
+import com.moneyguardian.util.GastosUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListaGastosFragment extends Fragment {
@@ -122,6 +125,30 @@ public class ListaGastosFragment extends Fragment {
                 startActivityForResult(intent, GESTION_GASTO);
             }
         });
+
+        // Borrado y seleccionado de  gastos
+        CheckBox checkBoxSelectAll = root.findViewById(R.id.cbSelectAllGastos);
+        checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                adapter.selectAll();
+                // TODO Va a funcionar?
+                View recycler = root.findViewById(R.id.recyclerGastos);
+                recycler.findViewById(R.id.checkBoxGasto).setSelected(true);
+            }
+        });
+
+        Button buttonDelete = root.findViewById(R.id.btnEliminarGasto);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (adapter.getCheckedGastos() != null)
+                    GastosUtil.deleteGastos(adapter.getCheckedGastos());
+                else
+                    Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         return root;
     }

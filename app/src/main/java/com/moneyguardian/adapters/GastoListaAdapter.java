@@ -1,5 +1,7 @@
 package com.moneyguardian.adapters;
 
+import static java.util.Map.entry;
+
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +40,12 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     public GastoListaAdapter(OnItemClickListener listener) {
         this.listaGastos = new ArrayList<>();
         this.listener = listener;
+    }
+
+    public void selectAll() {
+        for (Map.Entry<Gasto, Boolean> entry : checkedGastos.entrySet()) {
+            entry.setValue(true);
+        }
     }
 
     public void add(Gasto g) {
