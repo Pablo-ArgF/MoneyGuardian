@@ -34,6 +34,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     }
 
     private static Map<Gasto, Boolean> checkedGastos = new HashMap<>();
+    private static Map<Gasto, CheckBox> checkBoxMap = new HashMap<>();
     private List<Gasto> listaGastos;
     private OnItemClickListener listener;
 
@@ -42,10 +43,17 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         this.listener = listener;
     }
 
-    public void selectAll() {
+    public void selectAll(Boolean isChecked) {
         for (Map.Entry<Gasto, Boolean> entry : checkedGastos.entrySet()) {
-            entry.setValue(true);
+            entry.setValue(isChecked);
         }
+        // TODO la funcionalidad funcina, el marcado de checkboxes, no
+        /**
+         for (Map.Entry<Gasto, CheckBox> entry : checkBoxMap.entrySet()) {
+         entry.getValue().setSelected(isChecked);
+         }
+         notifyDataSetChanged();
+         */
     }
 
     public void add(Gasto g) {
@@ -121,11 +129,12 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             });
 
             CheckBox checkBox = itemView.findViewById(R.id.checkBoxGasto);
+            checkBoxMap.put(gasto, checkBox);
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     // Ponemos el contrario de si está o no cambiado
-                    checkedGastos.put(gasto, Boolean.FALSE.equals(checkedGastos.get(gasto.getNombre())));
+                    checkedGastos.put(gasto, isChecked);
                 }
             });
         }

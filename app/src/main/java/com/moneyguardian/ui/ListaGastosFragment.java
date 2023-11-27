@@ -131,10 +131,11 @@ public class ListaGastosFragment extends Fragment {
         checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                adapter.selectAll();
+                adapter.selectAll(isChecked);
                 // TODO Va a funcionar?
                 View recycler = root.findViewById(R.id.recyclerGastos);
-                recycler.findViewById(R.id.checkBoxGasto).setSelected(true);
+                CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
+                cb.setSelected(isChecked);
             }
         });
 
