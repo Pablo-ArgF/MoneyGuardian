@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.content.ContextCompat;
+
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -44,39 +47,52 @@ public class LinearChartFragment extends AbstractChartFragment {
 
     @Override
     public void updateUI() {
+        float textSize = 12;
+
         //we transform the list of Gasto objects into a list of entry objects
         List<Entry> entriesIngresos = new ArrayList<>();
         List<Entry> entriesGastos = new ArrayList<>();
         datos.forEach(dato ->{
-            if(dato.getBalance() > 0)
+            if(dato.getBalance() >= 0)
                 entriesIngresos.add(new Entry(dato.getFechaCreacionAsDate().getTime(),dato.getBalance()));
             else{
-                if (dato.getBalance()< 0)
-                    entriesGastos.add(new Entry(dato.getFechaCreacionAsDate().getTime(),dato.getBalance()));
+                entriesGastos.add(new Entry(dato.getFechaCreacionAsDate().getTime(),dato.getBalance()));
             }
         });
         LineData lineData = new LineData();
+
         LineDataSet datasetGastos = new LineDataSet(entriesGastos,getString(R.string.graph_legend_gastos));
-        datasetGastos.setColor(R.color.red);
+        datasetGastos.setColor(ContextCompat.getColor(getContext(),R.color.red));
+        datasetGastos.setCircleColor(ContextCompat.getColor(getContext(),R.color.red));
         lineData.addDataSet(datasetGastos);
+
         LineDataSet datasetIngresos = new LineDataSet(entriesIngresos,getString(R.string.graph_legend_ingresos));
-        datasetIngresos.setColor(R.color.green);
+        datasetIngresos.setColor(ContextCompat.getColor(getContext(),R.color.green));
+        datasetIngresos.setCircleColor(ContextCompat.getColor(getContext(),R.color.green));
         lineData.addDataSet(datasetIngresos);
+
+        lineData.setValueTextSize(textSize);
 
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
         xAxis.setValueFormatter(new DateXValueFormatter());
         xAxis.setLabelCount(datos.size());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-
+        xAxis.setTextSize(textSize);
 
         xAxis.setDrawLabels(true);
-        xAxis.setDrawGridLines(true);
+        xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(true);
 
+        //format the Yaxis
+        chart.getAxisLeft().setTextSize(textSize);
+        chart.getAxisRight().setEnabled(false);
 
 
+        Description description = new Description();
+        description.setText(getString(R.string.description_line_graph));
+
+        chart.setDescription(description);
         chart.setData(lineData);
         chart.invalidate();
     }

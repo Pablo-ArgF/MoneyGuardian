@@ -1,6 +1,8 @@
 package com.moneyguardian.util;
 
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,10 +12,11 @@ import java.util.Locale;
 /**
  * This class is used to map the x values of graphs from milis to date
  */
-public class DateXValueFormatter extends IndexAxisValueFormatter {
-    @Override
-    public String getFormattedValue(float value) {
+public class DateXValueFormatter extends ValueFormatter {
 
+
+    @Override
+    public String getAxisLabel(float value, AxisBase axis) {
         // Convert float value to date string
         // Convert from seconds back to milliseconds to format time  to show to the user
         long emissionsMilliSince1970Time = (long) value;
@@ -23,4 +26,5 @@ public class DateXValueFormatter extends IndexAxisValueFormatter {
 
         return simple.format(timeMilliseconds);
     }
+
 }

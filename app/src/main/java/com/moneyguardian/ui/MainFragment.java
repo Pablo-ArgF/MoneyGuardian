@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleOwnerKt;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,16 +32,27 @@ import com.moneyguardian.ui.charts.PieChartFragment;
 import com.moneyguardian.userAuth.LoginActivity;
 import com.moneyguardian.userAuth.SignInActivity;
 import com.moneyguardian.util.GastoMapper;
+import com.moneyguardian.util.LoadDataHelper;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.CoroutineScopeKt;
+import kotlinx.coroutines.CoroutineStart;
+import kotlinx.coroutines.GlobalScope;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.future.FutureKt;
 
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements LifecycleOwner {
 
     private CircleImageView profileBtn;
     private TextView txtWelcome;
@@ -176,7 +189,28 @@ public class MainFragment extends Fragment {
                             if(obj != null){
                                 List<DocumentReference> refs = (List<DocumentReference>) obj;
                                 updateChartDatasetSize(refs.size());
-                                for(DocumentReference ref : refs){
+
+                                //this code works god knows why
+                                CompletableFuture<List<Gasto>> gastos = FutureKt.future(
+                                        CoroutineScopeKt.CoroutineScope(EmptyCoroutineContext.INSTANCE),
+                                        EmptyCoroutineContext.INSTANCE,
+                                        CoroutineStart.DEFAULT,
+                                        (scope,continuation) -> {
+                                            return LoadDataHelper.loadGastosData(
+                                                    LifecycleOwnerKt.getLifecycleScope(MainFragment.this),
+                                                    refs,
+                                                    (Continuation<? super List<? extends Gasto>>) continuation);
+                                        }
+                                        );
+                                try {
+                                    gastos.get().forEach(g -> addEntryToGraphs(g));
+                                } catch (ExecutionException e) {
+                                    throw new RuntimeException(e);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                /*for(DocumentReference ref : refs){
                                     ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -185,7 +219,7 @@ public class MainFragment extends Fragment {
                                             addEntryToGraphs(g);
                                         }
                                     });
-                                }
+                                }*/
                             }
                         }
                     }
