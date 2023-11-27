@@ -3,6 +3,7 @@ package com.moneyguardian.util;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -15,12 +16,11 @@ public class DateXValueFormatter extends IndexAxisValueFormatter {
 
         // Convert float value to date string
         // Convert from seconds back to milliseconds to format time  to show to the user
-        long emissionsMilliSince1970Time = ((long) value) * 1000;
-
+        long emissionsMilliSince1970Time = (long) value;
+        DateFormat simple = new SimpleDateFormat("dd MMM yyyy");
         // Show time in local version
         Date timeMilliseconds = new Date(emissionsMilliSince1970Time);
-        DateFormat dateTimeFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 
-        return dateTimeFormat.format(timeMilliseconds);
+        return simple.format(timeMilliseconds);
     }
 }

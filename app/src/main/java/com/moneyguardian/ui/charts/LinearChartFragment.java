@@ -15,6 +15,7 @@ import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.DateXValueFormatter;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,18 +38,7 @@ public class LinearChartFragment extends AbstractChartFragment {
         View root = inflater.inflate(R.layout.fragment_linear_chart, container, false);
 
         this.chart = root.findViewById(R.id.lineChart);
-
-
-        //format the xaxis to accept dates
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setValueFormatter(new DateXValueFormatter());
-        xAxis.setLabelCount(datos.size());
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawLabels(true);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(true);
-
-
+        chart.setTouchEnabled(false);
         return root;
     }
 
@@ -70,6 +60,21 @@ public class LinearChartFragment extends AbstractChartFragment {
         lineData.addDataSet(datasetGastos);
         LineDataSet datasetIngresos = new LineDataSet(entriesIngresos,getString(R.string.graph_legend_ingresos));
         lineData.addDataSet(datasetIngresos);
+
+        //format the xaxis to accept dates
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setValueFormatter(new DateXValueFormatter());
+        xAxis.setLabelCount(datos.size());
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        //xAxis.setAxisMaximum(System.currentTimeMillis());
+        //xAxis.setAxisMinimum(System.currentTimeMillis() - 100000);
+
+        xAxis.setDrawLabels(true);
+        xAxis.setDrawGridLines(true);
+        xAxis.setDrawAxisLine(true);
+
+
 
         chart.setData(lineData);
         chart.invalidate();

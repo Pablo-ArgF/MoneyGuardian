@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class AbstractChartFragment extends Fragment {
     public static final String DATOS = "DATOS";
 
-    List<Gasto> datos;
+    List<Gasto> datos = new ArrayList<>();
     int datasetSize;
 
     public AbstractChartFragment() {
