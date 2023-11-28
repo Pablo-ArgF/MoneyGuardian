@@ -15,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -217,6 +218,15 @@ public class ListaGastosFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bundle b = data.getExtras();
+        if (b.get(GASTO_CREADO) != null) {
+            this.adapter.add((Gasto) b.get(GASTO_CREADO));
+        }
     }
 
     public void clickonItem(PagoConjunto pagoConjunto) {

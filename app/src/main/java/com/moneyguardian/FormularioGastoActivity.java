@@ -26,6 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.ui.DatePickerFragment;
 import com.moneyguardian.ui.ListaGastosFragment;
+import com.moneyguardian.util.GastosUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -139,8 +140,7 @@ public class FormularioGastoActivity extends AppCompatActivity {
 
         // Guardamos la referencia al objeto en el usuario
         // Hacemos un update que añadirá el objeto a la lista en el usuario
-        db.collection("users/").document(mAuth.getUid()).update("gastos",
-                FieldValue.arrayUnion(gastoReference));
+        GastosUtil.addGasto(gastoReference);
 
         return gasto;
     }

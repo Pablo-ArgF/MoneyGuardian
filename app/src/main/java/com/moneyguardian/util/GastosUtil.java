@@ -19,8 +19,9 @@ public class GastosUtil {
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public static void addGasto(Gasto g) {
-
+    public static void addGasto(DocumentReference gastoReference) {
+        db.collection("users/").document(auth.getUid()).update("gastos",
+                FieldValue.arrayUnion(gastoReference));
     }
 
     public static void deleteGasto(Gasto g) {
