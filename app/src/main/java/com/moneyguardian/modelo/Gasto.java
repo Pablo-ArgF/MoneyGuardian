@@ -25,17 +25,15 @@ public class Gasto implements Parcelable {
 
     }
 
-
-    public Gasto(String nombre, float balance, String categoria) {
+    public Gasto(String nombre, float balance, String categoria, Date fechaCreacion) {
         this.nombre = nombre;
         this.balance = balance;
         this.categoria = categoria;
-        this.fechaCreacion = new Date();
+        this.fechaCreacion = fechaCreacion;
     }
 
-    public Gasto(String nombre, float balance, Date fechaCreacion) {
-        this(nombre, balance, (String) null);
-        this.fechaCreacion = fechaCreacion;
+    public Gasto(String nombre, float balance, String categoria) {
+        this(nombre, balance, categoria, new Date());
     }
 
     public Gasto(String nombre, float balance, String categoria, String fechaCreacion) {
@@ -47,6 +45,7 @@ public class Gasto implements Parcelable {
             throw new RuntimeException(e);
         }
     }
+
 
     public void setReference(DocumentReference ref) {
         this.reference = ref;

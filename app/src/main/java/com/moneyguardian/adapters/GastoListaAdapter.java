@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
+import com.moneyguardian.util.GastosUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             nombre.setText(gasto.getNombre());
             fecha.setText(gasto.getFechaCreacion());
 
-            int imageMoney = gasto.getBalance() > 0 ? R.drawable.ic_money : R.drawable.ic_money_off;
+            int imageMoney = GastosUtil.getImageFor(gasto);
             imagenGasto.setImageResource(imageMoney);
 
             // Si es un gasto o un ingreso

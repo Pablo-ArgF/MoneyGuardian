@@ -6,10 +6,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import kotlin.NotImplementedError;
 
 public class GastosUtil {
 
@@ -26,19 +29,6 @@ public class GastosUtil {
             // Borramos ese pago de la lista de pagos del usuario
             db.collection("users/").document(
                     auth.getUid().toString()).update("gastos", FieldValue.arrayRemove(g.getReference()));
-            /**userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override public void onSuccess(DocumentSnapshot documentSnapshot) {
-            ArrayList<DocumentReference> docs = (ArrayList<DocumentReference>) documentSnapshot.get("gastos");
-            // TODO concurrency error
-            for (DocumentReference dRef : docs) {
-            if (dRef.equals(g.getReference())) {
-            docs.remove(dRef);
-            }
-            }
-            userRef.update("gastos", docs);
-            }
-            });
-             **/
         }
     }
 
@@ -47,6 +37,21 @@ public class GastosUtil {
             if (entry.getValue()) {
                 deleteGasto(entry.getKey());
             }
+        }
+    }
+
+    public static int getImageFor(Gasto gasto) {
+        switch (gasto.getCategoria()) {
+            case "Alimentación":
+                return R.drawable.ic_alimentacion;
+            case "Salud":
+                return R.drawable.ic_salud;
+            case "Transporte":
+                return R.drawable.ic_transport;
+            case "Educación":
+                return R.drawable.ic_educacion;
+            default:
+                return gasto.getBalance() > 0 ? R.drawable.ic_money : R.drawable.ic_money_off;
         }
     }
 
