@@ -18,9 +18,11 @@ import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.DateXValueFormatter;
 
-import java.sql.Timestamp;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class LinearChartFragment extends AbstractChartFragment {
 
@@ -48,17 +50,23 @@ public class LinearChartFragment extends AbstractChartFragment {
     @Override
     public void updateUI() {
         float textSize = 12;
+        DateXValueFormatter xAxisFormater = new DateXValueFormatter();
 
         //we transform the list of Gasto objects into a list of entry objects
         List<Entry> entriesIngresos = new ArrayList<>();
         List<Entry> entriesGastos = new ArrayList<>();
-        datos.forEach(dato ->{
+        float counter = 0;
+        List<Gasto> array = datos.stream()
+                .sorted((g, g1) -> g.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()))
+                .collect(Collectors.toList());
+        for(Gasto dato : array){
+            xAxisFormater.addDate(dato.getFechaCreacion());
             if(dato.getBalance() >= 0)
-                entriesIngresos.add(new Entry(dato.getFechaCreacionAsDate().getTime(),dato.getBalance()));
+                entriesIngresos.add(new Entry(counter++,dato.getBalance()));
             else{
-                entriesGastos.add(new Entry(dato.getFechaCreacionAsDate().getTime(),dato.getBalance()));
+                entriesGastos.add(new Entry(counter++,dato.getBalance()));
             }
-        });
+        }
         LineData lineData = new LineData();
 
         LineDataSet datasetGastos = new LineDataSet(entriesGastos,getString(R.string.graph_legend_gastos));
@@ -75,10 +83,12 @@ public class LinearChartFragment extends AbstractChartFragment {
 
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
-        xAxis.setValueFormatter(new DateXValueFormatter());
+        xAxis.setValueFormatter(xAxisFormater);
         xAxis.setLabelCount(datos.size());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
+        xAxis.setLabelRotationAngle(-45);
+        xAxis.setLabelCount(array.size());
 
         xAxis.setDrawLabels(true);
         xAxis.setDrawGridLines(false);
@@ -92,6 +102,7 @@ public class LinearChartFragment extends AbstractChartFragment {
         Description description = new Description();
         description.setText(getString(R.string.description_line_graph));
 
+        chart.setMaxVisibleValueCount(7);
         chart.setDescription(description);
         chart.setData(lineData);
         chart.invalidate();

@@ -113,4 +113,12 @@ public class Gasto implements Parcelable {
     public String getFechaCreacion() {
         return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreacion);
     }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Date getFechaCreacionAsDate() {
+        return fechaCreacion;
+    }
 }
