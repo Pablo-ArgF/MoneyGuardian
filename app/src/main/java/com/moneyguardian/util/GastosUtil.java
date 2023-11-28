@@ -10,6 +10,7 @@ import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import kotlin.NotImplementedError;
@@ -33,12 +34,15 @@ public class GastosUtil {
         }
     }
 
-    public static void deleteGastos(Map<Gasto, Boolean> gastos) {
+    public static List<Gasto> deleteGastos(Map<Gasto, Boolean> gastos) {
+        List<Gasto> gastoList = new ArrayList<>();
         for (Map.Entry<Gasto, Boolean> entry : gastos.entrySet()) {
             if (entry.getValue()) {
+                gastoList.add(entry.getKey());
                 deleteGasto(entry.getKey());
             }
         }
+        return gastoList;
     }
 
     public static int getImageFor(Gasto gasto) {

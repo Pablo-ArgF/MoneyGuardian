@@ -63,6 +63,14 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         notifyDataSetChanged();
     }
 
+    public void update(List<Gasto> gastosList) {
+        this.listaGastos.removeAll(gastosList);
+        for (Gasto g : gastosList) {
+            checkedGastos.remove(g);
+        }
+        notifyDataSetChanged();
+    }
+
     public Map<Gasto, Boolean> getCheckedGastos() {
         return new HashMap<>(checkedGastos);
     }

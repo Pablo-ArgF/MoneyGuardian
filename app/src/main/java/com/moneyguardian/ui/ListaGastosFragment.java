@@ -35,6 +35,7 @@ import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.util.GastosUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListaGastosFragment extends Fragment {
@@ -147,10 +148,14 @@ public class ListaGastosFragment extends Fragment {
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<Gasto> gastosList = new ArrayList<>();
                 if (adapter.getCheckedGastos() != null)
-                    GastosUtil.deleteGastos(adapter.getCheckedGastos());
+                    gastosList = GastosUtil.deleteGastos(adapter.getCheckedGastos());
                 else
                     Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();
+                if(gastosList.size() > 0){
+                    adapter.update(gastosList);
+                }
             }
         });
 
