@@ -1,5 +1,6 @@
 package com.moneyguardian.ui;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,7 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,8 +32,8 @@ import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.PagoConjunto;
+import com.moneyguardian.util.GastosUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListaGastosFragment extends Fragment {
@@ -123,6 +129,30 @@ public class ListaGastosFragment extends Fragment {
             }
         });
 
+        // Borrado y seleccionado de  gastos
+        CheckBox checkBoxSelectAll = root.findViewById(R.id.cbSelectAllGastos);
+        checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                adapter.selectAll(isChecked);
+                // TODO Va a funcionar?
+                View recycler = root.findViewById(R.id.recyclerGastos);
+                CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
+                cb.setSelected(isChecked);
+            }
+        });
+
+        Button buttonDelete = root.findViewById(R.id.btnEliminarGasto);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (adapter.getCheckedGastos() != null)
+                    GastosUtil.deleteGastos(adapter.getCheckedGastos());
+                else
+                    Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return root;
     }
 
@@ -175,8 +205,9 @@ public class ListaGastosFragment extends Fragment {
                                         String nombre = (String) documentSnapshot.get("nombre");
                                         double balance = (double) documentSnapshot.get("balance");
                                         String fecha = (String) documentSnapshot.get("fechaCreacion");
-                                        String imagen = (String) documentSnapshot.get("iamgen");
-                                        Gasto g = new Gasto(nombre, (float) balance, imagen, fecha);
+                                        String categoria = (String) documentSnapshot.get("categoria");
+                                        Gasto g = new Gasto(nombre, (float) balance, categoria, fecha);
+                                        g.setReference(gasto);
                                         adapter.add(g);
                                     }
                                 }

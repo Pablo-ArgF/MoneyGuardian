@@ -108,4 +108,8 @@
     <string name="graph_legend_gastos">Gastos</string>
     <string name="graph_legend_ingresos">Ingresos</string>
     <string name="description_line_graph">Gastos/Ingresos</string>
+    <string name="error_empty_name">El nombre no puede estar vacío</string>
+    <string name="error_empty_balance">El balance no puede estar vacío</string>
+    <string name="SelectAll">Seleccionar todos</string>
+    <string name="no_gasto_selected">No hay ningún gasto seleccionado</string>
 </resources>
