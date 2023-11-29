@@ -17,7 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp" />
@@ -29,7 +29,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:backgroundTint="@color/blue"
             android:clickable="true"
             android:contentDescription="@string/ContentDescriptionAddGasto"
@@ -49,8 +49,10 @@
             android:clickable="false"
             android:contentDescription="@string/addGasto"
             android:focusable="true"
+            android:src="@drawable/ic_money_off"
             android:tint="@color/white"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:maxImageSize="40dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonAddIngreso"
@@ -63,9 +65,11 @@
             android:clickable="false"
             android:contentDescription="@string/addIngreso"
             android:focusable="true"
+            android:src="@drawable/ic_money"
             android:tint="@color/white"
             android:visibility="invisible"
-            app:backgroundTint="@color/green" />
+            app:backgroundTint="@color/green"
+            app:maxImageSize="40dp" />
     </RelativeLayout>
 
 </FrameLayout>

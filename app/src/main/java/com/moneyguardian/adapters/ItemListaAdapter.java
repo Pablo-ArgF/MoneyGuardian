@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.ItemPagoConjunto;
+import com.moneyguardian.modelo.PagoConjunto;
 
 import java.util.List;
 
@@ -26,6 +27,10 @@ public class ItemListaAdapter extends RecyclerView.Adapter<ItemListaAdapter.Item
         this.listener = listener;
     }
 
+    public void changeAllList(List<ItemPagoConjunto> itemPagoConjuntos){
+        this.listaItemsPago = itemPagoConjuntos;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override

@@ -25,7 +25,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.FormItemsListaPago;
@@ -58,10 +61,12 @@ public class ListaPagosFragment extends Fragment {
     private PagoConjunto pagoConjunto;
 
     public static final int GESTION_ACTIVITY = 2;
-    private FirebaseFirestore db;
 
     RecyclerView listItemsPagosView;
     private ItemListaAdapter lpAdapter;
+
+    private FirebaseFirestore db;
+    private ListenerRegistration docListener;
 
     public static ListaPagosFragment newInstance(PagoConjunto param1) {
         ListaPagosFragment fragment = new ListaPagosFragment();
@@ -83,7 +88,6 @@ public class ListaPagosFragment extends Fragment {
             namePago = getArguments().getString(NAME_PAGO);
             imagen = getArguments().getParcelable(IMAGEN);
         }
-
     }
 
     @Override
@@ -94,6 +98,8 @@ public class ListaPagosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        db = FirebaseFirestore.getInstance();
+        addListenerToCollection();
         //Mostramos el fragmento en el contenedor
         View root = inflater.inflate(R.layout.fragment_lista_pagos, container, false);
         TextView tvName = root.findViewById(R.id.namePagos);
@@ -138,7 +144,7 @@ public class ListaPagosFragment extends Fragment {
     private void clickonItem(ItemPagoConjunto itemPago) {
 
         ItemPagosFragment argumentoFragment = ItemPagosFragment.newInstance
-                (itemPago.getNombre(), itemPago.getPagos());
+                (itemPago,pagoConjunto);
 
         getParentFragmentManager().beginTransaction().
                 replace(R.id.fragmentContainerMain, argumentoFragment).addToBackStack(null).commit();
@@ -156,5 +162,57 @@ public class ListaPagosFragment extends Fragment {
                 lpAdapter.addItem(itemNuevo);
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(docListener != null){
+            docListener.remove();
+        }
+    }
+
+    private void addListenerToCollection(){
+        docListener = db.collection("pagosConjuntos").document(pagoConjunto.getId()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value,
+                                                    @Nullable FirebaseFirestoreException error) {
+                if(error != null){
+                    Log.w("LISTENER","Liten Failed");
+                    return;
+                }
+
+                List<ItemPagoConjunto> itemsPago = new ArrayList<>();
+
+                db.collection("pagosConjuntos").document(pagoConjunto.getId())
+                    .collection("itemsPago").orderBy("nombre").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
+
+                            for(DocumentSnapshot itemPago : itemsPagoSnapshot){
+                                HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+                                String id = itemPago.getId();
+                                String nombre = itemPago.getString("nombre");
+                                HashMap<String, Double> cantidadesConUsersReferences =
+                                        (HashMap<String, Double>) itemPago.
+                                                get("UsuariosConPagos");
+
+                                for(Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()){
+                                    cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
+                                }
+
+
+                                itemsPago.add(new ItemPagoConjunto(id,nombre, cantidadesConUsers));
+                            }
+
+                            pagoConjunto.setItems(itemsPago);
+                            listaPagos = itemsPago;
+                            lpAdapter.changeAllList(itemsPago);
+
+                        }
+                    });
+            }
+        });
     }
 }

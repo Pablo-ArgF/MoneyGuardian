@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,8 +24,10 @@ import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.PagoConjunto;
+import com.moneyguardian.util.Animations;
 
-import java.util.ArrayList;
+
+import java.util.Arrays;
 import java.util.List;
 
 public class ListaGastosFragment extends Fragment {
@@ -45,6 +45,7 @@ public class ListaGastosFragment extends Fragment {
     private Animation rotateClose;
     private Animation fromBottom;
     private Animation toBottom;
+    private Animations animations;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,11 +62,14 @@ public class ListaGastosFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_lista_gastos, container, false);
 
         // Animaciones de botones
-        rotateOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
-        rotateClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
-        fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_anim);
-        toBottom = AnimationUtils.loadAnimation(getContext(), R.anim.to_bottom_amim);
+        animations = new Animations(root);
 
+        //Botones
+        FloatingActionButton buttonOpen = root.findViewById(R.id.buttonOpenMenuGastos);
+        FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
+        FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
+
+        animations.setOnClickAnimationAndVisibility(buttonOpen, Arrays.asList(buttonAddIngreso,buttonAddGasto));
 
         recyclerView = root.findViewById(R.id.recyclerGastos);
         recyclerView.setHasFixedSize(true);
@@ -88,18 +92,6 @@ public class ListaGastosFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        // Manejo del botón de añadir gasto
-
-        FloatingActionButton buttonOpen = root.findViewById(R.id.buttonOpenMenuGastos);
-        buttonOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setAnimation(root);
-                setVisibility(root);
-            }
-        });
-
-        FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
         buttonAddIngreso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +103,7 @@ public class ListaGastosFragment extends Fragment {
             }
         });
 
-        FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
+
         buttonAddGasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,37 +116,6 @@ public class ListaGastosFragment extends Fragment {
         });
 
         return root;
-    }
-
-    private void setVisibility(View root) {
-        FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
-        FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
-        if (buttonAddGasto.getVisibility() == View.VISIBLE) {
-            buttonAddGasto.setVisibility(View.INVISIBLE);
-            buttonAddIngreso.setVisibility(View.INVISIBLE);
-            buttonAddGasto.setClickable(false);
-            buttonAddIngreso.setClickable(false);
-        } else {
-            buttonAddGasto.setVisibility(View.VISIBLE);
-            buttonAddIngreso.setVisibility(View.VISIBLE);
-            buttonAddGasto.setClickable(true);
-            buttonAddIngreso.setClickable(true);
-        }
-    }
-
-    private void setAnimation(View root) {
-        FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
-        FloatingActionButton buttonOpenMenuGastos = root.findViewById(R.id.buttonOpenMenuGastos);
-        FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
-        if (buttonAddGasto.getVisibility() == View.INVISIBLE) {
-            buttonAddGasto.startAnimation(fromBottom);
-            buttonAddIngreso.startAnimation(fromBottom);
-            buttonOpenMenuGastos.startAnimation(rotateOpen);
-        } else {
-            buttonAddGasto.startAnimation(toBottom);
-            buttonAddIngreso.startAnimation(toBottom);
-            buttonOpenMenuGastos.startAnimation(rotateClose);
-        }
     }
 
     private void cargarDatos() {
