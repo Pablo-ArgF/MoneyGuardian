@@ -19,7 +19,7 @@ public class GastoMapper {
             throw new RuntimeException(e);
         }
         String nombre = document.getString("nombre");
-        String categoria = document.getString("categoria");
+        String categoria = document.get("categoria",String.class);
         Gasto g = new Gasto();
         g.setBalance(balance);
         g.setNombre(nombre);

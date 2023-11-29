@@ -70,6 +70,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private LinearChartFragment linearChartFragment = LinearChartFragment.newInstance(new ArrayList<>());
     private PieChartFragment pieChartFragment = PieChartFragment.newInstance(new ArrayList<>());
 
+    private List<Gasto> data = new ArrayList<>();
+
 
 
     public MainFragment() {
@@ -86,8 +88,10 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     public void onResume() {
         super.onResume();
         //we reload user data
-        loadUserInfo(root);
-
+        if(usuario == null)
+            loadUserInfo(root);
+        else
+            updateUserInfo();
     }
 
     @Override
@@ -101,8 +105,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             Intent intent = new Intent(this.getActivity(), LoginActivity.class);
             startActivity(intent);
         }
-        View root = inflater.inflate(R.layout.fragment_main,container, false);
-        this.root = root;
+        root = inflater.inflate(R.layout.fragment_main,container, false);
         profileBtn = root.findViewById(R.id.profileButton);
         txtWelcome = root.findViewById(R.id.txtWelcome);
         tipsLayout = root.findViewById(R.id.tipsLayout);
@@ -110,6 +113,11 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
         btnMenuGraphPie = root.findViewById(R.id.btn_pieChart);
 
+        //by default we load the line graph
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.chartFragmentContainer, linearChartFragment)
+                .commit();
 
         if(usuario == null)
             loadUserInfo(root);
@@ -122,12 +130,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             }
         });
 
-        //by default we load the line graph
-        getParentFragmentManager()
-                .beginTransaction()
-                .replace(R.id.chartFragmentContainer, linearChartFragment)
-                .commit();
-
         btnMenuGraphLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +137,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, linearChartFragment)
                         .commit();
+                linearChartFragment.reloadGraph();
             }
         });
 
@@ -145,12 +148,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, pieChartFragment)
                         .commit();
+                pieChartFragment.reloadGraph();
             }
         });
-
-
-
-
         return root;
     }
 
@@ -158,6 +158,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
 
     private void loadUserInfo(View root){
+
+
         //we check if user is logged in, if not send to login view
         if(auth.getUid() == null) {
             startActivity(new Intent(getContext(),SignInActivity.class));
@@ -173,14 +175,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         if(documentSnapshot.exists()){
                             usuario = UsuarioMapper.mapBasics(documentSnapshot);
 
-                            Uri profileUri =Uri.parse(usuario.getUriImg());
-                            Glide.with(root.getContext())
-                                    .load(profileUri)
-                                    .into(profileBtn);
-
-                            //we load the name in the welcome msg
-                            txtWelcome.setText( getString(R.string.welcome_msg,
-                                    usuario.getNombre()));
+                            updateUserInfo();
 
                             //we load the gastos of the user
                             //we get the references for the different gastos
@@ -203,6 +198,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                                         }
                                         );
                                 try {
+                                    data = gastos.get();
                                     gastos.get().forEach(g -> addEntryToGraphs(g));
                                 } catch (ExecutionException e) {
                                     throw new RuntimeException(e);
@@ -224,6 +220,17 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         }
                     }
                 });
+    }
+
+    private void updateUserInfo() {
+        Uri profileUri =Uri.parse(usuario.getUriImg());
+        Glide.with(root.getContext())
+                .load(profileUri)
+                .into(profileBtn);
+
+        //we load the name in the welcome msg
+        txtWelcome.setText( getString(R.string.welcome_msg,
+                usuario.getNombre()));
     }
 
     /**

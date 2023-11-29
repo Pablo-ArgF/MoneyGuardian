@@ -42,4 +42,6 @@ public abstract class AbstractChartFragment extends Fragment {
 
     public abstract void updateUI();
 
+    public abstract void reloadGraph();
+
 }

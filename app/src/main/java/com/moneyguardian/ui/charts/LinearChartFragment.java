@@ -28,6 +28,7 @@ public class LinearChartFragment extends AbstractChartFragment {
 
     private LineChart chart;
 
+
     public static LinearChartFragment newInstance(List<Gasto> param1) {
         LinearChartFragment fragment = new LinearChartFragment();
         Bundle args = new Bundle();
@@ -48,23 +49,36 @@ public class LinearChartFragment extends AbstractChartFragment {
     }
 
     @Override
+    public void onResume() {
+        reloadGraph();
+        super.onResume();
+    }
+
+    @Override
+    public void reloadGraph(){
+        chart.invalidate();
+    }
+
+    @Override
     public void updateUI() {
         float textSize = 12;
-        DateXValueFormatter xAxisFormater = new DateXValueFormatter();
 
         //we transform the list of Gasto objects into a list of entry objects
         List<Entry> entriesIngresos = new ArrayList<>();
         List<Entry> entriesGastos = new ArrayList<>();
-        float counter = 0;
+
         List<Gasto> array = datos.stream()
                 .sorted((g, g1) -> g.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()))
                 .collect(Collectors.toList());
         for(Gasto dato : array){
-            xAxisFormater.addDate(dato.getFechaCreacion());
             if(dato.getBalance() >= 0)
-                entriesIngresos.add(new Entry(counter++,dato.getBalance()));
+                entriesIngresos.add(new Entry(
+                       dato.getFechaCreacionAsDate().getTime()
+                        ,dato.getBalance()));
             else{
-                entriesGastos.add(new Entry(counter++,dato.getBalance()));
+                entriesGastos.add(new Entry(
+                        dato.getFechaCreacionAsDate().getTime()
+                        ,dato.getBalance()));
             }
         }
         LineData lineData = new LineData();
@@ -83,12 +97,11 @@ public class LinearChartFragment extends AbstractChartFragment {
 
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
-        xAxis.setValueFormatter(xAxisFormater);
-        xAxis.setLabelCount(datos.size());
+        xAxis.setValueFormatter(new DateXValueFormatter());
+        xAxis.setLabelCount(array.size());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
         xAxis.setLabelRotationAngle(-45);
-        xAxis.setLabelCount(array.size());
 
         xAxis.setDrawLabels(true);
         xAxis.setDrawGridLines(false);

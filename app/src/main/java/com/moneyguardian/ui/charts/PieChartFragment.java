@@ -32,4 +32,9 @@ public class PieChartFragment extends AbstractChartFragment {
     public void updateUI() {
         //TODO
     }
+
+    @Override
+    public void reloadGraph() {
+        //TODO
+    }
 }
