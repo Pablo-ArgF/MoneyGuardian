@@ -12,6 +12,7 @@ import com.moneyguardian.modelo.Gasto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import kotlin.NotImplementedError;
 
@@ -20,9 +21,14 @@ public class GastosUtil {
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public static void addGasto(DocumentReference gastoReference) {
+    public static Gasto addGasto(Gasto gasto) {
+        String gastoUUID = UUID.randomUUID().toString();
+        DocumentReference gastoReference = db.collection("gastos/").document(gastoUUID);
+        gastoReference.set(gasto);
         db.collection("users/").document(auth.getUid()).update("gastos",
                 FieldValue.arrayUnion(gastoReference));
+        gasto.setUUID(gastoUUID);
+        return gasto;
     }
 
     public static void deleteGasto(Gasto g) {

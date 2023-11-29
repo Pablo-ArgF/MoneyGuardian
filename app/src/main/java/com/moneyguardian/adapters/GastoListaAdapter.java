@@ -22,6 +22,7 @@ import com.moneyguardian.util.GastosUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,15 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
          }
          notifyDataSetChanged();
          */
+    }
+
+    /**
+     * Este método devuelve el número de gastos que tienen el value en el mapa puesto a true
+     *
+     * @return int el número de gastos seleccionados
+     */
+    public int getNumberOfChecked() {
+        return Collections.frequency(checkedGastos.values(), true);
     }
 
     public void add(Gasto g) {
@@ -129,13 +139,15 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             int color = gasto.getBalance() > 0 ? R.color.green : R.color.red;
             balance.setTextColor(ContextCompat.getColor(this.itemView.getContext(), color));
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i("GASTO", checkedGastos.get(gasto.getNombre()).toString());
-                    listener.onItemClick(gasto);
-                }
+            // TODO considero innecesario de momento realizar una vista de los pagos solo para mostrar
+            // los pocos campos que tienen, pero en caso de ser necesario -> descomentar
+            /** itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+            Log.i("GASTO", checkedGastos.get(gasto.getNombre()).toString());
+            listener.onItemClick(gasto);
+            }
             });
+             **/
 
             CheckBox checkBox = itemView.findViewById(R.id.checkBoxGasto);
             checkBoxMap.put(gasto, checkBox);

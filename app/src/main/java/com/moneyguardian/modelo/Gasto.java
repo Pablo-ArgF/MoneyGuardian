@@ -20,6 +20,7 @@ public class Gasto implements Parcelable {
     private String categoria;
     private Date fechaCreacion;
     private DocumentReference reference;
+    private String UUID;
 
     public Gasto() {
 
@@ -90,6 +91,7 @@ public class Gasto implements Parcelable {
         dest.writeFloat(balance);
         dest.writeString(categoria);
         dest.writeSerializable(fechaCreacion);
+        dest.writeString(UUID);
     }
 
     protected Gasto(Parcel in) {
@@ -97,6 +99,7 @@ public class Gasto implements Parcelable {
         balance = in.readFloat();
         categoria = in.readString();
         fechaCreacion = (Date) in.readSerializable();
+        UUID = in.readString();
     }
 
     public static final Creator<Gasto> CREATOR = new Creator<Gasto>() {
@@ -113,5 +116,13 @@ public class Gasto implements Parcelable {
 
     public String getFechaCreacion() {
         return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreacion);
+    }
+
+    public void setUUID(String gastoUUID) {
+        this.UUID = gastoUUID;
+    }
+
+    public String getUUID() {
+        return this.UUID;
     }
 }

@@ -34,12 +34,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 public class FormularioGastoActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private String gastoUUID;
     private boolean isIngreso = false;
 
     // Formulario
@@ -59,7 +57,6 @@ public class FormularioGastoActivity extends AppCompatActivity {
         // Manejo de base de datos
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        gastoUUID = UUID.randomUUID().toString();
 
         Button buttonCreate = findViewById(R.id.buttonCrearGasto);
         buttonCreate.setOnClickListener(new View.OnClickListener() {
@@ -132,15 +129,11 @@ public class FormularioGastoActivity extends AppCompatActivity {
 
         Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
 
-        // Guardamos el pago, con la fecha actual o la establecida por el usuario
+        // Guardamos el gasto, con la fecha actual o la establecida por el usuario
         Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, spCategorias.getSelectedItem().toString(), fecha);
 
-        DocumentReference gastoReference = db.collection("gastos/").document(gastoUUID);
-        gastoReference.set(gasto);
-
-        // Guardamos la referencia al objeto en el usuario
-        // Hacemos un update que añadirá el objeto a la lista en el usuario
-        GastosUtil.addGasto(gastoReference);
+        // Guardamos el gasto en la bd
+        gasto = GastosUtil.addGasto(gasto);
 
         return gasto;
     }

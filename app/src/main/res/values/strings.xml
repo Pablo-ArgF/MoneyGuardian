@@ -107,4 +107,5 @@
     <string name="error_empty_balance">El balance no puede estar vacío</string>
     <string name="SelectAll">Seleccionar todos</string>
     <string name="no_gasto_selected">No hay ningún gasto seleccionado</string>
+    <string name="question_remove_gasto">¿Desea borrar estos gastos?</string>
 </resources>

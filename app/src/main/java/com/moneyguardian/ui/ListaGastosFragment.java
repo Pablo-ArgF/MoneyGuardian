@@ -1,6 +1,7 @@
 package com.moneyguardian.ui;
 
-import android.app.DatePickerDialog;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,8 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -32,7 +31,6 @@ import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
-import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.util.GastosUtil;
 
 import java.util.ArrayList;
@@ -137,10 +135,11 @@ public class ListaGastosFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 adapter.selectAll(isChecked);
-                // TODO Va a funcionar?
+                // TODO No funciona
                 View recycler = root.findViewById(R.id.recyclerGastos);
                 CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
-                cb.setSelected(isChecked);
+                if (cb != null)
+                    cb.setSelected(isChecked);
             }
         });
 
@@ -148,14 +147,7 @@ public class ListaGastosFragment extends Fragment {
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<Gasto> gastosList = new ArrayList<>();
-                if (adapter.getCheckedGastos() != null)
-                    gastosList = GastosUtil.deleteGastos(adapter.getCheckedGastos());
-                else
-                    Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();
-                if(gastosList.size() > 0){
-                    adapter.update(gastosList);
-                }
+                alertBorrarGasto();
             }
         });
 
@@ -230,11 +222,33 @@ public class ListaGastosFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         Bundle b = data.getExtras();
         if (b.get(GASTO_CREADO) != null) {
-            this.adapter.add((Gasto) b.get(GASTO_CREADO));
+            Gasto gastoCreado = (Gasto) b.get(GASTO_CREADO);
+            gastoCreado.setReference(db.document("/gastos/" + gastoCreado.getUUID()));
+            this.adapter.add(gastoCreado);
         }
     }
 
-    public void clickonItem(PagoConjunto pagoConjunto) {
-        // TODO later
+    private void alertBorrarGasto() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(R.string.question_remove_gasto)
+                .setPositiveButton(R.string.confirm_remove_friend, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // CONFIRM
+                        List<Gasto> gastosList = new ArrayList<>();
+                        // Si hay mapa y hay gastos seleccionados
+                        if (adapter.getCheckedGastos() != null && adapter.getNumberOfChecked() > 0) {
+                            gastosList = GastosUtil.deleteGastos(adapter.getCheckedGastos());
+                            adapter.update(gastosList);
+                            // Si no hay mapa, o no hay ninguno seleccionado
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // CANCEL
+                    }
+                }).create().show();
     }
 }
