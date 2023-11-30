@@ -12,6 +12,7 @@ import java.util.List;
 
 public class PagoConjunto implements Parcelable {
 
+    private String owner;
     private String id;
     private String nombre;
     private Date fechaPago;
@@ -21,10 +22,11 @@ public class PagoConjunto implements Parcelable {
     private List<ItemPagoConjunto> items;
 
     public PagoConjunto(String id, String nombre, Date fechaPago, ArrayList<UsuarioParaParcelable>
-            es, Uri imagen, Date fechaLimite, List<ItemPagoConjunto> itemsPago) {
+            es, Uri imagen, Date fechaLimite, List<ItemPagoConjunto> itemsPago,String owner) {
         this(id,nombre, fechaPago, es, itemsPago);
         this.fechaLimite = fechaLimite;
         this.imagen = imagen;
+        this.owner = owner;
     }
 
     public PagoConjunto(String id,String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes, List<ItemPagoConjunto> items) {
@@ -62,6 +64,7 @@ public class PagoConjunto implements Parcelable {
         // con tamaño > 0 aunque esté vacía
         participantes = in.createTypedArrayList(UsuarioParaParcelable.CREATOR);
         items = in.createTypedArrayList(ItemPagoConjunto.CREATOR);
+        owner = in.readString();
     }
 
     @Override
@@ -73,6 +76,7 @@ public class PagoConjunto implements Parcelable {
         dest.writeSerializable(fechaPago);
         dest.writeTypedList(participantes);
         dest.writeTypedList(items);
+        dest.writeString(owner);
     }
 
     @Override
@@ -152,4 +156,11 @@ public class PagoConjunto implements Parcelable {
         return this.fechaLimite;
     }
 
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 }

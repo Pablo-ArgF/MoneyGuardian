@@ -20,6 +20,7 @@ import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.Animations;
+import com.moneyguardian.util.UserChecks;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,23 +88,33 @@ public class ItemPagosFragment extends Fragment {
         editButton = root.findViewById(R.id.floatingActionButtonEditItemPago);
         deleteButton = root.findViewById(R.id.floatingActionButtonItemDelete);
 
-        animations.setOnClickAnimationAndVisibility(openButton, Arrays.asList(editButton,deleteButton));
+        if(!new UserChecks().checkUser(pagoConjunto.getOwner())){
+            openButton.setVisibility(View.INVISIBLE);
+            editButton.setVisibility(View.INVISIBLE);
+            deleteButton.setVisibility(View.INVISIBLE);
+            openButton.setClickable(false);
+            editButton.setClickable(false);
+            deleteButton.setClickable(false);
+        }else {
+
+            animations.setOnClickAnimationAndVisibility(openButton, Arrays.asList(editButton, deleteButton));
 
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                db.collection("pagosConjuntos").document(pagoConjunto.getId()).
-                        collection("itemsPago").document(itemPagoConjunto.getId()).delete().
-                        addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                pagoConjunto.getItems().remove(itemPagoConjunto);
-                                getParentFragmentManager().popBackStack();
-                            }
-                        });
-            }
-        });
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    db.collection("pagosConjuntos").document(pagoConjunto.getId()).
+                            collection("itemsPago").document(itemPagoConjunto.getId()).delete().
+                            addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    pagoConjunto.getItems().remove(itemPagoConjunto);
+                                    getParentFragmentManager().popBackStack();
+                                }
+                            });
+                }
+            });
+        }
 
         //we add the layout manager to the group list
         RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(container.getContext());

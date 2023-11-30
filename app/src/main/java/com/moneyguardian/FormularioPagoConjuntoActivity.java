@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -202,10 +203,28 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     List<String> userId = new ArrayList<String>();
                     userId.add(mAuth.getCurrentUser().getUid());
                     pagoConjuntoDoc.put("pagador", userId);
+                    PagoConjunto finalPagoConjunto = pagoConjunto;
                     db.collection("pagosConjuntos").document(pagoConjuntoUUID).set(pagoConjuntoDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             Log.i("FIREBASE SET", "Se añadió el objeto");
+                            DocumentReference docReference = db.collection("pagosConjuntos").
+                                    document(pagoConjuntoUUID);
+
+                            db.collection("users").document(userId.get(0)).
+                                    update("pagosConjuntos",
+                                            FieldValue.arrayUnion(docReference)).
+                                    addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            for(DocumentReference u : nestedParticipantes) {
+                                                db.collection("users").document(u.getId()).
+                                                        update("pagosConjuntos",
+                                                                FieldValue.arrayUnion(docReference));
+                                            }
+                                            finish();
+                                        }
+                                    });
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -213,11 +232,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                             Log.w("FIRBASE SET", "Error writing document", e);
                         }
                     });
-
-                    Intent intentResult = new Intent();
-                    intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
-                    setResult(RESULT_OK, intentResult);
-                    finish();
                 }
                 Log.i("Estado Pago Conjunto", "No validado");
             }
