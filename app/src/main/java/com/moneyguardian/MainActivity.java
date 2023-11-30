@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.ui.DeudasListFragment;
 import com.moneyguardian.ui.ListaAmigosFragment;
 import com.moneyguardian.ui.ListaGastosFragment;
 import com.moneyguardian.ui.MainFragment;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private PagosConjuntosFragment fragmentPagosConjuntos;
     private ListaAmigosFragment amigosFragment;
     private ListaGastosFragment gastosFragment;
+    private DeudasListFragment deudasListFragment;
 
 
     @Override
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentPagosConjuntos = new PagosConjuntosFragment();
         amigosFragment = new ListaAmigosFragment();
         gastosFragment = new ListaGastosFragment();
+        deudasListFragment = new DeudasListFragment();
 
         //we load main fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (id == R.id.lista_menu_btn) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
-                                gastosFragment).commit();
+                                deudasListFragment).commit();
                         return true;
                     }
                     if (id == R.id.amigos_menu_btn) {

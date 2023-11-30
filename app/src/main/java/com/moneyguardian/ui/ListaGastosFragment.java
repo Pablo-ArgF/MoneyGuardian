@@ -85,7 +85,7 @@ public class ListaGastosFragment extends Fragment {
             adapter = new GastoListaAdapter(new GastoListaAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(Gasto gasto) {
-                    // Nothing
+                    // NADA
                 }
             });
         }
