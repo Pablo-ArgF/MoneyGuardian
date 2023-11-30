@@ -220,11 +220,13 @@ public class ListaGastosFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bundle b = data.getExtras();
-        if (b.get(GASTO_CREADO) != null) {
-            Gasto gastoCreado = (Gasto) b.get(GASTO_CREADO);
-            gastoCreado.setReference(db.document("/gastos/" + gastoCreado.getUUID()));
-            this.adapter.add(gastoCreado);
+        if (data != null) {
+            Bundle b = data.getExtras();
+            if (b.get(GASTO_CREADO) != null) {
+                Gasto gastoCreado = (Gasto) b.get(GASTO_CREADO);
+                gastoCreado.setReference(db.document("/gastos/" + gastoCreado.getUUID()));
+                this.adapter.add(gastoCreado);
+            }
         }
     }
 
