@@ -42,6 +42,7 @@ import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.ui.DatePickerFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 import com.moneyguardian.util.ImageProcessor;
+import com.moneyguardian.util.PagosConjuntosUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -139,12 +140,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (validarPagoConjunto()) {
                     List<UsuarioParaParcelable> participantes = new ArrayList<UsuarioParaParcelable>();
+
                     // Rellenamos la lista de usuarios
-                    for (int i = 0; i < usuarios.size(); i++) {
-                        if (usuarioArrayAdapter.isChecked(i)) {
-                            participantes.add(usuarios.get(i));
-                        }
-                    }
+                    participantes = usuarioArrayAdapter.getChecked();
 
                     String[] fechaTexto = fechaPago.getText().toString().trim().split("/");
                     Calendar fechaLimite = Calendar.getInstance();
@@ -186,33 +184,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                         });
                     }
 
-                    // Creación del Map para persistencia
-
-                    // TODO existe una manera de sacar el collectionPath para que sea configurable?
-                    Map<String, Object> pagoConjuntoDoc = new HashMap<>();
-                    pagoConjuntoDoc.put("nombre", pagoConjunto.getNombre());
-                    pagoConjuntoDoc.put("imagen", pagoConjunto.getImagen());
-                    pagoConjuntoDoc.put("fechaLimite", pagoConjunto.getFechaLimite());
-                    pagoConjuntoDoc.put("fechaPago", pagoConjunto.getFechaPago());
-                    // Guardamos los participantes como una lista de referencias
-                    ArrayList<DocumentReference> nestedParticipantes = new ArrayList<DocumentReference>();
-                    nestedParticipantes.addAll(usuariosUUIDs);
-                    pagoConjuntoDoc.put("participantes", nestedParticipantes);
-                    // OJO: el usuario pagador debe ir dentro de un Map para poder realizar la query en Firestore
-                    List<String> userId = new ArrayList<String>();
-                    userId.add(mAuth.getCurrentUser().getUid());
-                    pagoConjuntoDoc.put("pagador", userId);
-                    db.collection("pagosConjuntos").document(pagoConjuntoUUID).set(pagoConjuntoDoc).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Log.i("FIREBASE SET", "Se añadió el objeto");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("FIRBASE SET", "Error writing document", e);
-                        }
-                    });
+                    // Guardamos el pago conjunto
+                    PagosConjuntosUtil.addPagoConjunto(pagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
 
                     Intent intentResult = new Intent();
                     intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
@@ -266,14 +239,9 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                 DocumentSnapshot queryResult = task.getResult();
                 // Guardamos el usuario para la UI y parcelable
                 usuarios.add(new UsuarioParaParcelable((String) queryResult.get("name"),
-                        (String) queryResult.get("email"), (String) queryResult.get("profilePicture")));
-                // Ahora, para actualizar la lista,
-                // necesitamos volver a crear el adapter y asignarselo a la list view
-                // POR CADA USUARIO AÑADIDO, tal vez haya una manera de optimizar este código...
-                usuarioArrayAdapter = new UsuarioArrayAdapter(getApplicationContext(),
-                        android.R.layout.simple_list_item_multiple_choice, usuarios);
-                listViewUsuarios.setAdapter(usuarioArrayAdapter);
-                usuarioArrayAdapter.notifyDataSetChanged();
+                        (String) queryResult.get("email"), (String) queryResult.get("profilePicture"), queryResult.getId()));
+
+                usuarioArrayAdapter.update(usuarios);
             }
         }
     };
@@ -313,15 +281,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             return false;
         }
 
-        boolean oneUserMarked = false;
-        for (int i = 0; i < this.usuarios.size(); i++) {
-            if (usuarioArrayAdapter.isChecked(i)) {
-                oneUserMarked = true;
-                break;
-            }
-        }
         // Si no hay, como mínimo, otro usuario en el pago, no dejamos que se efectue
-        if (!oneUserMarked) {
+        if (!usuarioArrayAdapter.atLeastOneUserSelected()) {
             // TODO: al ser un text view, no deja ver cual es el error
             TextView usuarios = findViewById(R.id.textViewParticipantes);
             // TODO sacarlo al strings.xml?
