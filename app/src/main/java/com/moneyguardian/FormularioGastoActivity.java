@@ -1,36 +1,43 @@
 package com.moneyguardian;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.ui.DatePickerFragment;
 import com.moneyguardian.ui.ListaGastosFragment;
-import com.moneyguardian.ui.PagosConjuntosFragment;
+import com.moneyguardian.util.GastosUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 public class FormularioGastoActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private String gastoUUID;
     private boolean isIngreso = false;
 
     // Formulario
@@ -50,7 +57,6 @@ public class FormularioGastoActivity extends AppCompatActivity {
         // Manejo de base de datos
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        gastoUUID = UUID.randomUUID().toString();
 
         Button buttonCreate = findViewById(R.id.buttonCrearGasto);
         buttonCreate.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +78,8 @@ public class FormularioGastoActivity extends AppCompatActivity {
             }
         });
 
+        // Manejo de la fecha y el calendario
+
         EditText fechaText = findViewById(R.id.editDateGasto);
         fechaText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +97,20 @@ public class FormularioGastoActivity extends AppCompatActivity {
             }
         });
 
+        // Manejo del spinner con las categorías
+        db.collection("categorias/").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
+                List<String> categorias = new ArrayList<>();
+                List<DocumentSnapshot> refs = task.getResult().getDocuments();
+                refs.forEach(ref -> {
+                    categorias.add((String) ref.get("nombre"));
+                });
+                spCategorias.setAdapter(new ArrayAdapter<String>(getBaseContext(),
+                        android.R.layout.simple_spinner_item, categorias));
+            }
+        });
     }
 
     private Gasto saveGasto() {
@@ -105,16 +127,13 @@ public class FormularioGastoActivity extends AppCompatActivity {
             }
         }
 
-        // Guardamos el pago, con la fecha actual o la establecida por el usuario
-        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, fecha);
+        Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
 
-        DocumentReference gastoReference = db.collection("gastos/").document(gastoUUID);
-        gastoReference.set(gasto);
+        // Guardamos el gasto, con la fecha actual o la establecida por el usuario
+        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, spCategorias.getSelectedItem().toString(), fecha);
 
-        // Guardamos la referencia al objeto en el usuario
-        // Hacemos un update que añadirá el objeto a la lista en el usuario
-        db.collection("users/").document(mAuth.getUid()).update("gastos",
-                FieldValue.arrayUnion(gastoReference));
+        // Guardamos el gasto en la bd
+        gasto = GastosUtil.addGasto(gasto);
 
         return gasto;
     }

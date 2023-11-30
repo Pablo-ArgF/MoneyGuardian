@@ -25,8 +25,7 @@ public class Gasto implements Parcelable {
 
     }
 
-
-    public Gasto(String nombre, float balance, String categoria) {
+    public Gasto(String nombre, float balance, String categoria, Date fechaCreacion) {
         this.nombre = nombre;
         this.balance = balance;
         this.categoria = categoria;
@@ -36,6 +35,10 @@ public class Gasto implements Parcelable {
     public Gasto(String nombre, float balance, Date fechaCreacion) {
         this(nombre, balance, (String) null);
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public Gasto(String nombre, float balance, String categoria) {
+        this(nombre, balance, categoria, new Date());
     }
 
     public Gasto(String nombre, float balance, String categoria, String fechaCreacion) {
@@ -112,6 +115,14 @@ public class Gasto implements Parcelable {
 
     public String getFechaCreacion() {
         return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreacion);
+    }
+
+    public void setUUID(String gastoUUID) {
+        this.UUID = gastoUUID;
+    }
+
+    public String getUUID() {
+        return this.UUID;
     }
 
     public void setFechaCreacion(Date fechaCreacion) {
