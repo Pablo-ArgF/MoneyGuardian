@@ -291,6 +291,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
 
     private void updateUserInfo() {
+        if(getContext() == null)
+            return; //avoids not attached to a context
+
         Uri profileUri =Uri.parse(usuario.getUriImg());
         Glide.with(root.getContext())
                 .load(profileUri)

@@ -52,6 +52,8 @@ public class GastosUtil {
     }
 
     public static int getImageFor(Gasto gasto) {
+        if(gasto.getCategoria() == null)
+            return gasto.getBalance() > 0 ? R.drawable.ic_money : R.drawable.ic_money_off;
         switch (gasto.getCategoria()) {
             case "Alimentación":
                 return R.drawable.ic_alimentacion;

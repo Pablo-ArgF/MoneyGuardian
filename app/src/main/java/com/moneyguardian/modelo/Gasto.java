@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 public class Gasto implements Parcelable {
 
@@ -20,6 +21,7 @@ public class Gasto implements Parcelable {
     private String categoria;
     private Date fechaCreacion;
     private DocumentReference reference;
+    private String UUID;
 
     public Gasto() {
 
