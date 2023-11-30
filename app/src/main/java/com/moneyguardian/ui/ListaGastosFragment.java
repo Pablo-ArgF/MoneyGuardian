@@ -1,5 +1,7 @@
 package com.moneyguardian.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,8 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +31,7 @@ import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
-import com.moneyguardian.modelo.PagoConjunto;
+import com.moneyguardian.util.GastosUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +129,28 @@ public class ListaGastosFragment extends Fragment {
             }
         });
 
+        // Borrado y seleccionado de  gastos
+        CheckBox checkBoxSelectAll = root.findViewById(R.id.cbSelectAllGastos);
+        checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                adapter.selectAll(isChecked);
+                // TODO No funciona
+                View recycler = root.findViewById(R.id.recyclerGastos);
+                CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
+                if (cb != null)
+                    cb.setSelected(isChecked);
+            }
+        });
+
+        Button buttonDelete = root.findViewById(R.id.btnEliminarGasto);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertBorrarGasto();
+            }
+        });
+
         return root;
     }
 
@@ -175,8 +203,9 @@ public class ListaGastosFragment extends Fragment {
                                         String nombre = (String) documentSnapshot.get("nombre");
                                         double balance = (double) documentSnapshot.get("balance");
                                         String fecha = (String) documentSnapshot.get("fechaCreacion");
-                                        String imagen = (String) documentSnapshot.get("iamgen");
-                                        Gasto g = new Gasto(nombre, (float) balance, imagen, fecha);
+                                        String categoria = (String) documentSnapshot.get("categoria");
+                                        Gasto g = new Gasto(nombre, (float) balance, categoria, fecha);
+                                        g.setReference(gasto);
                                         adapter.add(g);
                                     }
                                 }
@@ -188,7 +217,38 @@ public class ListaGastosFragment extends Fragment {
         });
     }
 
-    public void clickonItem(PagoConjunto pagoConjunto) {
-        // TODO later
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bundle b = data.getExtras();
+        if (b.get(GASTO_CREADO) != null) {
+            Gasto gastoCreado = (Gasto) b.get(GASTO_CREADO);
+            gastoCreado.setReference(db.document("/gastos/" + gastoCreado.getUUID()));
+            this.adapter.add(gastoCreado);
+        }
+    }
+
+    private void alertBorrarGasto() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(R.string.question_remove_gasto)
+                .setPositiveButton(R.string.confirm_remove_friend, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // CONFIRM
+                        List<Gasto> gastosList = new ArrayList<>();
+                        // Si hay mapa y hay gastos seleccionados
+                        if (adapter.getCheckedGastos() != null && adapter.getNumberOfChecked() > 0) {
+                            gastosList = GastosUtil.deleteGastos(adapter.getCheckedGastos());
+                            adapter.update(gastosList);
+                            // Si no hay mapa, o no hay ninguno seleccionado
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // CANCEL
+                    }
+                }).create().show();
     }
 }
