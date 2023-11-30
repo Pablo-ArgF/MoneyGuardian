@@ -1,9 +1,11 @@
 package com.moneyguardian.ui;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.LifecycleOwner;
@@ -27,6 +29,7 @@ import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.Usuario;
+import com.moneyguardian.ui.charts.AbstractChartFragment;
 import com.moneyguardian.ui.charts.LinearChartFragment;
 import com.moneyguardian.ui.charts.PieChartFragment;
 import com.moneyguardian.userAuth.LoginActivity;
@@ -72,6 +75,12 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
     private List<Gasto> data = new ArrayList<>();
 
+    //filters
+    private TextView filter1Month;
+    private TextView filter3Month;
+    private TextView filter1Year;
+    private TextView filterAll;
+    private ColorStateList notSelectedColors; //color of not selected filter
 
 
     public MainFragment() {
@@ -112,6 +121,14 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
         btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
         btnMenuGraphPie = root.findViewById(R.id.btn_pieChart);
+        filter1Month = root.findViewById(R.id.filter_1month);
+        filter3Month = root.findViewById(R.id.filter_3month);
+        filter1Year = root.findViewById(R.id.filter_1year);
+        filterAll = root.findViewById(R.id.filter_all);
+        //we store the not selected color
+        this.notSelectedColors = filter1Month.getTextColors();
+        //we mark the all filter as marked
+        markSelectedFilter(filterAll);
 
         //by default we load the line graph
         getParentFragmentManager()
@@ -137,7 +154,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, linearChartFragment)
                         .commit();
-                linearChartFragment.reloadGraph();
+
             }
         });
 
@@ -151,10 +168,61 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 pieChartFragment.reloadGraph();
             }
         });
+
+        //filter configuarion
+        filter1Month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //update filter button colors
+                markSelectedFilter(filter1Month);
+                //update graph
+                updateFilterOnGraphs(AbstractChartFragment.Filter.ONE_MONTH);
+            }
+        });
+        filter3Month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //update filter button colors
+                markSelectedFilter(filter3Month);
+                //update graph
+                updateFilterOnGraphs(AbstractChartFragment.Filter.THREE_MONTHS);
+            }
+        });
+        filter1Year.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //update filter button colors
+                markSelectedFilter(filter1Year);
+                //update graph
+                updateFilterOnGraphs(AbstractChartFragment.Filter.ONE_YEAR);
+            }
+        });
+        filterAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //update filter button colors
+                markSelectedFilter(filterAll);
+                //update graph
+                updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
+            }
+        });
+
         return root;
     }
 
+    /**
+     * Marks passed text view as the currently selected filter and the others to not selected
+     */
+    private void markSelectedFilter(TextView tv) {
+        //we mark all as not selected
+        filter1Month.setTextColor(notSelectedColors);
+        filter3Month.setTextColor(notSelectedColors);
+        filter1Year.setTextColor(notSelectedColors);
+        filterAll.setTextColor(notSelectedColors);
 
+        //we mark the passed one with blue color
+        tv.setTextColor(ContextCompat.getColor(getContext(),R.color.blue));
+    }
 
 
     private void loadUserInfo(View root){
@@ -251,4 +319,10 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         linearChartFragment.setDatasetSize(size);
         pieChartFragment.setDatasetSize(size);
     }
+
+    private void updateFilterOnGraphs(AbstractChartFragment.Filter filter) {
+        linearChartFragment.updateFilter(filter);
+        pieChartFragment.updateFilter(filter);
+    }
+
 }

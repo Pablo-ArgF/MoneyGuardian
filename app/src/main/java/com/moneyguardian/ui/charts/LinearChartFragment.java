@@ -49,12 +49,6 @@ public class LinearChartFragment extends AbstractChartFragment {
     }
 
     @Override
-    public void onResume() {
-        reloadGraph();
-        super.onResume();
-    }
-
-    @Override
     public void reloadGraph(){
         chart.invalidate();
     }
@@ -78,7 +72,7 @@ public class LinearChartFragment extends AbstractChartFragment {
             else{
                 entriesGastos.add(new Entry(
                         dato.getFechaCreacionAsDate().getTime()
-                        ,dato.getBalance()));
+                        ,- dato.getBalance()));
             }
         }
         LineData lineData = new LineData();
@@ -93,7 +87,7 @@ public class LinearChartFragment extends AbstractChartFragment {
         datasetIngresos.setCircleColor(ContextCompat.getColor(getContext(),R.color.green));
         lineData.addDataSet(datasetIngresos);
 
-        lineData.setValueTextSize(textSize);
+        lineData.setValueTextSize(10);
 
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
@@ -102,6 +96,7 @@ public class LinearChartFragment extends AbstractChartFragment {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
         xAxis.setLabelRotationAngle(-45);
+        xAxis.setLabelCount(10);
 
         xAxis.setDrawLabels(true);
         xAxis.setDrawGridLines(false);
@@ -109,13 +104,14 @@ public class LinearChartFragment extends AbstractChartFragment {
 
         //format the Yaxis
         chart.getAxisLeft().setTextSize(textSize);
+        chart.getAxisLeft().setAxisMinimum(0);
         chart.getAxisRight().setEnabled(false);
 
 
         Description description = new Description();
         description.setText(getString(R.string.description_line_graph));
 
-        chart.setMaxVisibleValueCount(7);
+
         chart.setDescription(description);
         chart.setData(lineData);
         chart.invalidate();
