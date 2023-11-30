@@ -118,7 +118,7 @@ public class FormularioGastoActivity extends AppCompatActivity {
 
         // Manejo de la fecha en caso de que hubiere
         EditText textFecha = findViewById(R.id.editDateGasto);
-        Date fecha = new Date();
+        Date fecha;
         if (!textFecha.getText().toString().trim().isEmpty()) {
             try {
                 fecha = new SimpleDateFormat("dd / MM / yyyy", new Locale("es")).parse(textFecha.getText().toString());
@@ -126,6 +126,8 @@ public class FormularioGastoActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         }
+        else
+            fecha = new Date();
 
         Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
 

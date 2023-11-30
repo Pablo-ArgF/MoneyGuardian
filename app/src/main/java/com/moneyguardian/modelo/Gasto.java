@@ -31,7 +31,7 @@ public class Gasto implements Parcelable {
         this.nombre = nombre;
         this.balance = balance;
         this.categoria = categoria;
-        this.fechaCreacion = new Date();
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Gasto(String nombre, float balance, Date fechaCreacion) {

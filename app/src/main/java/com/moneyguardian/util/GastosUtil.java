@@ -68,4 +68,19 @@ public class GastosUtil {
         }
     }
 
+    public static int getImageFor(String category) {
+        switch (category) {
+            case "Alimentación":
+                return R.drawable.ic_alimentacion;
+            case "Salud":
+                return R.drawable.ic_salud;
+            case "Transporte":
+                return R.drawable.ic_transport;
+            case "Educación":
+                return R.drawable.ic_educacion;
+            default:
+                return R.drawable.ic_money_off;
+        }
+    }
+
 }

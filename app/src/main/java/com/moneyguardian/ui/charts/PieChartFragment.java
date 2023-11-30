@@ -1,6 +1,10 @@
 package com.moneyguardian.ui.charts;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +22,10 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.database.collection.LLRBNode;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
+import com.moneyguardian.util.GastosUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,16 +53,26 @@ public class PieChartFragment extends AbstractChartFragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_pie_chart, container, false);
         this.chart = root.findViewById(R.id.pieChart);
-        chart.setTouchEnabled(false);
         return root;
     }
 
     @Override
     public void updateUI() {
+        //this if configures the text colors to be the ones of the theme
+        int color = 0;
+        boolean couldGetColor = false;
+        if (getContext()!= null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            TypedValue val = new TypedValue();
+            getContext().getTheme().resolveAttribute(androidx.appcompat.R.attr.colorAccent,val,true);
+            color = val.data;
+            couldGetColor = true;
+        }
+
         if(getContext() == null)
             return;
 
         float textSize = 12;
+
 
         entriesGastos.clear();
         acc.clear();
@@ -78,16 +94,22 @@ public class PieChartFragment extends AbstractChartFragment {
 
         //we create the pieEntries
         for(String category : acc.keySet()){
-            entriesGastos.add(new PieEntry(acc.get(category), category));
-
+            PieEntry entry = new PieEntry(acc.get(category), category);
+            entriesGastos.add(entry);
+            //we indicate the icon for each cat
+            entry.setIcon(getResources().getDrawable(GastosUtil.getImageFor(category)));
         }
-        //TODO meter los iconos así
-        //entriesGastos.get(0).setIcon(getResources().getDrawable(R.drawable.chart_icon));
+
 
         PieDataSet set = new PieDataSet(entriesGastos,"");
         set.setValueTextSize(textSize);
+        set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setColors(ColorTemplate.COLORFUL_COLORS);
+        if(couldGetColor)
+            set.setValueTextColor(color);
         PieData data = new PieData(set);
+
 
         chart.getDescription().setText("");
         chart.setEntryLabelTextSize(textSize);
@@ -101,6 +123,15 @@ public class PieChartFragment extends AbstractChartFragment {
         chart.setCenterText(getResources().getString(R.string.center_pie_chart));
         chart.setCenterTextSize(18);
         chart.animateXY(800,300);
+
+
+
+        if(couldGetColor)
+            chart.getLegend().setTextColor(color);
+        chart.getLegend().setEnabled(false);
+
+
+
         chart.invalidate(); // refresh
     }
 

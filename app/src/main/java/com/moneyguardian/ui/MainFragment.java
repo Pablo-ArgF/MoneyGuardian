@@ -320,6 +320,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     }
 
     private void showNoChartView(){
+        if(getContext() == null)
+            return;
+
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.chartFragmentContainer, new NoChartFragment())
                 .commit();
@@ -330,6 +333,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     }
 
     private void enableChartView() {
+        if(getContext() == null)
+            return;
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.chartFragmentContainer, linearChartFragment)
                 .commit();
