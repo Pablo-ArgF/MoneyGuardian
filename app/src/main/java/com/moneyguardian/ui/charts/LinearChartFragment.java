@@ -2,18 +2,21 @@ package com.moneyguardian.ui.charts;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.core.content.ContextCompat;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.DateXValueFormatter;
@@ -27,6 +30,9 @@ import java.util.stream.Collectors;
 public class LinearChartFragment extends AbstractChartFragment {
 
     private LineChart chart;
+    private List<Entry> entriesIngresos = new ArrayList<>();
+    private List<Entry> entriesGastos = new ArrayList<>();
+    private DateXValueFormatter dateXFormatter = new DateXValueFormatter();
 
 
     public static LinearChartFragment newInstance(List<Gasto> param1) {
@@ -41,25 +47,23 @@ public class LinearChartFragment extends AbstractChartFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_linear_chart, container, false);
-
+        this.root = inflater.inflate(R.layout.fragment_linear_chart, container, false);
         this.chart = root.findViewById(R.id.lineChart);
         chart.setTouchEnabled(false);
         return root;
     }
 
-    @Override
-    public void reloadGraph(){
-        chart.invalidate();
-    }
 
     @Override
     public void updateUI() {
         float textSize = 12;
 
+        Log.i("CHART","grafica de lineas update con "+allData.size());
+
+        
         //we transform the list of Gasto objects into a list of entry objects
-        List<Entry> entriesIngresos = new ArrayList<>();
-        List<Entry> entriesGastos = new ArrayList<>();
+        entriesIngresos.clear();
+        entriesGastos.clear();
 
         List<Gasto> array = datos.stream()
                 .sorted((g, g1) -> g.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()))
@@ -91,7 +95,7 @@ public class LinearChartFragment extends AbstractChartFragment {
 
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
-        xAxis.setValueFormatter(new DateXValueFormatter());
+        xAxis.setValueFormatter(dateXFormatter);
         xAxis.setLabelCount(array.size());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
@@ -114,6 +118,7 @@ public class LinearChartFragment extends AbstractChartFragment {
 
         chart.setDescription(description);
         chart.setData(lineData);
+        chart.animateXY(1000,1500 );
         chart.invalidate();
     }
 }

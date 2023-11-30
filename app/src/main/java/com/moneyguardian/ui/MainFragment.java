@@ -101,6 +101,13 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             loadUserInfo(root);
         else
             updateUserInfo();
+
+        //we reload the fragments
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.chartFragmentContainer, linearChartFragment)
+                .commit();
+        linearChartFragment.onResume();
     }
 
     @Override
@@ -165,7 +172,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, pieChartFragment)
                         .commit();
-                pieChartFragment.reloadGraph();
             }
         });
 
@@ -226,8 +232,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
 
     private void loadUserInfo(View root){
-
-
+        if(usuario != null)
+            return; //if user is logged in and stored we do nothing
         //we check if user is logged in, if not send to login view
         if(auth.getUid() == null) {
             startActivity(new Intent(getContext(),SignInActivity.class));

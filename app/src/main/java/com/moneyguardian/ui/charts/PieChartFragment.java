@@ -33,8 +33,4 @@ public class PieChartFragment extends AbstractChartFragment {
         //TODO
     }
 
-    @Override
-    public void reloadGraph() {
-        //TODO
-    }
 }

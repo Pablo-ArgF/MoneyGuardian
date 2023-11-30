@@ -1,6 +1,7 @@
 package com.moneyguardian.ui.charts;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractChartFragment extends Fragment {
     public static final String DATOS = "DATOS";
+    protected View root;
+
     public static  enum Filter {ALL,ONE_MONTH,THREE_MONTHS,ONE_YEAR};
 
     List<Gasto> datos = new ArrayList<>();//contains currently filtered data
@@ -40,7 +43,7 @@ public abstract class AbstractChartFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        reloadGraph();
+        updateUI();
     }
 
     public void setDatasetSize(int size){
@@ -48,6 +51,7 @@ public abstract class AbstractChartFragment extends Fragment {
     }
 
     public void addData(Gasto g){
+        Log.i("CHART","addData called "+ g.getNombre());
         this.datos.add(g);
         this.allData.add(g);
         if(this.allData.size() == datasetSize)
@@ -96,13 +100,12 @@ public abstract class AbstractChartFragment extends Fragment {
             case ALL:
             default:
                 datos = new ArrayList<>(allData);
+                break;
         }
         //we update the graph after the filter
         updateUI();
     }
 
     public abstract void updateUI();
-
-    public abstract void reloadGraph();
 
 }
