@@ -95,12 +95,16 @@ public class Gasto implements Parcelable {
         dest.writeString(nombre);
         dest.writeFloat(balance);
         dest.writeString(categoria);
+        dest.writeSerializable(fechaCreacion);
+        dest.writeString(UUID);
     }
 
     protected Gasto(Parcel in) {
         nombre = in.readString();
         balance = in.readFloat();
         categoria = in.readString();
+        fechaCreacion = (Date) in.readSerializable();
+        UUID = in.readString();
     }
 
     public static final Creator<Gasto> CREATOR = new Creator<Gasto>() {
