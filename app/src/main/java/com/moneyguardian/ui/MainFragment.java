@@ -161,7 +161,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, linearChartFragment)
                         .commit();
-
+                //filter selector to all
+                markSelectedFilter(filterAll);
+                updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
             }
         });
 
@@ -172,6 +174,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, pieChartFragment)
                         .commit();
+                markSelectedFilter(filterAll);
+                updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
             }
         });
 
@@ -257,7 +261,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                             //if has gastos, load them
                             if(obj != null){
                                 List<DocumentReference> refs = (List<DocumentReference>) obj;
-                                updateChartDatasetSize(refs.size());
 
                                 //this code works god knows why
                                 CompletableFuture<List<Gasto>> gastos = FutureKt.future(
@@ -273,10 +276,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                                         );
                                 try {
                                     data = gastos.get();
-                                    gastos.get().forEach(g -> addEntryToGraphs(g));
-                                } catch (ExecutionException e) {
-                                    throw new RuntimeException(e);
-                                } catch (InterruptedException e) {
+                                    addEntrysToGraphs(data);
+                                } catch (ExecutionException | InterruptedException e) {
                                     throw new RuntimeException(e);
                                 }
 
@@ -309,22 +310,13 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
     /**
      * adds the given gasto to all the graphs
-     * @param g
+     * @param gs
      */
-    private void addEntryToGraphs(Gasto g) {
-        linearChartFragment.addData(g);
-        pieChartFragment.addData(g);
+    private void addEntrysToGraphs(List<Gasto> gs) {
+        linearChartFragment.updateData(gs);
+        pieChartFragment.updateData(gs);
     }
 
-    /**
-     * Goes one by one throug all the charts and tells them the size of data. When charts detect
-     * that all data has been received, they update
-     * @param size
-     */
-    private void updateChartDatasetSize(int size) {
-        linearChartFragment.setDatasetSize(size);
-        pieChartFragment.setDatasetSize(size);
-    }
 
     private void updateFilterOnGraphs(AbstractChartFragment.Filter filter) {
         linearChartFragment.updateFilter(filter);

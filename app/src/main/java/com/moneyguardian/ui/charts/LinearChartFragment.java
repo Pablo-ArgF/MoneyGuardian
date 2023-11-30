@@ -81,6 +81,10 @@ public class LinearChartFragment extends AbstractChartFragment {
         }
         LineData lineData = new LineData();
 
+        //we validate context is not null to avoid no attached to a context errors
+        if(getContext() == null)
+            return;
+
         LineDataSet datasetGastos = new LineDataSet(entriesGastos,getString(R.string.graph_legend_gastos));
         datasetGastos.setColor(ContextCompat.getColor(getContext(),R.color.red));
         datasetGastos.setCircleColor(ContextCompat.getColor(getContext(),R.color.red));
@@ -96,11 +100,11 @@ public class LinearChartFragment extends AbstractChartFragment {
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
         xAxis.setValueFormatter(dateXFormatter);
-        xAxis.setLabelCount(array.size());
+        xAxis.setLabelCount(7);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
         xAxis.setLabelRotationAngle(-45);
-        xAxis.setLabelCount(10);
+
 
         xAxis.setDrawLabels(true);
         xAxis.setDrawGridLines(false);
@@ -118,7 +122,7 @@ public class LinearChartFragment extends AbstractChartFragment {
 
         chart.setDescription(description);
         chart.setData(lineData);
-        chart.animateXY(1000,1500 );
+        chart.animateXY(1000,1200 );
         chart.invalidate();
     }
 }

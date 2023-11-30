@@ -27,7 +27,6 @@ public abstract class AbstractChartFragment extends Fragment {
     List<Gasto> datos = new ArrayList<>();//contains currently filtered data
     List<Gasto> allData = new ArrayList<>(); //contains all data
     Filter currentFilter = Filter.ALL; //current selected filter
-    int datasetSize;
 
     public AbstractChartFragment() {
         // Required empty public constructor
@@ -43,24 +42,21 @@ public abstract class AbstractChartFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        //we reset the filter to Todos
+        currentFilter = Filter.ALL;
+        updateFilter(currentFilter);
         updateUI();
     }
 
-    public void setDatasetSize(int size){
-        this.datasetSize = size;
-    }
 
-    public void addData(Gasto g){
-        Log.i("CHART","addData called "+ g.getNombre());
-        this.datos.add(g);
-        this.allData.add(g);
-        if(this.allData.size() == datasetSize)
-            updateUI();
+    public void updateData(List<Gasto> g){
+        this.allData = new ArrayList<>(g);
+        updateFilter(currentFilter);
+        updateUI();
+
     }
 
     public void updateFilter(Filter newFilter){
-        if(currentFilter == newFilter)
-            return;
         //we update current filter
         currentFilter = newFilter;
         switch (newFilter){
