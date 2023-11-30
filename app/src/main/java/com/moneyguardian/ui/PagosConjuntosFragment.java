@@ -133,7 +133,7 @@ public class PagosConjuntosFragment extends Fragment {
         Log.i("User", auth.getCurrentUser().getUid());
         ArrayList<PagoConjunto> pagos = new ArrayList<>();
         pagosRef.
-                whereArrayContains("pagador", auth.getCurrentUser().getUid()).
+                whereArrayContains("participantes", db.document("users/" + auth.getCurrentUser().getUid())).
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -146,7 +146,6 @@ public class PagosConjuntosFragment extends Fragment {
                                 }
                                 Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
                                 Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
-
 
 
                                 List<Map<String, Map<String, Double>>> itemsPagoSinTransform =
