@@ -31,6 +31,7 @@ import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.ui.charts.AbstractChartFragment;
 import com.moneyguardian.ui.charts.LinearChartFragment;
+import com.moneyguardian.ui.charts.NoChartFragment;
 import com.moneyguardian.ui.charts.PieChartFragment;
 import com.moneyguardian.userAuth.LoginActivity;
 import com.moneyguardian.userAuth.SignInActivity;
@@ -101,13 +102,11 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             loadUserInfo(root);
         else
             updateUserInfo();
-
-        //we reload the fragments
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(R.id.chartFragmentContainer, linearChartFragment)
-                .commit();
-        linearChartFragment.onResume();
+        if(data.size() > 0) {
+            enableChartView();
+        }
+        else
+            showNoChartView();
     }
 
     @Override
@@ -137,11 +136,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         //we mark the all filter as marked
         markSelectedFilter(filterAll);
 
-        //by default we load the line graph
-        getParentFragmentManager()
-                .beginTransaction()
-                .replace(R.id.chartFragmentContainer, linearChartFragment)
-                .commit();
 
         if(usuario == null)
             loadUserInfo(root);
@@ -261,7 +255,12 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                             //if has gastos, load them
                             if(obj != null){
                                 List<DocumentReference> refs = (List<DocumentReference>) obj;
-
+                                if(refs.size() == 0) {
+                                    showNoChartView();
+                                }
+                                else {
+                                    enableChartView();
+                                }
                                 //this code works god knows why
                                 CompletableFuture<List<Gasto>> gastos = FutureKt.future(
                                         CoroutineScopeKt.CoroutineScope(EmptyCoroutineContext.INSTANCE),
@@ -280,22 +279,16 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                                 } catch (ExecutionException | InterruptedException e) {
                                     throw new RuntimeException(e);
                                 }
-
-                                /*for(DocumentReference ref : refs){
-                                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            //we map this to a Gasto object
-                                            Gasto g = GastoMapper.map(documentSnapshot);
-                                            addEntryToGraphs(g);
-                                        }
-                                    });
-                                }*/
+                            }
+                            else{ //if the user has no gastos/ingresos we display an empty fragment
+                                 showNoChartView();
                             }
                         }
                     }
                 });
     }
+
+
 
     private void updateUserInfo() {
         Uri profileUri =Uri.parse(usuario.getUriImg());
@@ -321,6 +314,26 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private void updateFilterOnGraphs(AbstractChartFragment.Filter filter) {
         linearChartFragment.updateFilter(filter);
         pieChartFragment.updateFilter(filter);
+    }
+
+    private void showNoChartView(){
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.chartFragmentContainer, new NoChartFragment())
+                .commit();
+
+        //we disable the buttons to change the graph
+        btnMenuGraphPie.setEnabled(false);
+        btnMenuGraphLine.setEnabled(false);
+    }
+
+    private void enableChartView() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.chartFragmentContainer, linearChartFragment)
+                .commit();
+        linearChartFragment.onResume();
+        //we disable the buttons to change the graph
+        btnMenuGraphPie.setEnabled(true);
+        btnMenuGraphLine.setEnabled(true);
     }
 
 }

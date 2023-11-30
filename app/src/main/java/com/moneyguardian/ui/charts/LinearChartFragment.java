@@ -57,9 +57,6 @@ public class LinearChartFragment extends AbstractChartFragment {
     @Override
     public void updateUI() {
         float textSize = 12;
-
-        Log.i("CHART","grafica de lineas update con "+allData.size());
-
         
         //we transform the list of Gasto objects into a list of entry objects
         entriesIngresos.clear();

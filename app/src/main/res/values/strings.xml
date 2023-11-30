@@ -116,4 +116,6 @@
     <string name="filter_3month">3M</string>
     <string name="filter_1year">1Y</string>
     <string name="filter_all">Todo</string>
+    <string name="noDataChart">Aún no tienes gastos/ingresos, registra alguno para poder ver gráficas en esta seccion</string>
+    <string name="center_pie_chart">Gastos por categoría</string>
 </resources>
