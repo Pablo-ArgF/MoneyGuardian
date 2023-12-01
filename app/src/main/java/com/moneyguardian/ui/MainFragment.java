@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -24,7 +25,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
@@ -211,6 +214,21 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             }
         });
 
+
+        //listener to get changes on the user be represented here
+        db.collection("users").document(auth.getUid())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        usuario = UsuarioMapper.mapBasics(value);
+                        //we update name and picture if needed
+                        updateUserInfo();
+                        //we update the Gastos data
+                        updateAllGastos(value);
+                    }
+                });
+
+
         return root;
     }
 
@@ -246,48 +264,53 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if(documentSnapshot.exists()){
                             usuario = UsuarioMapper.mapBasics(documentSnapshot);
-
                             updateUserInfo();
-
-                            //we load the gastos of the user
-                            //we get the references for the different gastos
-                            Object obj = documentSnapshot.get("gastos");
-                            //if has gastos, load them
-                            if(obj != null){
-                                List<DocumentReference> refs = (List<DocumentReference>) obj;
-                                if(refs.size() == 0) {
-                                    showNoChartView();
-                                }
-                                else {
-                                    enableChartView();
-                                }
-                                //this code works god knows why
-                                CompletableFuture<List<Gasto>> gastos = FutureKt.future(
-                                        CoroutineScopeKt.CoroutineScope(EmptyCoroutineContext.INSTANCE),
-                                        EmptyCoroutineContext.INSTANCE,
-                                        CoroutineStart.DEFAULT,
-                                        (scope,continuation) -> {
-                                            return LoadDataHelper.loadGastosData(
-                                                    LifecycleOwnerKt.getLifecycleScope(MainFragment.this),
-                                                    refs,
-                                                    (Continuation<? super List<? extends Gasto>>) continuation);
-                                        }
-                                        );
-                                try {
-                                    data = gastos.get();
-                                    addEntrysToGraphs(data);
-                                } catch (ExecutionException | InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                            else{ //if the user has no gastos/ingresos we display an empty fragment
-                                 showNoChartView();
-                            }
+                            updateAllGastos(documentSnapshot);
                         }
                     }
                 });
     }
 
+    private void updateAllGastos(DocumentSnapshot documentSnapshot) {
+        //we load the gastos of the user
+        //we get the references for the different gastos
+        Object obj = documentSnapshot.get("gastos");
+        //if has gastos, load them
+        if(obj != null){
+            List<DocumentReference> refs = (List<DocumentReference>) obj;
+            if(refs.size() == 0) {
+                showNoChartView();
+            }
+            else {
+                enableChartView();
+            }
+            loadGastosData(refs);
+        }
+        else{ //if the user has no gastos/ingresos we display an empty fragment
+             showNoChartView();
+        }
+    }
+
+    private void loadGastosData(List<DocumentReference> refs) {
+        //this code works god knows why
+        CompletableFuture<List<Gasto>> gastos = FutureKt.future(
+                CoroutineScopeKt.CoroutineScope(EmptyCoroutineContext.INSTANCE),
+                EmptyCoroutineContext.INSTANCE,
+                CoroutineStart.DEFAULT,
+                (scope,continuation) -> {
+                    return LoadDataHelper.loadGastosData(
+                            LifecycleOwnerKt.getLifecycleScope(MainFragment.this),
+                            refs,
+                            (Continuation<? super List<? extends Gasto>>) continuation);
+                }
+                );
+        try {
+            data = gastos.get();
+            addEntrysToGraphs(data);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     private void updateUserInfo() {
