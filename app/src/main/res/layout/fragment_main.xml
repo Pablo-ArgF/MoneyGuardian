@@ -45,14 +45,14 @@
 
                 <Button
                     android:id="@+id/btn_lineChart"
-                    android:layout_width="90dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="@string/title_linear_graph"
                     />
 
                 <Button
                     android:id="@+id/btn_pieChart"
-                    android:layout_width="90dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="@string/title_pie_graph" />
             </LinearLayout>

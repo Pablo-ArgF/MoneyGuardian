@@ -103,8 +103,8 @@
     <string name="CrearGasto">Crear nueva transacción</string>
     <string name="addIngreso">Añadir nuevo ingreso</string>
     <string name="addGasto">Añadir nuevo gasto</string>
-    <string name="title_linear_graph">Linea</string>
-    <string name="title_pie_graph">Tarta</string>
+    <string name="title_linear_graph">Balance</string>
+    <string name="title_pie_graph">Por categorías</string>
     <string name="graph_legend_gastos">Gastos</string>
     <string name="graph_legend_ingresos">Ingresos</string>
     <string name="description_line_graph">Gastos/Ingresos</string>
