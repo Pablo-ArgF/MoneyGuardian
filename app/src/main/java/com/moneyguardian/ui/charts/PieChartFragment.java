@@ -106,8 +106,10 @@ public class PieChartFragment extends AbstractChartFragment {
         set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setColors(ColorTemplate.COLORFUL_COLORS);
-        if(couldGetColor)
-            set.setValueTextColor(color);
+        if(couldGetColor) {
+            set.setValueTextColor(color); //value
+            chart.setEntryLabelColor(color); //name of the cat
+        }
         PieData data = new PieData(set);
 
 

@@ -1,8 +1,10 @@
 package com.moneyguardian.ui.charts;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +59,15 @@ public class LinearChartFragment extends AbstractChartFragment {
     @Override
     public void updateUI() {
         float textSize = 12;
+        //this if configures the text colors to be the ones of the theme
+        int color = 0;
+        boolean couldGetColor = false;
+        if (getContext()!= null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            TypedValue val = new TypedValue();
+            getContext().getTheme().resolveAttribute(androidx.appcompat.R.attr.colorAccent,val,true);
+            color = val.data;
+            couldGetColor = true;
+        }
         
         //we transform the list of Gasto objects into a list of entry objects
         entriesIngresos.clear();
@@ -83,16 +94,22 @@ public class LinearChartFragment extends AbstractChartFragment {
             return;
 
         LineDataSet datasetGastos = new LineDataSet(entriesGastos,getString(R.string.graph_legend_gastos));
-        datasetGastos.setColor(ContextCompat.getColor(getContext(),R.color.red));
-        datasetGastos.setCircleColor(ContextCompat.getColor(getContext(),R.color.red));
+        int colorRed = ContextCompat.getColor(getContext(),R.color.red);
+        datasetGastos.setColor(colorRed);
+        datasetGastos.setCircleColor(colorRed);
+        datasetGastos.setCircleHoleColor(colorRed);
         lineData.addDataSet(datasetGastos);
 
         LineDataSet datasetIngresos = new LineDataSet(entriesIngresos,getString(R.string.graph_legend_ingresos));
-        datasetIngresos.setColor(ContextCompat.getColor(getContext(),R.color.green));
-        datasetIngresos.setCircleColor(ContextCompat.getColor(getContext(),R.color.green));
+        int colorGreen = ContextCompat.getColor(getContext(),R.color.green);
+        datasetIngresos.setColor(colorGreen);
+        datasetIngresos.setCircleColor(colorGreen);
+        datasetIngresos.setCircleHoleColor(colorGreen);
         lineData.addDataSet(datasetIngresos);
 
         lineData.setValueTextSize(10);
+        if(couldGetColor)
+            lineData.setValueTextColor(color);
 
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
@@ -100,6 +117,8 @@ public class LinearChartFragment extends AbstractChartFragment {
         xAxis.setLabelCount(7);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
+        if(couldGetColor)
+            xAxis.setTextColor(color);
         xAxis.setLabelRotationAngle(-45);
 
 
@@ -111,15 +130,23 @@ public class LinearChartFragment extends AbstractChartFragment {
         chart.getAxisLeft().setTextSize(textSize);
         chart.getAxisLeft().setAxisMinimum(0);
         chart.getAxisRight().setEnabled(false);
+        if(couldGetColor)
+            chart.getAxisLeft().setTextColor(color);
 
 
         Description description = new Description();
-        description.setText(getString(R.string.description_line_graph));
+        description.setText("");
 
+        if(couldGetColor) {
+            chart.setBorderColor(color);
+            chart.getLegend().setTextColor(color);
+        }
+
+        chart.getLegend().setTextSize(textSize);
 
         chart.setDescription(description);
         chart.setData(lineData);
-        chart.animateXY(1000,1200 );
+        chart.animateXY(1000,1000 );
         chart.invalidate();
     }
 }
