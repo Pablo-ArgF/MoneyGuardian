@@ -28,6 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
@@ -85,6 +86,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private TextView filter1Year;
     private TextView filterAll;
     private ColorStateList notSelectedColors; //color of not selected filter
+    private Button btnRegistrarGasto;
+    private Button btnRegistrarIngreso;
 
 
     public MainFragment() {
@@ -105,9 +108,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             loadUserInfo(root);
         else
             updateUserInfo();
-        if(data.size() > 0) {
+
+        if(data.size() > 0)
             enableChartView();
-        }
         else
             showNoChartView();
     }
@@ -134,6 +137,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         filter3Month = root.findViewById(R.id.filter_3month);
         filter1Year = root.findViewById(R.id.filter_1year);
         filterAll = root.findViewById(R.id.filter_all);
+        btnRegistrarGasto = root.findViewById(R.id.btnGasto);
+        btnRegistrarIngreso = root.findViewById(R.id.btnIngreso);
         //we store the not selected color
         this.notSelectedColors = filter1Month.getTextColors();
         //we mark the all filter as marked
@@ -154,7 +159,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         btnMenuGraphLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getParentFragmentManager()
+                getChildFragmentManager()
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, linearChartFragment)
                         .commit();
@@ -167,7 +172,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         btnMenuGraphPie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getParentFragmentManager()
+                getChildFragmentManager()
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, pieChartFragment)
                         .commit();
@@ -213,6 +218,30 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
             }
         });
+
+        //listeners to buttons to register gastos and ingresos
+        btnRegistrarIngreso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FormularioGastoActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("Ingreso", true);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        btnRegistrarGasto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FormularioGastoActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("Ingreso", false);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
 
 
         //listener to get changes on the user be represented here
@@ -346,7 +375,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         if(getContext() == null)
             return;
 
-        getParentFragmentManager().beginTransaction()
+        getChildFragmentManager().beginTransaction()
                 .replace(R.id.chartFragmentContainer, new NoChartFragment())
                 .commit();
 
@@ -358,13 +387,17 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private void enableChartView() {
         if(getContext() == null)
             return;
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.chartFragmentContainer, linearChartFragment)
-                .commit();
+
         linearChartFragment.onResume();
         //we disable the buttons to change the graph
         btnMenuGraphPie.setEnabled(true);
         btnMenuGraphLine.setEnabled(true);
+
+
+
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.chartFragmentContainer, linearChartFragment)
+                .commit();
     }
 
 }
