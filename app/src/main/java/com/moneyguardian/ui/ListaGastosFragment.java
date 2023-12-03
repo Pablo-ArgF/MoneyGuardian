@@ -87,19 +87,28 @@ public class ListaGastosFragment extends Fragment {
                 new LinearLayoutManager(root.getContext().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
 
+        // Para no rehacer el adapter cuando cambiamos de fragment
+        if (adapter == null) {
+            adapter = new GastoListaAdapter(new GastoListaAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Gasto gasto) {
+                    // NADA
+                }
+            });
+        }
+
+        // Si el adapter ya existe, lo colocamos
+        // Se que parece codigo innecesario, pero puede dar errores quitando el condicional
+        if (adapter != null) {
+            recyclerView.setAdapter(adapter);
+        }
+
         // Recuperar gastos del usuario
 
-        cargarDatos();
-
-        adapter = new GastoListaAdapter(new GastoListaAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Gasto gasto) {
-                // TODO later
-                // clickonItem(gasto);
-            }
-        });
-
-        recyclerView.setAdapter(adapter);
+        // Si no hay adapter, o no hay items los cargamos
+        if (adapter == null || adapter.getItemCount() == 0) {
+            cargarDatos();
+        }
 
         buttonAddIngreso.setOnClickListener(new View.OnClickListener() {
             @Override
