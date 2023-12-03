@@ -1,7 +1,5 @@
 package com.moneyguardian.ui;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -44,25 +41,14 @@ import java.util.Map;
 
 public class PagosConjuntosFragment extends Fragment {
 
-    // Identificadores de intent
-
-    public static final String PAGO_CONJUNTO_SELECCIONADO = "pago_conjunto_seleccionado";
-    public static final String PAGO_CONJUNTO_CREADO = "pago_conjunto_creado";
-
     // Identificador de activiy
     public static final int GESTION_ACTIVITY = 1;
 
     // Modelo de datos
 
-    private ArrayList<PagoConjunto> listaPagosConjuntos = new ArrayList<>();
     private PagosConjuntosListaAdapter pagosConjuntosListaAdapter;
-    private PagoConjunto pagoConjunto;
-    private RecyclerView listaPagosConjuntosView;
 
-    // Firebase
-    private FirebaseAuth auth;
     private FirebaseFirestore db;
-    private FirebaseStorage storage;
     private ListenerRegistration docListener;
 
 
@@ -90,14 +76,14 @@ public class PagosConjuntosFragment extends Fragment {
         addListenerToCollection();
 
 
-        listaPagosConjuntosView = root.findViewById(R.id.recyclerPagosConjuntos);
+        RecyclerView listaPagosConjuntosView = root.findViewById(R.id.recyclerPagosConjuntos);
         listaPagosConjuntosView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(root.getContext().getApplicationContext());
         listaPagosConjuntosView.setLayoutManager(layoutManager);
 
 
-        listaPagosConjuntos = new ArrayList<>();
+        ArrayList<PagoConjunto> listaPagosConjuntos = new ArrayList<>();
         cargarDatos();
 
         pagosConjuntosListaAdapter = new PagosConjuntosListaAdapter(listaPagosConjuntos,
@@ -126,8 +112,8 @@ public class PagosConjuntosFragment extends Fragment {
 
     private void cargarDatos() {
 
-        auth = FirebaseAuth.getInstance();
-        storage = FirebaseStorage.getInstance();
+        // Firebase
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         ArrayList<PagoConjunto> pagos = new ArrayList<>();
 
         db.collection("users").document(auth.getCurrentUser().getUid()).
@@ -229,6 +215,7 @@ public class PagosConjuntosFragment extends Fragment {
 
         getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain, listaPagosFragment).addToBackStack(null).commit();
     }
+
 
     @Override
     public void onDestroy() {

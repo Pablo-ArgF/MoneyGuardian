@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +35,7 @@ import com.moneyguardian.util.Animations;
 import com.moneyguardian.util.GastosUtil;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

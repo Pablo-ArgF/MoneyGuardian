@@ -6,26 +6,51 @@
     android:id="@+id/fragmentMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainFragment"
-    android:layout_margin="7dp">
+    tools:context=".ui.MainFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        android:layout_height="match_parent">
 
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/txtWelcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/profileButton"
+            android:fontFamily="@font/roboto_condensed_regular"
+            android:text="@string/welcome_msg"
+            android:textSize="20sp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileButton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            app:civ_border_color="@color/blue"
+            app:civ_border_width="2dp" />
+
+        <RelativeLayout
             android:id="@+id/chartLayout"
-            android:layout_width="384dp"
-            android:layout_height="390dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.518"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtWelcome"
-            app:layout_constraintVertical_bias="0.132">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tipsLayout"
+            android:layout_below="@+id/txtWelcome"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:visibility="visible">
 
             <!--<com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/nav_graphs"
@@ -39,16 +64,16 @@
                 android:id="@+id/menu_graphs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btn_lineChart"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="@string/title_linear_graph"
-                    />
+                    android:text="@string/title_linear_graph" />
 
                 <Button
                     android:id="@+id/btn_pieChart"
@@ -59,17 +84,25 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/chartFragmentContainer"
-                android:layout_width="386dp"
-                android:layout_height="310dp"
-                />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/menu_filters"
+                android:layout_below="@+id/menu_graphs"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp" />
 
             <LinearLayout
                 android:id="@+id/menu_filters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/filter_1month"
@@ -107,51 +140,22 @@
                     android:textSize="17dp"
                     android:textStyle="bold" />
             </LinearLayout>
-        </LinearLayout>
-
-
-
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileButton"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
-            app:civ_border_color="@color/blue"
-            app:civ_border_width="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.953"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.045" />
-
-        <TextView
-            android:id="@+id/txtWelcome"
-            android:layout_width="259dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_condensed_regular"
-            android:text="@string/welcome_msg"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/profileButton"
-            app:layout_constraintHorizontal_bias="0.542"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.062" />
+        </RelativeLayout>
 
 
         <LinearLayout
             android:id="@+id/tipsLayout"
-            android:layout_width="334dp"
-            android:layout_height="110dp"
+            android:layout_width="wrap_content"
+            android:layout_height="99dp"
+            android:layout_above="@+id/linearLayout2"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/rounded_edge"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.493"
-            app:layout_constraintVertical_bias="0.1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chartLayout">
+            android:visibility="visible">
 
 
             <LinearLayout
@@ -189,14 +193,15 @@
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="54dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.535"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
-            app:layout_constraintVertical_bias="1.0">
+            android:visibility="visible">
 
             <Button
                 android:id="@+id/btnGasto"
@@ -217,7 +222,5 @@
         </LinearLayout>
 
 
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </FrameLayout>
