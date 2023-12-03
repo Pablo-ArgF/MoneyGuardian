@@ -24,7 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.PagosConjuntosListaAdapter;

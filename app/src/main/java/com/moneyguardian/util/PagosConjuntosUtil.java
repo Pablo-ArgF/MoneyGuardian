@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class PagosConjuntosUtil {
 
-    public static PagoConjunto getPagoConjuntoFrom(QueryDocumentSnapshot document) {
+    /*public static PagoConjunto getPagoConjuntoFrom(QueryDocumentSnapshot document) {
         String nombre = (String) document.getData().get("nombre");
         Uri imagen = null;
         if (document.getData().get("imagen") != null) {
@@ -51,6 +51,6 @@ public class PagosConjuntosUtil {
         }
 
         return new PagoConjunto(document.getId(), nombre, fechaPago, new ArrayList<>(), imagen, fechaLimite, itemsPago);
-    }
+    }*/
 
 }
