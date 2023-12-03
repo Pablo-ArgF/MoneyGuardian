@@ -103,4 +103,21 @@
     <string name="CrearGasto">Crear nueva transacción</string>
     <string name="addIngreso">Añadir nuevo ingreso</string>
     <string name="addGasto">Añadir nuevo gasto</string>
+    <string name="title_linear_graph">Balance</string>
+    <string name="title_pie_graph">Por categorías</string>
+    <string name="graph_legend_gastos">Gastos</string>
+    <string name="graph_legend_ingresos">Ingresos</string>
+    <string name="description_line_graph">Gastos/Ingresos</string>
+    <string name="error_empty_name">El nombre no puede estar vacío</string>
+    <string name="error_empty_balance">El balance no puede estar vacío</string>
+    <string name="SelectAll">Seleccionar todos</string>
+    <string name="no_gasto_selected">No hay ningún gasto seleccionado</string>
+    <string name="question_remove_gasto">¿Desea borrar estos gastos?</string>
+    <string name="filter_1month">1M</string>
+    <string name="filter_3month">3M</string>
+    <string name="filter_1year">1Y</string>
+    <string name="filter_all">Todo</string>
+    <string name="noDataChart">Aún no tienes gastos/ingresos, registra alguno para poder ver gráficas en esta seccion</string>
+    <string name="center_pie_chart">Gastos por categoría</string>
+    <string name="fecha">Fecha</string>
 </resources>

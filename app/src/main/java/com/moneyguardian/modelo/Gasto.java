@@ -6,43 +6,59 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 public class Gasto implements Parcelable {
 
     private String nombre;
     private float balance;
-    private String imagen;
-    private Date fechaCreación;
+    private String categoria;
+    private Date fechaCreacion;
+    private DocumentReference reference;
+    private String UUID;
 
     public Gasto() {
 
     }
 
-    public Gasto(String nombre, float balance, String imagen) {
+    public Gasto(String nombre, float balance, String categoria, Date fechaCreacion) {
         this.nombre = nombre;
         this.balance = balance;
-        this.imagen = imagen;
+        this.categoria = categoria;
+        this.fechaCreacion = fechaCreacion;
     }
 
-    public Gasto(String nombre, float balance, String imagen, Date fechaCreación) {
-        this(nombre, balance, imagen);
-        this.fechaCreación = fechaCreación;
+    public Gasto(String nombre, float balance, Date fechaCreacion) {
+        this(nombre, balance, (String) null);
+        this.fechaCreacion = fechaCreacion;
     }
 
-    public Gasto(String nombre, float balance, String imagen, String fechaCreación) {
-        this(nombre, balance, imagen);
+    public Gasto(String nombre, float balance, String categoria) {
+        this(nombre, balance, categoria, new Date());
+    }
+
+    public Gasto(String nombre, float balance, String categoria, String fechaCreacion) {
+        this(nombre, balance, categoria);
         SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", new Locale("es"));
         try {
-            this.fechaCreación = formater.parse(fechaCreación);
+            this.fechaCreacion = formater.parse(fechaCreacion);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setReference(DocumentReference ref) {
+        this.reference = ref;
+    }
+
+    public DocumentReference getReference() {
+        return this.reference;
     }
 
     public String getNombre() {
@@ -61,12 +77,12 @@ public class Gasto implements Parcelable {
         this.balance = balance;
     }
 
-    public String getImagen() {
-        return imagen;
+    public String getCategoria() {
+        return categoria;
     }
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     @Override
@@ -78,13 +94,17 @@ public class Gasto implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeFloat(balance);
-        dest.writeString(imagen);
+        dest.writeString(categoria);
+        dest.writeSerializable(fechaCreacion);
+        dest.writeString(UUID);
     }
 
     protected Gasto(Parcel in) {
         nombre = in.readString();
         balance = in.readFloat();
-        imagen = in.readParcelable(Uri.class.getClassLoader());
+        categoria = in.readString();
+        fechaCreacion = (Date) in.readSerializable();
+        UUID = in.readString();
     }
 
     public static final Creator<Gasto> CREATOR = new Creator<Gasto>() {
@@ -100,6 +120,22 @@ public class Gasto implements Parcelable {
     };
 
     public String getFechaCreacion() {
-        return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreación);
+        return new SimpleDateFormat("dd-MM-yyyy", new Locale("es")).format(this.fechaCreacion);
+    }
+
+    public void setUUID(String gastoUUID) {
+        this.UUID = gastoUUID;
+    }
+
+    public String getUUID() {
+        return this.UUID;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Date getFechaCreacionAsDate() {
+        return fechaCreacion;
     }
 }
