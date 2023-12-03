@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +18,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -32,9 +36,11 @@ import com.moneyguardian.adapters.ItemListaAdapter;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
+import com.moneyguardian.util.Animations;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +56,10 @@ public class ListaPagosFragment extends Fragment {
     private Uri imagen;
     private String namePago;
     private List<ItemPagoConjunto> listaPagos;
-    private Button btnAddNewItem;
+    FloatingActionButton mainOpenButton;
+    FloatingActionButton btnAddNewItem;
+    FloatingActionButton fabDelete;
+    FloatingActionButton fabEdit;
     private PagoConjunto pagoConjunto;
     private ItemListaAdapter lpAdapter;
 
@@ -94,7 +103,10 @@ public class ListaPagosFragment extends Fragment {
         tvName.setText(namePago);
         ImageView ivImagen = root.findViewById(R.id.iconPago);
         if (imagen != null) Picasso.get().load(imagen).into(ivImagen);
+        mainOpenButton = root.findViewById(R.id.floatingActionButtonMainPagoConjunto);
         btnAddNewItem = root.findViewById(R.id.btnNewItemPago);
+        fabDelete = root.findViewById(R.id.floatingActionButtonDeletePagoConjunto);
+        fabEdit = root.findViewById(R.id.floatingActionButtonEditPagoConjunto);
 
         btnAddNewItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +117,16 @@ public class ListaPagosFragment extends Fragment {
             }
         });
 
+        fabDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete();
+            }
+        });
+
+
+        new Animations(root).setOnClickAnimationAndVisibility(mainOpenButton,
+                Arrays.asList(btnAddNewItem,fabDelete,fabEdit));
 
         return root;
     }
@@ -152,6 +174,26 @@ public class ListaPagosFragment extends Fragment {
         if (docListener != null) {
             docListener.remove();
         }
+    }
+
+    private void delete(){
+        DocumentReference docReference = db.collection("pagosConjuntos").
+                document(pagoConjunto.getId());
+
+        docReference.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        for (UsuarioParaParcelable p : pagoConjunto.getParticipantes()) {
+                            db.collection("users").document(p.getId()).update("pagosConjuntos",
+                                    FieldValue.arrayRemove(docReference));
+                        }
+                        
+                        db.collection("users").document(pagoConjunto.getOwner()).update("pagosConjuntos",
+                                FieldValue.arrayRemove(docReference));
+                        getParentFragmentManager().popBackStack();
+                    }
+                });
     }
 
     private void addListenerToCollection() {

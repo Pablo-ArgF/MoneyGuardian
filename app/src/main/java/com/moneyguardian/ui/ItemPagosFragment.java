@@ -108,7 +108,6 @@ public class ItemPagosFragment extends Fragment {
                             addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    pagoConjunto.getItems().remove(itemPagoConjunto);
                                     getParentFragmentManager().popBackStack();
                                 }
                             });

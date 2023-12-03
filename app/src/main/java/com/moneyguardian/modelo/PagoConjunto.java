@@ -22,8 +22,8 @@ public class PagoConjunto implements Parcelable {
     private List<ItemPagoConjunto> items;
 
     public PagoConjunto(String id, String nombre, Date fechaPago, ArrayList<UsuarioParaParcelable>
-            es, Uri imagen, Date fechaLimite, List<ItemPagoConjunto> itemsPago,String owner) {
-        this(id,nombre, fechaPago, es, itemsPago);
+            participantes, Uri imagen, Date fechaLimite, List<ItemPagoConjunto> itemsPago,String owner) {
+        this(id,nombre, fechaPago, participantes, itemsPago);
         this.fechaLimite = fechaLimite;
         this.imagen = imagen;
         this.owner = owner;

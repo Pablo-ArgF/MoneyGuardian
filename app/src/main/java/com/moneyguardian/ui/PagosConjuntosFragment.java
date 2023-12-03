@@ -34,6 +34,7 @@ import com.moneyguardian.adapters.PagosConjuntosListaAdapter;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
+import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -155,6 +156,22 @@ public class PagosConjuntosFragment extends Fragment {
 
                                     String owner = ((ArrayList<String>) document.getData().get("pagador")).get(0);
 
+                                    List< DocumentReference> users =
+                                            (List< DocumentReference >) document.getData().get("participantes");
+
+                                    List<UsuarioParaParcelable> participantes = new ArrayList<>();
+
+                                    users.forEach(user ->
+                                    {
+                                        user.get()
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentSnapshot d) {
+                                                        participantes.add(UsuarioMapper.mapBasicsParcelable(d));
+                                                    }
+                                                });
+                                    });
+
                                     List<ItemPagoConjunto> itemsPago = new ArrayList<>();
 
                                     Uri finalImagen = imagen;
@@ -190,11 +207,13 @@ public class PagosConjuntosFragment extends Fragment {
                                                     Log.i("Firebase GET", document.getData().toString());
 
                                                     pagos.add(new PagoConjunto(document.getId(), nombre,
-                                                            fechaPago, new ArrayList<>(), finalImagen,
-                                                            fechaLimite, itemsPago, owner));
+                                                            fechaPago, new ArrayList<>(participantes),
+                                                            finalImagen, fechaLimite, itemsPago, owner));
                                                     pagosConjuntosListaAdapter.updateList(pagos);
                                                 }
                                             });
+                                }else{
+                                    pagosConjuntosListaAdapter.updateList(new ArrayList<>());
                                 }
                             }
                         });
@@ -212,26 +231,6 @@ public class PagosConjuntosFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Comprobamos a qué petición se está respondiendo
-
-        if (requestCode == GESTION_ACTIVITY) {
-            // Nos aseguramos que el resultado fue OK
-            if (resultCode == RESULT_OK) {
-
-                Snackbar.make(getActivity().findViewById(R.id.fragmentPagosConjuntos), R.string.PagoConjuntoCreado, Snackbar.LENGTH_LONG).show();
-
-                this.pagoConjunto = data.getParcelableExtra(PAGO_CONJUNTO_CREADO);
-
-                // Refrescar el RecyclerView, lo ponemos a 0 y cargamos los datos de la BD
-                this.listaPagosConjuntos = new ArrayList<>();
-                //cargarDatos();
-            }
-        }
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         if (docListener != null) {
@@ -241,7 +240,7 @@ public class PagosConjuntosFragment extends Fragment {
 
     private void addListenerToCollection() {
         if (docListener == null) {
-            docListener = db.collection("pagosConjuntos").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            docListener = db.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                             if (error != null) {
@@ -249,9 +248,7 @@ public class PagosConjuntosFragment extends Fragment {
                                 return;
                             }
 
-                            if(!value.getDocumentChanges().isEmpty()) {
-                                cargarDatos();
-                            }
+                            cargarDatos();
                         }
                     });
         }
