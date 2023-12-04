@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.FormularioGastoActivity;
+import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
@@ -44,6 +45,7 @@ public class ListaGastosFragment extends Fragment {
     public static final int GESTION_GASTO = 10;
     private RecyclerView recyclerView;
     private GastoListaAdapter adapter;
+    private MainActivity mainActivity;
 
     // Base de datos
     private FirebaseAuth auth;
@@ -57,11 +59,6 @@ public class ListaGastosFragment extends Fragment {
     private Animations animations;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -69,6 +66,9 @@ public class ListaGastosFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
 
         View root = inflater.inflate(R.layout.fragment_lista_gastos, container, false);
+        mainActivity = ((MainActivity) getActivity());
+        //we enable the loading view until data is loaded
+        mainActivity.setLoading(true);
 
         // Animaciones de botones
         animations = new Animations(root);
@@ -158,7 +158,24 @@ public class ListaGastosFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(adapter.getItemCount() == 0){
+            //we enable the loading screen
+            mainActivity.setLoading(true);
+            cargarDatos();
+        }
+    }
+
     private void cargarDatos() {
+        if(mainActivity.getGastos()!= null && mainActivity.getGastos().size() >0){
+            mainActivity.getGastos().forEach(g -> adapter.add(g));
+            //we disable the loading screen
+            mainActivity.setLoading(false);
+            return;
+        }
+
         db.collection("users/").document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(Task task) {
@@ -180,6 +197,8 @@ public class ListaGastosFragment extends Fragment {
                                         Gasto g = new Gasto(nombre, (float) balance, categoria, fecha);
                                         g.setReference(gasto);
                                         adapter.add(g);
+                                        //we disable the loading screen
+                                        mainActivity.setLoading(false);
                                     }
                                 }
                             });

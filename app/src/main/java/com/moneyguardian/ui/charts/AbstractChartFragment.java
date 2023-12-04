@@ -56,6 +56,44 @@ public abstract class AbstractChartFragment extends Fragment {
 
     }
 
+    public int numberOfItemsIfFilterApplied(Filter filter){
+        switch (filter){
+            case ONE_MONTH:
+
+                return (int) allData.stream()
+                        .filter(gasto ->
+                        {
+                            Calendar c = Calendar.getInstance();
+                            c.add(Calendar.MONTH, -1);
+                            Date oneMonthAgo = c.getTime();
+                            return gasto.getFechaCreacionAsDate().after(oneMonthAgo);
+                        }).count();
+            case THREE_MONTHS:
+                //solo los datos de los ultimos 3 meses
+                return (int) allData.stream()
+                        .filter(gasto ->
+                        {
+                            Calendar c = Calendar.getInstance();
+                            c.add(Calendar.MONTH, -3);
+                            Date oneMonthAgo = c.getTime();
+                            return gasto.getFechaCreacionAsDate().after(oneMonthAgo);
+                        }).count();
+            case ONE_YEAR:
+                //solo los datos del ultimo año
+                return (int) allData.stream()
+                        .filter(gasto ->
+                        {
+                            Calendar c = Calendar.getInstance();
+                            c.add(Calendar.MONTH, -12);
+                            Date oneMonthAgo = c.getTime();
+                            return gasto.getFechaCreacionAsDate().after(oneMonthAgo);
+                        }).count();
+            case ALL:
+            default:
+                return allData.size();
+        }
+    }
+
     public void updateFilter(Filter newFilter){
         //we update current filter
         currentFilter = newFilter;

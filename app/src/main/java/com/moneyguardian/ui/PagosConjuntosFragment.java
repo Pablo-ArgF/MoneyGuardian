@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
+import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.PagosConjuntosListaAdapter;
 import com.moneyguardian.modelo.ItemPagoConjunto;
@@ -49,6 +50,7 @@ public class PagosConjuntosFragment extends Fragment {
     // Modelo de datos
     SwipeRefreshLayout swipeRefreshLayout;
     private PagosConjuntosListaAdapter pagosConjuntosListaAdapter;
+    private MainActivity mainActivity;
     private FirebaseFirestore db;
 
 
@@ -64,14 +66,15 @@ public class PagosConjuntosFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onResume() {
+        super.onResume();
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_pagos_conjuntos, container, false);
+        mainActivity = (MainActivity) getActivity();
         db = FirebaseFirestore.getInstance();
 
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshPagosConjuntos);
@@ -92,7 +95,10 @@ public class PagosConjuntosFragment extends Fragment {
 
 
         ArrayList<PagoConjunto> listaPagosConjuntos = new ArrayList<>();
-        cargarDatos();
+        if(this.mainActivity.getPagosConjuntos() == null || mainActivity.getPagosConjuntos().size() == 0)
+            cargarDatos();
+        else
+            listaPagosConjuntos = new ArrayList<>(mainActivity.getPagosConjuntos());
 
         pagosConjuntosListaAdapter = new PagosConjuntosListaAdapter(listaPagosConjuntos,
                 new PagosConjuntosListaAdapter.OnItemClickListener() {
@@ -213,6 +219,7 @@ public class PagosConjuntosFragment extends Fragment {
                                                                     pagos.add(new PagoConjunto(document.getId(), nombre,
                                                                             fechaPago, new ArrayList<>(participantes),
                                                                             finalImagen, fechaLimite, itemsPago, owner));
+                                                                    mainActivity.setPagosConjuntos(pagos);
                                                                     pagosConjuntosListaAdapter.updateList(pagos);
                                                                 }
                                                             });

@@ -29,6 +29,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moneyguardian.FormularioGastoActivity;
+import com.moneyguardian.MainActivity;
 import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
@@ -61,12 +62,10 @@ import kotlinx.coroutines.future.FutureKt;
 
 
 public class MainFragment extends Fragment implements LifecycleOwner {
-
+    private MainActivity mainActivity;
     private CircleImageView profileBtn;
     private TextView txtWelcome;
     private LinearLayout tipsLayout;
-
-    private Usuario usuario;
 
 
     private FirebaseAuth auth;
@@ -77,8 +76,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private Button btnMenuGraphPie;
     private LinearChartFragment linearChartFragment = LinearChartFragment.newInstance(new ArrayList<>());
     private PieChartFragment pieChartFragment = PieChartFragment.newInstance(new ArrayList<>());
-
-    private List<Gasto> data = new ArrayList<>();
+    private NoChartFragment noChartFragment = new NoChartFragment();
+    private AbstractChartFragment currentFragment = linearChartFragment;
 
     //filters
     private TextView filter1Month;
@@ -104,12 +103,12 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     public void onResume() {
         super.onResume();
         //we reload user data
-        if(usuario == null)
+        if(mainActivity.getUser() == null)
             loadUserInfo(root);
         else
             updateUserInfo();
 
-        if(data.size() > 0)
+        if(mainActivity.getGastos().size() > 0)
             enableChartView();
         else
             showNoChartView();
@@ -139,14 +138,18 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         filterAll = root.findViewById(R.id.filter_all);
         btnRegistrarGasto = root.findViewById(R.id.btnGasto);
         btnRegistrarIngreso = root.findViewById(R.id.btnIngreso);
+        mainActivity = ((MainActivity)getActivity());
         //we store the not selected color
         this.notSelectedColors = filter1Month.getTextColors();
         //we mark the all filter as marked
         markSelectedFilter(filterAll);
 
 
-        if(usuario == null)
+
+        if(mainActivity.getUser() == null) {
+            ((MainActivity)getActivity()).setLoading(true);
             loadUserInfo(root);
+        }
 
         profileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,9 +166,11 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .beginTransaction()
                         .replace(R.id.chartFragmentContainer, linearChartFragment)
                         .commit();
-                //filter selector to all
                 markSelectedFilter(filterAll);
+                currentFragment = linearChartFragment;
+                //filter selector to all
                 updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
+
             }
         });
 
@@ -175,6 +180,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     .replace(R.id.chartFragmentContainer, pieChartFragment)
                     .commit();
             markSelectedFilter(filterAll);
+            currentFragment = pieChartFragment;
             updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
         });
 
@@ -222,12 +228,11 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         });
 
 
-
         if(auth.getUid() != null) {
             //listener to get changes on the user be represented here
             db.collection("users").document(auth.getUid())
                     .addSnapshotListener((value, error) -> {
-                        usuario = UsuarioMapper.mapBasics(value);
+                        mainActivity.setUser(UsuarioMapper.mapBasics(value));
                         //we update name and picture if needed
                         updateUserInfo();
                         //we update the Gastos data
@@ -254,7 +259,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
 
     private void loadUserInfo(View root){
-        if(usuario != null)
+        if(mainActivity.getUser() != null)
             return; //if user is logged in and stored we do nothing
         //we check if user is logged in, if not send to login view
         if(auth.getUid() == null) {
@@ -267,7 +272,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            usuario = UsuarioMapper.mapBasics(documentSnapshot);
+                            mainActivity.setUser(UsuarioMapper.mapBasics(documentSnapshot));
                             updateUserInfo();
                             updateAllGastos(documentSnapshot);
                         }
@@ -284,14 +289,20 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             List<DocumentReference> refs = (List<DocumentReference>) obj;
             if(refs.size() == 0) {
                 showNoChartView();
+                //we remove the loading
+                mainActivity.setLoading(false);
             }
             else {
                 enableChartView();
+                //we remove the loading
+                mainActivity.setLoading(false);
             }
             loadGastosData(refs);
         }
         else{ //if the user has no gastos/ingresos we display an empty fragment
              showNoChartView();
+            //we remove the loading
+            mainActivity.setLoading(false);
         }
     }
 
@@ -309,8 +320,10 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 }
                 );
         try {
-            data = gastos.get();
-            addEntrysToGraphs(data);
+            mainActivity.setGastos(gastos.get());
+            addEntrysToGraphs(mainActivity.getGastos());
+            //disable the loading of the data
+            ((MainActivity)getActivity()).setLoading(false);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -321,14 +334,14 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         if(getContext() == null)
             return; //avoids not attached to a context
 
-        Uri profileUri =Uri.parse(usuario.getUriImg());
+        Uri profileUri =Uri.parse(mainActivity.getUser().getUriImg());
         Glide.with(root.getContext())
                 .load(profileUri)
                 .into(profileBtn);
 
         //we load the name in the welcome msg
         txtWelcome.setText( getString(R.string.welcome_msg,
-                usuario.getNombre()));
+                mainActivity.getUser().getNombre()));
     }
 
     /**
@@ -342,8 +355,21 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
 
     private void updateFilterOnGraphs(AbstractChartFragment.Filter filter) {
+        //if the result of filtering we show in the view the empty view
+        if(linearChartFragment.numberOfItemsIfFilterApplied(filter) == 0){
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.chartFragmentContainer, noChartFragment)
+                    .commit();
+        }
+        else {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.chartFragmentContainer,currentFragment)
+                    .commit();
+        }
         linearChartFragment.updateFilter(filter);
         pieChartFragment.updateFilter(filter);
+
     }
 
     private void showNoChartView(){
@@ -351,7 +377,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             return;
 
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.chartFragmentContainer, new NoChartFragment())
+                .replace(R.id.chartFragmentContainer, noChartFragment)
                 .commit();
 
         //we disable the buttons to change the graph
@@ -367,10 +393,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         //we disable the buttons to change the graph
         btnMenuGraphPie.setEnabled(true);
         btnMenuGraphLine.setEnabled(true);
-
-
-
-        getChildFragmentManager().beginTransaction()
+        if(!getChildFragmentManager().isStateSaved())
+            getChildFragmentManager().beginTransaction()
                 .replace(R.id.chartFragmentContainer, linearChartFragment)
                 .commit();
     }

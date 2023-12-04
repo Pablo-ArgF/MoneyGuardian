@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.core.content.ContextCompat;
 
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 
 public class PieChartFragment extends AbstractChartFragment {
 
+    private LinearLayout msgNoGastos;
     private PieChart chart;
     private List<PieEntry> entriesGastos = new ArrayList<>();
     private Map<String, Float> acc = new HashMap<>();
@@ -52,12 +54,18 @@ public class PieChartFragment extends AbstractChartFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_pie_chart, container, false);
+        this.msgNoGastos =(LinearLayout) root.findViewById(R.id.msg_no_gastos);
         this.chart = root.findViewById(R.id.pieChart);
         return root;
     }
 
     @Override
     public void updateUI() {
+        //if no data to display we show the msg
+        if(msgNoGastos!= null && chart!= null ) {
+
+        }
+
         //this if configures the text colors to be the ones of the theme
         int color = 0;
         boolean couldGetColor = false;
