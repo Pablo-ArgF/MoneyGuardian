@@ -100,19 +100,13 @@ public class ItemPagosFragment extends Fragment {
             animations.setOnClickAnimationAndVisibility(openButton, Arrays.asList(editButton, deleteButton));
 
 
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            deleteButton.setOnClickListener(v ->
                     db.collection("pagosConjuntos").document(pagoConjunto.getId()).
-                            collection("itemsPago").document(itemPagoConjunto.getId()).delete().
-                            addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    getParentFragmentManager().popBackStack();
-                                }
-                            });
-                }
-            });
+                    collection("itemsPago").document(itemPagoConjunto.getId()).delete().
+                    addOnSuccessListener(unused -> {
+                        pagoConjunto.getItems().remove(itemPagoConjunto);
+                        getParentFragmentManager().popBackStack();
+                    }));
         }
 
         //we add the layout manager to the group list

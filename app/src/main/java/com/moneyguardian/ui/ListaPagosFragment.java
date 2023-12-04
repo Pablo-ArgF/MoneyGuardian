@@ -66,7 +66,6 @@ public class ListaPagosFragment extends Fragment {
     private ItemListaAdapter lpAdapter;
 
     private FirebaseFirestore db;
-    private ListenerRegistration docListener;
 
     public static ListaPagosFragment newInstance(PagoConjunto param1) {
         ListaPagosFragment fragment = new ListaPagosFragment();
@@ -115,6 +114,7 @@ public class ListaPagosFragment extends Fragment {
             Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
             intent.putExtra("PAGO", pagoConjunto);
             startActivityForResult(intent, GESTION_ACTIVITY);
+            mainOpenButton.callOnClick();
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -139,7 +139,7 @@ public class ListaPagosFragment extends Fragment {
         listItemsPagosView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         listItemsPagosView.setLayoutManager(layoutManager);
 
-        lpAdapter = new ItemListaAdapter(listaPagos, this::clickonItem);
+        lpAdapter = new ItemListaAdapter(pagoConjunto.getItems(), this::clickonItem);
         listItemsPagosView.setAdapter(lpAdapter);
     }
 
@@ -157,7 +157,7 @@ public class ListaPagosFragment extends Fragment {
 
         if(resultCode == RESULT_OK && requestCode == GESTION_ACTIVITY){
             assert data != null;
-            lpAdapter.addItem((ItemPagoConjunto) requireNonNull(data.getExtras()).getParcelable("NEW_ITEM"));
+            lpAdapter.addItem(requireNonNull(data.getExtras()).getParcelable("NEW_ITEM"));
         }
 
     }

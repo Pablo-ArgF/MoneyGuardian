@@ -1,5 +1,9 @@
 package com.moneyguardian.ui;
 
+import static android.app.Activity.RESULT_OK;
+
+import static androidx.core.util.ObjectsCompat.requireNonNull;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,16 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.FormularioPagoConjuntoActivity;
 import com.moneyguardian.R;
@@ -37,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PagosConjuntosFragment extends Fragment {
 
@@ -44,11 +47,9 @@ public class PagosConjuntosFragment extends Fragment {
     public static final int GESTION_ACTIVITY = 1;
 
     // Modelo de datos
-
+    SwipeRefreshLayout swipeRefreshLayout;
     private PagosConjuntosListaAdapter pagosConjuntosListaAdapter;
-
     private FirebaseFirestore db;
-    private ListenerRegistration docListener;
 
 
     public PagosConjuntosFragment() {
@@ -72,7 +73,15 @@ public class PagosConjuntosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_pagos_conjuntos, container, false);
         db = FirebaseFirestore.getInstance();
-        addListenerToCollection();
+
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshPagosConjuntos);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                cargarDatos();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
 
         RecyclerView listaPagosConjuntosView = root.findViewById(R.id.recyclerPagosConjuntos);
@@ -87,11 +96,11 @@ public class PagosConjuntosFragment extends Fragment {
 
         pagosConjuntosListaAdapter = new PagosConjuntosListaAdapter(listaPagosConjuntos,
                 new PagosConjuntosListaAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(PagoConjunto pago) {
-                clickonItem(pago);
-            }
-        });
+                    @Override
+                    public void onItemClick(PagoConjunto pago) {
+                        clickonItem(pago);
+                    }
+                });
 
         listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
 
@@ -109,6 +118,16 @@ public class PagosConjuntosFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK && requestCode == GESTION_ACTIVITY){
+            assert data != null;
+            pagosConjuntosListaAdapter.addItem(requireNonNull(data.getExtras()).getParcelable("NEW_PAGO"));
+        }
+    }
+
     private void cargarDatos() {
 
         // Firebase
@@ -117,95 +136,95 @@ public class PagosConjuntosFragment extends Fragment {
 
         db.collection("users").document(auth.getCurrentUser().getUid()).
                 get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                List<DocumentReference> referenciasPagos = (List<DocumentReference>) documentSnapshot.get("pagosConjuntos");
+                        List<DocumentReference> referenciasPagos = (List<DocumentReference>) documentSnapshot.get("pagosConjuntos");
 
-                if(referenciasPagos != null) {
+                        if (referenciasPagos != null) {
 
-                    for (DocumentReference document : referenciasPagos) {
+                            for (DocumentReference document : referenciasPagos) {
 
-                        db.collection("pagosConjuntos").document(document.getId()).
-                                get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot document) {
-                                if (document.getData() != null) {
-                                    String nombre = (String) document.getData().get("nombre");
-                                    Uri imagen = null;
-                                    if (document.getData().get("imagen") != null) {
-                                        imagen = Uri.parse((String) document.getData().get("imagen"));
-                                    }
-                                    Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
-                                    Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
-
-                                    String owner = ((ArrayList<String>) document.getData().get("pagador")).get(0);
-
-                                    List< DocumentReference> users =
-                                            (List< DocumentReference >) document.getData().get("participantes");
-
-                                    List<UsuarioParaParcelable> participantes = new ArrayList<>();
-
-                                    users.forEach(user ->
-                                    {
-                                        user.get()
-                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentSnapshot d) {
-                                                        participantes.add(UsuarioMapper.mapBasicsParcelable(d));
+                                db.collection("pagosConjuntos").document(document.getId()).
+                                        get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot document) {
+                                                if (document.getData() != null) {
+                                                    String nombre = (String) document.getData().get("nombre");
+                                                    Uri imagen = null;
+                                                    if (document.getData().get("imagen") != null) {
+                                                        imagen = Uri.parse((String) document.getData().get("imagen"));
                                                     }
-                                                });
-                                    });
+                                                    Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
+                                                    Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
 
-                                    List<ItemPagoConjunto> itemsPago = new ArrayList<>();
+                                                    String owner = ((ArrayList<String>) document.getData().get("pagador")).get(0);
 
-                                    Uri finalImagen = imagen;
+                                                    List<DocumentReference> users =
+                                                            (List<DocumentReference>) document.getData().get("participantes");
 
-                                    db.collection("pagosConjuntos")
-                                            .document(document.getId()).collection("itemsPago")
-                                            .orderBy("nombre").get()
-                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                    List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
+                                                    List<UsuarioParaParcelable> participantes = new ArrayList<>();
 
-                                                    for (DocumentSnapshot itemPago : itemsPagoSnapshot) {
-                                                        HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
-                                                        String id = itemPago.getId();
-                                                        String nombre = itemPago.getString("nombre");
-                                                        HashMap<String, Double> cantidadesConUsersReferences =
-                                                                (HashMap<String, Double>) itemPago
-                                                                        .get("UsuariosConPagos");
+                                                    users.forEach(user ->
+                                                    {
+                                                        user.get()
+                                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onSuccess(DocumentSnapshot d) {
+                                                                        participantes.add(UsuarioMapper.mapBasicsParcelable(d));
+                                                                    }
+                                                                });
+                                                    });
 
-                                                        for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
-                                                            cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
-                                                        }
+                                                    List<ItemPagoConjunto> itemsPago = new ArrayList<>();
+
+                                                    Uri finalImagen = imagen;
+
+                                                    db.collection("pagosConjuntos")
+                                                            .document(document.getId()).collection("itemsPago")
+                                                            .orderBy("nombre").get()
+                                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                                    List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
+
+                                                                    for (DocumentSnapshot itemPago : itemsPagoSnapshot) {
+                                                                        HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+                                                                        String id = itemPago.getId();
+                                                                        String nombre = itemPago.getString("nombre");
+                                                                        HashMap<String, Double> cantidadesConUsersReferences =
+                                                                                (HashMap<String, Double>) itemPago
+                                                                                        .get("UsuariosConPagos");
+
+                                                                        for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
+                                                                            cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
+                                                                        }
 
 
-                                                        itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers));
-                                                    }
+                                                                        itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers));
+                                                                    }
 
-                                                    if (nombre == null || fechaLimite == null || fechaPago == null) {
-                                                        throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
-                                                    }
+                                                                    if (nombre == null || fechaLimite == null || fechaPago == null) {
+                                                                        throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
+                                                                    }
 
-                                                    Log.i("Firebase GET", document.getData().toString());
+                                                                    Log.i("Firebase GET", document.getData().toString());
 
-                                                    pagos.add(new PagoConjunto(document.getId(), nombre,
-                                                            fechaPago, new ArrayList<>(participantes),
-                                                            finalImagen, fechaLimite, itemsPago, owner));
-                                                    pagosConjuntosListaAdapter.updateList(pagos);
+                                                                    pagos.add(new PagoConjunto(document.getId(), nombre,
+                                                                            fechaPago, new ArrayList<>(participantes),
+                                                                            finalImagen, fechaLimite, itemsPago, owner));
+                                                                    pagosConjuntosListaAdapter.updateList(pagos);
+                                                                }
+                                                            });
+                                                } else {
+                                                    pagosConjuntosListaAdapter.updateList(new ArrayList<>());
                                                 }
-                                            });
-                                }else{
-                                    pagosConjuntosListaAdapter.updateList(new ArrayList<>());
-                                }
+                                            }
+                                        });
                             }
-                        });
+                        }
                     }
-                }
-            }
-        });
+                });
     }
 
     // Click del item del adapter
@@ -215,28 +234,4 @@ public class PagosConjuntosFragment extends Fragment {
         getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain, listaPagosFragment).addToBackStack(null).commit();
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (docListener != null) {
-            docListener.remove();
-        }
-    }
-
-    private void addListenerToCollection() {
-        if (docListener == null) {
-            docListener = db.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                            if (error != null) {
-                                Log.w("LISTENER", "Litener Failed");
-                                return;
-                            }
-
-                            cargarDatos();
-                        }
-                    });
-        }
-    }
 }

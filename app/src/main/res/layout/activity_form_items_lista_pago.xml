@@ -1,119 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainRelativeItemsForm"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".FormItemsListaPago">
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
 
-    <TextView
-        android:id="@+id/formItemPagoNameTV"
-        android:layout_width="238dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="104dp"
-        android:text="@string/formListaPagosName"
-        android:textSize="18sp" />
+    <LinearLayout
+        android:id="@+id/mainRelativeItemsForm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".FormItemsListaPago"
+        android:orientation="vertical"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        >
 
-    <EditText
-        android:id="@+id/formItemPagoNameTextField"
-        android:layout_width="wrap_content"
-        android:layout_height="57dp"
-        android:layout_below="@+id/formItemPagoNameTV"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="60dp"
-        android:ems="10"
-        android:hint="@string/formListaPagosName"
-        android:inputType="text" />
+        <TextView
+            android:id="@+id/formItemPagoNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/formListaPagosName"
+            android:textSize="18sp" />
 
-    <EditText
-        android:id="@+id/editTextTotalMoneyItemPago"
-        android:layout_width="112dp"
-        android:layout_height="57dp"
-        android:layout_below="@+id/formItemPagoNameTextField"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="93dp"
-        android:layout_toEndOf="@+id/textView3"
-        android:ems="10"
-        android:hint="@string/formListaPagosHintCantidadTotal"
-        android:inputType="numberDecimal" />
+        <EditText
+            android:id="@+id/formItemPagoNameTextField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/formListaPagosName"
+            android:inputType="text" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/formItemPagoNameTextField"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="35dp"
-        android:text="@string/formListaPagosCantidadTotal"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/formListaPagosCantidadTotal"
+            android:textSize="18sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recicledViewUsersToSelect"
-        android:layout_width="wrap_content"
-        android:layout_height="173dp"
-        android:layout_below="@+id/checkBoxChangeMoney"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp" />
+        <EditText
+            android:id="@+id/editTextTotalMoneyItemPago"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/formListaPagosHintCantidadTotal"
+            android:inputType="numberDecimal" />
 
-    <Button
-        android:id="@+id/btnCreteItemPago"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="17dp"
-        android:layout_marginBottom="20dp"
-        android:text="@string/acceptBtn" />
+        <TextView
+            android:id="@+id/TVPagador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/TVPagador"
+            android:textSize="18sp" />
 
-    <Spinner
-        android:id="@+id/spinnerWhoPays"
-        android:layout_width="205dp"
-        android:layout_height="51dp"
-        android:layout_below="@+id/TVPagador"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="137dp" />
+        <Spinner
+            android:id="@+id/spinnerWhoPays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"/>
 
-    <TextView
-        android:id="@+id/TVPagador"
-        android:layout_width="239dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="102dp"
-        android:text="@string/TVPagador"
-        android:textSize="16sp" />
+        <CheckBox
+            android:id="@+id/checkBoxChangeMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/changeMoneyPerPerson" />
 
-    <CheckBox
-        android:id="@+id/checkBoxChangeMoney"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spinnerWhoPays"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/changeMoneyPerPerson" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recicledViewUsersToSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/btnCreteItemPago"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/acceptBtn" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

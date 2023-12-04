@@ -25,24 +25,21 @@ public class Animations {
 
     public void setOnClickAnimationAndVisibility(FloatingActionButton mainButton,
                                                  List<FloatingActionButton> otherButtons) {
-        mainButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (otherButtons.get(0).getVisibility() == View.INVISIBLE) {
-                    for (FloatingActionButton fab : otherButtons){
-                        fab.startAnimation(fromBottom);
-                        fab.setVisibility(View.VISIBLE);
-                        fab.setClickable(true);
-                    }
-                    mainButton.startAnimation(rotateOpen);
-                } else {
-                    for (FloatingActionButton fab : otherButtons){
-                        fab.startAnimation(toBottom);
-                        fab.setVisibility(View.INVISIBLE);
-                        fab.setClickable(false);
-                    }
-                    mainButton.startAnimation(rotateClose);
+        mainButton.setOnClickListener(v -> {
+            if (otherButtons.get(0).getVisibility() == View.INVISIBLE) {
+                for (FloatingActionButton fab : otherButtons){
+                    fab.startAnimation(fromBottom);
+                    fab.setVisibility(View.VISIBLE);
+                    fab.setClickable(true);
                 }
+                mainButton.startAnimation(rotateOpen);
+            } else {
+                for (FloatingActionButton fab : otherButtons){
+                    fab.startAnimation(toBottom);
+                    fab.setVisibility(View.INVISIBLE);
+                    fab.setClickable(false);
+                }
+                mainButton.startAnimation(rotateClose);
             }
         });
     }
