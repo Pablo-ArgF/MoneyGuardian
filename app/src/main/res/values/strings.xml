@@ -121,4 +121,7 @@
     <string name="center_pie_chart">Gastos por categoría</string>
     <string name="fecha">Fecha</string>
     <string name="tituloListaPagos">Lista del Balance</string>
+    <string name="googleBtn">Google</string>
+    <string name="loginBtnText">Login</string>
+    <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
 </resources>

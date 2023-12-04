@@ -141,52 +141,46 @@ public class ProfileActivity extends AppCompatActivity {
                                                     Toast.LENGTH_LONG)
                                             .show();
                                 }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    //we update the image on the image show
-                                    imgUser.setImageBitmap(finalSelectedImageBitmap);
-                                    //we store the link to the image in the store in the db
-                                    userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                             db.collection("users")
-                                                     .document(auth.getUid())
-                                                     .update("profilePicture",uri)
-                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                         @Override
-                                                         public void onSuccess(Void unused) {
-                                                             Toast.makeText(getApplicationContext(),
-                                                                             getString(R.string.ok_update_profilePicture),
-                                                                             Toast.LENGTH_LONG)
-                                                                     .show();
-                                                         }
-                                                     }).addOnFailureListener(new OnFailureListener() {
-                                                         @Override
-                                                         public void onFailure(@NonNull Exception e) {
-                                                             Toast.makeText(getApplicationContext(),
-                                                                             getString(R.string.error_update_profilePicture),
-                                                                             Toast.LENGTH_LONG)
-                                                                     .show();
-                                                         }
-                                                     });
-                                        }
-                                    });
-                                }
+                            }).addOnSuccessListener(taskSnapshot -> {
+                                //we update the image on the image show
+                                imgUser.setImageBitmap(finalSelectedImageBitmap);
+                                //we store the link to the image in the store in the db
+                                userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                         db.collection("users")
+                                                 .document(auth.getUid())
+                                                 .update("profilePicture",uri)
+                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                     @Override
+                                                     public void onSuccess(Void unused) {
+                                                         Toast.makeText(getApplicationContext(),
+                                                                         getString(R.string.ok_update_profilePicture),
+                                                                         Toast.LENGTH_LONG)
+                                                                 .show();
+                                                     }
+                                                 }).addOnFailureListener(new OnFailureListener() {
+                                                     @Override
+                                                     public void onFailure(@NonNull Exception e) {
+                                                         Toast.makeText(getApplicationContext(),
+                                                                         getString(R.string.error_update_profilePicture),
+                                                                         Toast.LENGTH_LONG)
+                                                                 .show();
+                                                     }
+                                                 });
+                                    }
+                                });
                             });
                         }
                     }
                 });
 
-        btnEditPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent();
-                i.setType("image/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
+        btnEditPicture.setOnClickListener(v -> {
+            Intent i = new Intent();
+            i.setType("image/*");
+            i.setAction(Intent.ACTION_GET_CONTENT);
 
-                launchSomeActivity.launch(i);
-            }
+            launchSomeActivity.launch(i);
         });
 
         btnEditUsername.setOnClickListener(new View.OnClickListener() {
@@ -292,21 +286,13 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         //if clicked on the reestablecer text the previus stored username is placed
-        txtReestablecer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txtUsername.setText(previousUsername);
-            }
-        });
+        txtReestablecer.setOnClickListener(v -> txtUsername.setText(previousUsername));
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth = FirebaseAuth.getInstance();
-                auth.signOut();
-                Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
-                startActivity(i);
-            }
+        btnLogout.setOnClickListener(v -> {
+            auth = FirebaseAuth.getInstance();
+            auth.signOut();
+            Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
+            startActivity(i);
         });
 
     }

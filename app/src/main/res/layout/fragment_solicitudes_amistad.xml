@@ -1,39 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SolicitudesAmistadFragment">
+    android:orientation="vertical"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="10dp"
+    >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerListaPeticiones"
-            android:layout_width="366dp"
-            android:layout_height="181dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.488"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5"
-            app:layout_constraintVertical_bias="0.022" />
-
-        <ImageButton
-            android:id="@+id/btnReloadRequests"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:backgroundTint="@color/blue"
-            android:background="@drawable/circle_button"
-            android:src="@drawable/reload"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.048"
-            app:layout_constraintStart_toEndOf="@+id/textView5"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.05" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
 
         <TextView
             android:id="@+id/textView5"
@@ -42,80 +23,76 @@
             android:text="@string/tus_solicitudes"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.075"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.057" />
+            android:layout_centerVertical="true"
+            />
+
+        <ImageButton
+            android:id="@+id/btnReloadRequests"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circle_button"
+            android:backgroundTint="@color/blue"
+            android:src="@drawable/reload"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:layout_centerVertical="true"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/msgNoSolicitudes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgNoSolicitudes"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/amigos_icon" />
 
         <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/send_friend_request"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.088"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerListaPeticiones"
-            app:layout_constraintVertical_bias="0.048" />
+            android:text="@string/no_friend_requests"
+            android:textAlignment="center"
+            android:textSize="17sp" />
+    </LinearLayout>
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/buscadorAmigos"
-            app:queryHint="@string/hint_search_friends"
-            app:defaultQueryHint="@string/hint_search_friends"
-            android:layout_width="365dp"
-            android:layout_height="45dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9"
-            app:layout_constraintVertical_bias="0.023">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerListaPeticiones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-        </androidx.appcompat.widget.SearchView>
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_friend_request"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerListaAmigosEnviar"
-            android:layout_width="365dp"
-            android:layout_height="341dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buscadorAmigos"
-            app:layout_constraintVertical_bias="0.0" />
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/buscadorAmigos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:defaultQueryHint="@string/hint_search_friends"
+        app:queryHint="@string/hint_search_friends"
+        android:layout_gravity="end"
+        >
 
-        <LinearLayout
-            android:id="@+id/msgNoSolicitudes"
-            android:layout_width="366dp"
-            android:layout_height="184dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.49"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5"
-            app:layout_constraintVertical_bias="0.022">
+    </androidx.appcompat.widget.SearchView>
 
-            <ImageView
-                android:id="@+id/imgNoSolicitudes"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/amigos_icon" />
-
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/no_friend_requests"
-                android:textAlignment="center"
-                android:textSize="17sp" />
-        </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerListaAmigosEnviar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+</LinearLayout>

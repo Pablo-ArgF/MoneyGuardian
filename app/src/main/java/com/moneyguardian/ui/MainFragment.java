@@ -169,95 +169,72 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             }
         });
 
-        btnMenuGraphPie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getChildFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.chartFragmentContainer, pieChartFragment)
-                        .commit();
-                markSelectedFilter(filterAll);
-                updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
-            }
+        btnMenuGraphPie.setOnClickListener(v -> {
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.chartFragmentContainer, pieChartFragment)
+                    .commit();
+            markSelectedFilter(filterAll);
+            updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
         });
 
         //filter configuarion
-        filter1Month.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //update filter button colors
-                markSelectedFilter(filter1Month);
-                //update graph
-                updateFilterOnGraphs(AbstractChartFragment.Filter.ONE_MONTH);
-            }
+        filter1Month.setOnClickListener(v -> {
+            //update filter button colors
+            markSelectedFilter(filter1Month);
+            //update graph
+            updateFilterOnGraphs(AbstractChartFragment.Filter.ONE_MONTH);
         });
-        filter3Month.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //update filter button colors
-                markSelectedFilter(filter3Month);
-                //update graph
-                updateFilterOnGraphs(AbstractChartFragment.Filter.THREE_MONTHS);
-            }
+        filter3Month.setOnClickListener(v -> {
+            //update filter button colors
+            markSelectedFilter(filter3Month);
+            //update graph
+            updateFilterOnGraphs(AbstractChartFragment.Filter.THREE_MONTHS);
         });
-        filter1Year.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //update filter button colors
-                markSelectedFilter(filter1Year);
-                //update graph
-                updateFilterOnGraphs(AbstractChartFragment.Filter.ONE_YEAR);
-            }
+        filter1Year.setOnClickListener(v -> {
+            //update filter button colors
+            markSelectedFilter(filter1Year);
+            //update graph
+            updateFilterOnGraphs(AbstractChartFragment.Filter.ONE_YEAR);
         });
-        filterAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //update filter button colors
-                markSelectedFilter(filterAll);
-                //update graph
-                updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
-            }
+        filterAll.setOnClickListener(v -> {
+            //update filter button colors
+            markSelectedFilter(filterAll);
+            //update graph
+            updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
         });
 
         //listeners to buttons to register gastos and ingresos
-        btnRegistrarIngreso.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FormularioGastoActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("Ingreso", true);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
+        btnRegistrarIngreso.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), FormularioGastoActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("Ingreso", true);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 
-        btnRegistrarGasto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FormularioGastoActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("Ingreso", false);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
+        btnRegistrarGasto.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), FormularioGastoActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("Ingreso", false);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 
 
 
-        //listener to get changes on the user be represented here
-        db.collection("users").document(auth.getUid())
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+        if(auth.getUid() != null) {
+            //listener to get changes on the user be represented here
+            db.collection("users").document(auth.getUid())
+                    .addSnapshotListener((value, error) -> {
                         usuario = UsuarioMapper.mapBasics(value);
                         //we update name and picture if needed
                         updateUserInfo();
                         //we update the Gastos data
                         updateAllGastos(value);
-                    }
-                });
+                    });
 
-
+        }
         return root;
     }
 
@@ -281,23 +258,21 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             return; //if user is logged in and stored we do nothing
         //we check if user is logged in, if not send to login view
         if(auth.getUid() == null) {
-            startActivity(new Intent(getContext(),SignInActivity.class));
-        }
-        //we load the image of the user into the profile btn
-        //we get the uri from database user info 'profilePicture'
-        db.collection("users")
-                .document(auth.getUid())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists()){
+            startActivity(new Intent(getContext(),LoginActivity.class));
+        }else {
+            //we load the image of the user into the profile btn
+            //we get the uri from database user info 'profilePicture'
+            db.collection("users")
+                    .document(auth.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
                             usuario = UsuarioMapper.mapBasics(documentSnapshot);
                             updateUserInfo();
                             updateAllGastos(documentSnapshot);
                         }
-                    }
-                });
+                    });
+        }
     }
 
     private void updateAllGastos(DocumentSnapshot documentSnapshot) {
