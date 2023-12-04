@@ -18,7 +18,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="19dp"
-            android:layout_marginTop="10dp"></ImageView>
+            android:layout_marginTop="10dp"/>
 
         <TextView
             android:id="@+id/namePagos"
@@ -32,20 +32,20 @@
             android:layout_toEndOf="@+id/iconPago"
             android:textSize="22sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/mainListPagosRecycler"
-            android:layout_width="wrap_content"
-            android:layout_height="450dp"
-            android:layout_below="@+id/namePagos"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshListaPagos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iconPago">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mainListPagosRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/namePagos"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButtonMainPagoConjunto"
@@ -55,7 +55,6 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:clickable="true"
             android:src="@android:drawable/ic_input_add"
             android:tint="@color/white"
             app:backgroundTint="@android:color/holo_blue_dark" />

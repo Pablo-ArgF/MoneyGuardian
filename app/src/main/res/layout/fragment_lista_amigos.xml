@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragmentListaAmigos"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.ListaAmigosFragment"
-    >
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
         <TextView
             android:id="@+id/tituloFragmentAmigos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginStart="92dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="92dp"
@@ -29,58 +22,48 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tituloListaGrupos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tituloFragmentAmigos"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/titulo_grupos_de_amigos"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/btnNuevoGrupoAmigos"
-            android:layout_width="138dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tituloFragmentAmigos"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/tituloListaGrupos"
-            android:text="@string/nuevo_grupo_amigos" />
+            <TextView
+                android:id="@+id/tituloListaGrupos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/titulo_grupos_de_amigos"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnNuevoGrupoAmigos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@string/nuevo_grupo_amigos" />
+
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerListaGruposAmigos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/divider"
-            android:layout_below="@+id/tituloListaGrupos"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:nestedScrollingEnabled="false"/>
 
         <LinearLayout
             android:id="@+id/msgNoGroups"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/tituloListaGrupos"
-            android:layout_alignBottom="@+id/recyclerListaGruposAmigos"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imgNoGroups"
@@ -102,69 +85,52 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="270dp"
             android:background="?android:attr/listDivider" />
 
-        <TextView
-            android:id="@+id/tituloListaAmigos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="-250dp"
-            android:text="@string/titulo_lista_de_amigos"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/btnGestionAmigos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="-263dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/tituloListaAmigos"
-            android:backgroundTint="@color/green"
-            android:text="@string/gestionar_amigos" />
+            <TextView
+                android:id="@+id/tituloListaAmigos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/titulo_lista_de_amigos"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnGestionAmigos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:backgroundTint="@color/green"
+                android:text="@string/gestionar_amigos" />
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerListaAmigos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/tituloListaAmigos"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp">
-
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:nestedScrollingEnabled="false"/>
 
         <LinearLayout
             android:id="@+id/msgNoFriends"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/tituloListaAmigos"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imgNoFriends"
@@ -182,6 +148,5 @@
 
         </LinearLayout>
 
-    </RelativeLayout>
-
-</FrameLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

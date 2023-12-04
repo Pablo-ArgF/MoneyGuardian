@@ -2,34 +2,34 @@ package com.moneyguardian.ui;
 
 import static android.app.Activity.RESULT_OK;
 
+import static androidx.core.util.ObjectsCompat.requireNonNull;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.FormItemsListaPago;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.ItemListaAdapter;
@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ListaPagosFragment extends Fragment {
 
@@ -53,13 +54,14 @@ public class ListaPagosFragment extends Fragment {
     private static final String IMAGEN = "Imagen";
     private static final String PAGO_CONJUNTO = "Pago Conjunto";
     RecyclerView listItemsPagosView;
-    private Uri imagen;
-    private String namePago;
-    private List<ItemPagoConjunto> listaPagos;
     FloatingActionButton mainOpenButton;
     FloatingActionButton btnAddNewItem;
     FloatingActionButton fabDelete;
     FloatingActionButton fabEdit;
+    SwipeRefreshLayout swipeRefreshLayout;
+    private Uri imagen;
+    private String namePago;
+    private List<ItemPagoConjunto> listaPagos;
     private PagoConjunto pagoConjunto;
     private ItemListaAdapter lpAdapter;
 
@@ -96,7 +98,7 @@ public class ListaPagosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         db = FirebaseFirestore.getInstance();
-        addListenerToCollection();
+
         //Mostramos el fragmento en el contenedor
         View root = inflater.inflate(R.layout.fragment_lista_pagos, container, false);
         TextView tvName = root.findViewById(R.id.namePagos);
@@ -107,26 +109,23 @@ public class ListaPagosFragment extends Fragment {
         btnAddNewItem = root.findViewById(R.id.btnNewItemPago);
         fabDelete = root.findViewById(R.id.floatingActionButtonDeletePagoConjunto);
         fabEdit = root.findViewById(R.id.floatingActionButtonEditPagoConjunto);
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshListaPagos);
 
-        btnAddNewItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
-                intent.putExtra("PAGO", pagoConjunto);
-                startActivityForResult(intent, GESTION_ACTIVITY);
-            }
+        btnAddNewItem.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
+            intent.putExtra("PAGO", pagoConjunto);
+            startActivityForResult(intent, GESTION_ACTIVITY);
         });
 
-        fabDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                delete();
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            updateFromDB();
+            swipeRefreshLayout.setRefreshing(false);
         });
 
+        fabDelete.setOnClickListener(v -> delete());
 
-        new Animations(root).setOnClickAnimationAndVisibility(mainOpenButton,
-                Arrays.asList(btnAddNewItem,fabDelete,fabEdit));
+
+        new Animations(root).setOnClickAnimationAndVisibility(mainOpenButton, Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
 
         return root;
     }
@@ -137,14 +136,10 @@ public class ListaPagosFragment extends Fragment {
         listItemsPagosView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext().getApplicationContext());
+        listItemsPagosView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         listItemsPagosView.setLayoutManager(layoutManager);
 
-        lpAdapter = new ItemListaAdapter(listaPagos, new ItemListaAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(ItemPagoConjunto itemPago) {
-                clickonItem(itemPago);
-            }
-        });
+        lpAdapter = new ItemListaAdapter(listaPagos, this::clickonItem);
         listItemsPagosView.setAdapter(lpAdapter);
     }
 
@@ -152,8 +147,7 @@ public class ListaPagosFragment extends Fragment {
 
         ItemPagosFragment argumentoFragment = ItemPagosFragment.newInstance(itemPago, pagoConjunto);
 
-        getParentFragmentManager().beginTransaction().
-                replace(R.id.fragmentContainerMain, argumentoFragment).addToBackStack(null).commit();
+        getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain, argumentoFragment).addToBackStack(null).commit();
 
     }
 
@@ -161,87 +155,52 @@ public class ListaPagosFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GESTION_ACTIVITY) {
-            if (resultCode == RESULT_OK) {
-                assert data != null;
+        if(resultCode == RESULT_OK && requestCode == GESTION_ACTIVITY){
+            assert data != null;
+            lpAdapter.addItem((ItemPagoConjunto) requireNonNull(data.getExtras()).getParcelable("NEW_ITEM"));
+        }
+
+    }
+
+    private void delete() {
+        DocumentReference docReference = db.collection("pagosConjuntos").document(pagoConjunto.getId());
+
+        docReference.delete().addOnCompleteListener(task -> {
+            for (UsuarioParaParcelable p : pagoConjunto.getParticipantes()) {
+                db.collection("users").document(p.getId()).update("pagosConjuntos", FieldValue.arrayRemove(docReference));
             }
-        }
+
+            db.collection("users").document(pagoConjunto.getOwner()).update("pagosConjuntos", FieldValue.arrayRemove(docReference));
+            getParentFragmentManager().popBackStack();
+        });
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (docListener != null) {
-            docListener.remove();
-        }
-    }
+    private void updateFromDB() {
 
-    private void delete(){
-        DocumentReference docReference = db.collection("pagosConjuntos").
-                document(pagoConjunto.getId());
+        List<ItemPagoConjunto> itemsPago = new ArrayList<>();
 
-        docReference.delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        for (UsuarioParaParcelable p : pagoConjunto.getParticipantes()) {
-                            db.collection("users").document(p.getId()).update("pagosConjuntos",
-                                    FieldValue.arrayRemove(docReference));
-                        }
-                        
-                        db.collection("users").document(pagoConjunto.getOwner()).update("pagosConjuntos",
-                                FieldValue.arrayRemove(docReference));
-                        getParentFragmentManager().popBackStack();
-                    }
-                });
-    }
+        db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").orderBy("nombre").get().addOnSuccessListener(queryDocumentSnapshots -> {
+            List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
 
-    private void addListenerToCollection() {
+            for (DocumentSnapshot itemPago : itemsPagoSnapshot) {
+                HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+                String id = itemPago.getId();
+                String nombre = itemPago.getString("nombre");
+                HashMap<String, Double> cantidadesConUsersReferences = (HashMap<String, Double>) itemPago.get("UsuariosConPagos");
 
-        if (docListener == null) {
-            docListener = db.collection("pagosConjuntos").document(pagoConjunto.getId())
-                    .collection("itemsPago").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                    if (error != null) {
-                        Log.w("LISTENER", "Litener Failed");
-                        return;
-                    }
-
-                    List<ItemPagoConjunto> itemsPago = new ArrayList<>();
-
-                    if(!value.getDocumentChanges().isEmpty()) {
-
-                        db.collection("pagosConjuntos").document(pagoConjunto.getId())
-                                .collection("itemsPago").orderBy("nombre").get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
-
-                                        for (DocumentSnapshot itemPago : itemsPagoSnapshot) {
-                                            HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
-                                            String id = itemPago.getId();
-                                            String nombre = itemPago.getString("nombre");
-                                            HashMap<String, Double> cantidadesConUsersReferences = (HashMap<String, Double>) itemPago.get("UsuariosConPagos");
-
-                                            for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
-                                                cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
-                                            }
-
-
-                                            itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers));
-                                        }
-
-                                        pagoConjunto.setItems(itemsPago);
-                                        listaPagos = itemsPago;
-                                        lpAdapter.changeAllList(itemsPago);
-
-                                    }
-                                });
-                    }
+                for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
+                    cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
                 }
-            });
-        }
+
+
+                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers));
+            }
+
+            pagoConjunto.setItems(itemsPago);
+            listaPagos = itemsPago;
+            lpAdapter.changeAllList(itemsPago);
+
+        });
+
     }
 }

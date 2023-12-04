@@ -3,11 +3,6 @@ package com.moneyguardian.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.R;
 import com.moneyguardian.adapters.ListaAmigosAdapter;
 import com.moneyguardian.adapters.ListaGruposAdapter;
-import com.moneyguardian.R;
 import com.moneyguardian.modelo.GrupoUsuarios;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.util.AmistadesUtil;
@@ -64,7 +63,6 @@ public class ListaAmigosFragment extends Fragment {
     private ListaGruposAdapter gruposAdapter;
 
 
-
     public ListaAmigosFragment() {
         // Required empty public constructor
     }
@@ -100,8 +98,8 @@ public class ListaAmigosFragment extends Fragment {
         updateUIFriends();
     }
 
-    public void clickonDeleteAmigo (Usuario amigo){
-        Log.i("Click adapter","Item Clicked to be removed "+amigo.getNombre());
+    public void clickonDeleteAmigo(Usuario amigo) {
+        Log.i("Click adapter", "Item Clicked to be removed " + amigo.getNombre());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(R.string.question_remove_friend)
@@ -126,25 +124,21 @@ public class ListaAmigosFragment extends Fragment {
     }
 
     private void updateUIFriends() {
-        if(amigosAdapter.getItemCount() == 0)
-        {
+        if (amigosAdapter.getItemCount() == 0) {
             msgNoFriends.setVisibility(View.VISIBLE);
-            listaAmigosView.setVisibility(View.INVISIBLE);
-        }
-        else{
-            msgNoFriends.setVisibility(View.INVISIBLE);
+            listaAmigosView.setVisibility(View.GONE);
+        } else {
+            msgNoFriends.setVisibility(View.GONE);
             listaAmigosView.setVisibility(View.VISIBLE);
         }
     }
 
     private void updateUIGroups() {
-        if(gruposAdapter.getItemCount() == 0)
-        {
+        if (gruposAdapter.getItemCount() == 0) {
             msgNoGroups.setVisibility(View.VISIBLE);
-            listaGruposView.setVisibility(View.INVISIBLE);
-        }
-        else{
-            msgNoGroups.setVisibility(View.INVISIBLE);
+            listaGruposView.setVisibility(View.GONE);
+        } else {
+            msgNoGroups.setVisibility(View.GONE);
             listaGruposView.setVisibility(View.VISIBLE);
         }
     }
@@ -161,22 +155,22 @@ public class ListaAmigosFragment extends Fragment {
                         List<DocumentReference> friendRefs =
                                 (List<DocumentReference>) documentSnapshot.get("friends");
 
-                        if(friendRefs == null)
+                        if (friendRefs == null)
                             return;
 
                         //we load all the friends
-                        for(int i = 0 ; i< friendRefs.size() ; i++) {
+                        for (int i = 0; i < friendRefs.size(); i++) {
                             friendRefs.get(i).get()
-                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        //we map this element to a user and we add it to the list
-                                        //of friends
-                                        Usuario usuario = UsuarioMapper.mapBasics(documentSnapshot);
-                                        amigosAdapter.addAmigo(usuario);
-                                        updateUIFriends();
-                                    }
-                                });
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            //we map this element to a user and we add it to the list
+                                            //of friends
+                                            Usuario usuario = UsuarioMapper.mapBasics(documentSnapshot);
+                                            amigosAdapter.addAmigo(usuario);
+                                            updateUIFriends();
+                                        }
+                                    });
 
                         }
 
@@ -190,7 +184,7 @@ public class ListaAmigosFragment extends Fragment {
 
         String[] nombresGrupos = {"Amigos de la Universidad", "Familiares", "Compañeros de Trabajo", "Vecinos", "Amigos de la Infancia", "Equipo de Deportes", "Amigos de Club de Lectura", "Compañeros de Clase", "Vecinos de la Calle A", "Amigos de Juegos en Línea"};
         List usuarios = IntStream.range(0, 30)
-                .mapToObj(i -> new Usuario("a","Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com",null, null, null))
+                .mapToObj(i -> new Usuario("a", "Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com", null, null, null))
                 .collect(Collectors.toList());
         List<List<Usuario>> miembrosGrupos = Arrays.asList(usuarios.subList(0, 3), usuarios.subList(3, 6), usuarios.subList(6, 9), usuarios.subList(9, 12), usuarios.subList(12, 15), usuarios.subList(15, 18), usuarios.subList(18, 21), usuarios.subList(21, 24), usuarios.subList(24, 27), usuarios.subList(27, 30));
 
@@ -202,14 +196,12 @@ public class ListaAmigosFragment extends Fragment {
         }
 
 
-
-
         updateUIGroups();
     }
 
     private void clickonGrupo(GrupoUsuarios grupo) {
 
-        Log.i("Click adapter","Item Clicked "+grupo.getNombre());
+        Log.i("Click adapter", "Item Clicked " + grupo.getNombre());
 
         //Paso el modo de apertura
         /*
@@ -258,7 +250,7 @@ public class ListaAmigosFragment extends Fragment {
         listaAmigosView.setAdapter(amigosAdapter);
 
         gruposAdapter = new ListaGruposAdapter(new ArrayList<>(),
-                (grupo) ->{
+                (grupo) -> {
                     clickonGrupo(grupo);
                 });
         listaGruposView.setAdapter(gruposAdapter);
@@ -277,7 +269,7 @@ public class ListaAmigosFragment extends Fragment {
                 SolicitudesAmistadFragment fragmentFriendManagement = new SolicitudesAmistadFragment();
                 //we pass as arguments the list of friends
                 Bundle args = new Bundle();
-                args.putParcelableArrayList("friends",  new ArrayList<>(listaAmigos));
+                args.putParcelableArrayList("friends", new ArrayList<>(listaAmigos));
                 fragmentFriendManagement.setArguments(args);
                 getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
                         fragmentFriendManagement).addToBackStack(null).commit();
@@ -290,7 +282,7 @@ public class ListaAmigosFragment extends Fragment {
             public void onClick(View v) {
                 String[] nombresGrupos = {"Amigos de la Universidad", "Familiares", "Compañeros de Trabajo", "Vecinos", "Amigos de la Infancia", "Equipo de Deportes", "Amigos de Club de Lectura", "Compañeros de Clase", "Vecinos de la Calle A", "Amigos de Juegos en Línea"};
                 List usuarios = IntStream.range(0, 30)
-                        .mapToObj(i -> new Usuario("a","Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com",null, null, null))
+                        .mapToObj(i -> new Usuario("a", "Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com", null, null, null))
                         .collect(Collectors.toList());
                 List<List<Usuario>> miembrosGrupos = Arrays.asList(usuarios.subList(0, 3), usuarios.subList(3, 6), usuarios.subList(6, 9), usuarios.subList(9, 12), usuarios.subList(12, 15), usuarios.subList(15, 18), usuarios.subList(18, 21), usuarios.subList(21, 24), usuarios.subList(24, 27), usuarios.subList(27, 30));
 

@@ -228,29 +228,21 @@ public class FormItemsListaPago extends AppCompatActivity {
                             LayoutInflater inflater = builder.create().getLayoutInflater();
                             builder.setView(inflater.inflate(R.layout.dialog_warning_create_item_pago,
                                     null)).setPositiveButton(R.string.acceptBtn,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
+                                    (dialog, which) -> {
 
-                                            ItemPagoConjunto itemPago = new ItemPagoConjunto(UUID.randomUUID().toString(),
-                                                    name.getText().toString(), usersSelected);
+                                        ItemPagoConjunto itemPago = new ItemPagoConjunto(UUID.randomUUID().toString(),
+                                                name.getText().toString(), usersSelected);
 
-                                            saveInDataBase(itemPago);
+                                        saveInDataBase(itemPago);
 
-                                            Intent intent = new Intent();
-                                            intent.putExtra("NEW_ITEM",itemPago);
-                                            setResult(RESULT_OK,intent);
-                                            finish();
-                                        }
+                                        Intent intent = new Intent();
+                                        intent.putExtra("NEW_ITEM",itemPago);
+                                        setResult(RESULT_OK,intent);
+                                        finish();
                                     });
                             builder.setView(inflater.inflate(R.layout.dialog_warning_create_item_pago,
                                     null)).setNegativeButton(R.string.cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    });
+                                    (dialog, which) -> dialog.cancel());
 
                             AlertDialog dialog = builder.create();
                             dialog.show();
@@ -259,12 +251,7 @@ public class FormItemsListaPago extends AppCompatActivity {
                             LayoutInflater inflater = builder.create().getLayoutInflater();
                             builder.setView(inflater.inflate(R.layout.dialog_warning_user_selected,
                                     null)).setPositiveButton(R.string.acceptBtn,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                            });
+                                    (dialog, which) -> dialog.cancel());
 
 
                             AlertDialog dialog = builder.create();
@@ -275,12 +262,7 @@ public class FormItemsListaPago extends AppCompatActivity {
                         LayoutInflater inflater = builder.create().getLayoutInflater();
                         builder.setView(inflater.inflate(R.layout.dialog_warning_not_all_pay,
                                 null)).setPositiveButton(R.string.acceptBtn,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                });
+                                (dialog, which) -> dialog.cancel());
 
 
                         AlertDialog dialog = builder.create();
@@ -290,16 +272,13 @@ public class FormItemsListaPago extends AppCompatActivity {
             }
         });
 
-        moneyChangeActivatedCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeMoneyActivated = moneyChangeActivatedCheckBox.isChecked();
+        moneyChangeActivatedCheckBox.setOnClickListener(v -> {
+            changeMoneyActivated = moneyChangeActivatedCheckBox.isChecked();
 
-                UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
-                                checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
-                usersToAdd.setAdapter(usersFormItemsListaAdapter);
-            }
+            UsersFormItemsListaAdapter usersFormItemsListaAdapter1 =
+                    new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
+                            checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
+            usersToAdd.setAdapter(usersFormItemsListaAdapter1);
         });
 
     }
