@@ -319,6 +319,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 }
                 );
         try {
+            // TODO impide borrar gastos, no tenemos la ref ni el ID después en el fragmento de gastos
             mainActivity.setGastos(gastos.get());
             addEntrysToGraphs(mainActivity.getGastos());
             //disable the loading of the data

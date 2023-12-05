@@ -10,6 +10,7 @@ import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,8 +24,13 @@ public class GastosUtil {
 
     public static Gasto addGasto(Gasto gasto) {
         String gastoUUID = UUID.randomUUID().toString();
+        Map<String, Object> gastoDB = new HashMap<>();
+        gastoDB.put("nombre", gasto.getNombre());
+        gastoDB.put("categoria", gasto.getCategoria());
+        gastoDB.put("balance", gasto.getBalance());
+        gastoDB.put("fechaCreacion", gasto.getFechaCreacion());
         DocumentReference gastoReference = db.collection("gastos/").document(gastoUUID);
-        gastoReference.set(gasto);
+        gastoReference.set(gastoDB);
         db.collection("users/").document(auth.getUid()).update("gastos",
                 FieldValue.arrayUnion(gastoReference));
         gasto.setUUID(gastoUUID);
@@ -37,6 +43,10 @@ public class GastosUtil {
             // Borramos ese pago de la lista de pagos del usuario
             db.collection("users/").document(
                     auth.getUid().toString()).update("gastos", FieldValue.arrayRemove(g.getReference()));
+        } else if (g.getUUID() != null) {
+            DocumentReference ref = db.collection("gastos/").document(g.getUUID());
+            g.setReference(ref);
+            deleteGasto(g);
         }
     }
 
@@ -52,7 +62,7 @@ public class GastosUtil {
     }
 
     public static int getImageFor(Gasto gasto) {
-        if(gasto.getCategoria() == null)
+        if (gasto.getCategoria() == null)
             return gasto.getBalance() > 0 ? R.drawable.ic_money : R.drawable.ic_money_off;
         switch (gasto.getCategoria()) {
             case "Alimentación":

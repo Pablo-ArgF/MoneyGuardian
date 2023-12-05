@@ -32,7 +32,7 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
     private static final FirebaseAuth auth = FirebaseAuth.getInstance();
     private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private final List<DeudaDTO> deudas;
+    private List<DeudaDTO> deudas;
 
     public DeudaListaAdapter() {
         this.deudas = new ArrayList<>();
@@ -72,6 +72,7 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
             });
         }
     }
+
 
     public class DeudaViewHolder extends RecyclerView.ViewHolder {
 

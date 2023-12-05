@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
+import com.moneyguardian.adapters.DeudaListaAdapter;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.PagoConjunto;
@@ -52,11 +54,8 @@ public class ListaGastosFragment extends Fragment {
     private FirebaseFirestore db;
 
     // Botones
-    private Animation rotateOpen;
-    private Animation rotateClose;
-    private Animation fromBottom;
-    private Animation toBottom;
     private Animations animations;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,8 +66,7 @@ public class ListaGastosFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_lista_gastos, container, false);
         mainActivity = ((MainActivity) getActivity());
-        //we enable the loading view until data is loaded
-        mainActivity.setLoading(true);
+
 
         // Animaciones de botones
         animations = new Animations(root);
@@ -78,7 +76,7 @@ public class ListaGastosFragment extends Fragment {
         FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
         FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
 
-        animations.setOnClickAnimationAndVisibility(buttonOpen, Arrays.asList(buttonAddIngreso,buttonAddGasto));
+        animations.setOnClickAnimationAndVisibility(buttonOpen, Arrays.asList(buttonAddIngreso, buttonAddGasto));
 
         recyclerView = root.findViewById(R.id.recyclerGastos);
         recyclerView.setHasFixedSize(true);
@@ -89,12 +87,7 @@ public class ListaGastosFragment extends Fragment {
 
         // Para no rehacer el adapter cuando cambiamos de fragment
         if (adapter == null) {
-            adapter = new GastoListaAdapter(new GastoListaAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(Gasto gasto) {
-                    // NADA
-                }
-            });
+            adapter = new GastoListaAdapter();
         }
 
         // Si el adapter ya existe, lo colocamos
@@ -105,10 +98,16 @@ public class ListaGastosFragment extends Fragment {
 
         // Recuperar gastos del usuario
 
+
         // Si no hay adapter, o no hay items los cargamos
         if (adapter == null || adapter.getItemCount() == 0) {
+            //we enable the loading view until data is loaded
+            mainActivity.setLoading(true);
             cargarDatos();
+        } else {
+            mainActivity.setLoading(false);
         }
+
 
         buttonAddIngreso.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,13 +154,26 @@ public class ListaGastosFragment extends Fragment {
             }
         });
 
+        // Manejo de refresh
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshGastos);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ((MainActivity) getActivity()).setLoading(true);
+                adapter = new GastoListaAdapter();
+                recyclerView.setAdapter(adapter);
+                cargarDatos();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         return root;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(adapter.getItemCount() == 0){
+        if (adapter.getItemCount() == 0) {
             //we enable the loading screen
             mainActivity.setLoading(true);
             cargarDatos();
@@ -169,7 +181,7 @@ public class ListaGastosFragment extends Fragment {
     }
 
     private void cargarDatos() {
-        if(mainActivity.getGastos()!= null && mainActivity.getGastos().size() >0){
+        if (mainActivity.getGastos() != null && mainActivity.getGastos().size() > 0) {
             mainActivity.getGastos().forEach(g -> adapter.add(g));
             //we disable the loading screen
             mainActivity.setLoading(false);
@@ -196,6 +208,7 @@ public class ListaGastosFragment extends Fragment {
                                         String categoria = (String) documentSnapshot.get("categoria");
                                         Gasto g = new Gasto(nombre, (float) balance, categoria, fecha);
                                         g.setReference(gasto);
+                                        g.setUUID(gasto.getId());
                                         adapter.add(g);
                                         //we disable the loading screen
                                         mainActivity.setLoading(false);

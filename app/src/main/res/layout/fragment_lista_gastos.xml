@@ -43,18 +43,32 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.046" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerGastos"
-            android:layout_width="wrap_content"
-            android:layout_height="382dp"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshGastos"
+            android:layout_width="match_parent"
+            android:layout_height="641dp"
             android:layout_below="@+id/cbSelectAllGastos"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="-1dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerGastos"
+                android:layout_width="wrap_content"
+                android:layout_height="382dp"
+                android:layout_below="@+id/cbSelectAllGastos"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonOpenMenuGastos"

@@ -38,11 +38,9 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     private static Map<Gasto, Boolean> checkedGastos = new HashMap<>();
     private static Map<Gasto, CheckBox> checkBoxMap = new HashMap<>();
     private List<Gasto> listaGastos;
-    private OnItemClickListener listener;
 
-    public GastoListaAdapter(OnItemClickListener listener) {
+    public GastoListaAdapter() {
         this.listaGastos = new ArrayList<>();
-        this.listener = listener;
     }
 
     public void selectAll(Boolean isChecked) {
@@ -97,7 +95,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     @Override
     public void onBindViewHolder(@NonNull GastoViewHolder holder, int position) {
         Gasto gasto = listaGastos.get(position);
-        holder.bindUser(gasto, listener);
+        holder.bindUser(gasto);
     }
 
     @Override
@@ -125,7 +123,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
 
         }
 
-        public void bindUser(final Gasto gasto, final OnItemClickListener listener) {
+        public void bindUser(final Gasto gasto) {
             // TODO falta validar
             nombre.setText(gasto.getNombre());
             fecha.setText(gasto.getFechaCreacion());
