@@ -52,20 +52,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_lineChart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_linear_graph" />
+                android:text="@string/title_linear_graph"
+                android:textSize="12sp" />
 
             <Button
-                android:id="@+id/btn_pieChart"
+                android:id="@+id/btn_pieChartGastos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_pie_graph" />
+                android:text="@string/title_pie_graph_gastos"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btn_pieChartIngresos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_pie_graph_ingresos"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView
@@ -73,13 +82,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/menu_filters"
-            android:layout_below="@+id/menu_graphs"/>
+            android:layout_below="@+id/menu_graphs"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp" />
 
         <LinearLayout
             android:id="@+id/menu_filters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="230dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -128,6 +145,7 @@
         android:orientation="horizontal"
         android:visibility="visible"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:layout_alignParentBottom="true"
         >
 

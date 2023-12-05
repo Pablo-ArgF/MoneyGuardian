@@ -5,7 +5,6 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -20,32 +19,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
-import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.ui.charts.AbstractChartFragment;
+import com.moneyguardian.ui.charts.IngresosPieChartFragment;
 import com.moneyguardian.ui.charts.LinearChartFragment;
 import com.moneyguardian.ui.charts.NoChartFragment;
-import com.moneyguardian.ui.charts.PieChartFragment;
+import com.moneyguardian.ui.charts.GastosPieChartFragment;
 import com.moneyguardian.userAuth.LoginActivity;
-import com.moneyguardian.userAuth.SignInActivity;
-import com.moneyguardian.util.GastoMapper;
 import com.moneyguardian.util.LoadDataHelper;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -53,11 +46,8 @@ import java.util.concurrent.ExecutionException;
 import de.hdodenhof.circleimageview.CircleImageView;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.EmptyCoroutineContext;
-import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.CoroutineScopeKt;
 import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.GlobalScope;
-import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.future.FutureKt;
 
 
@@ -73,9 +63,11 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private View root;
     private FragmentContainerView chartFragmentContainer;
     private Button btnMenuGraphLine;
-    private Button btnMenuGraphPie;
+    private Button btnMenuGraphPieGastos;
+    private Button btnMenuGraphPieIngresos;
     private LinearChartFragment linearChartFragment = LinearChartFragment.newInstance(new ArrayList<>());
-    private PieChartFragment pieChartFragment = PieChartFragment.newInstance(new ArrayList<>());
+    private GastosPieChartFragment gastosPieChartFragment = GastosPieChartFragment.newInstance(new ArrayList<>());
+    private IngresosPieChartFragment ingresosPieChartFragment = IngresosPieChartFragment.newInstance(new ArrayList<>());
     private NoChartFragment noChartFragment = new NoChartFragment();
     private AbstractChartFragment currentFragment = linearChartFragment;
 
@@ -130,7 +122,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         txtWelcome = root.findViewById(R.id.txtWelcome);
         chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
         btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
-        btnMenuGraphPie = root.findViewById(R.id.btn_pieChart);
+        btnMenuGraphPieGastos = root.findViewById(R.id.btn_pieChartGastos);
+        btnMenuGraphPieIngresos = root.findViewById(R.id.btn_pieChartIngresos);
         filter1Month = root.findViewById(R.id.filter_1month);
         filter3Month = root.findViewById(R.id.filter_3month);
         filter1Year = root.findViewById(R.id.filter_1year);
@@ -173,13 +166,23 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             }
         });
 
-        btnMenuGraphPie.setOnClickListener(v -> {
+        btnMenuGraphPieGastos.setOnClickListener(v -> {
             getChildFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.chartFragmentContainer, pieChartFragment)
+                    .replace(R.id.chartFragmentContainer, gastosPieChartFragment)
                     .commit();
             markSelectedFilter(filterAll);
-            currentFragment = pieChartFragment;
+            currentFragment = gastosPieChartFragment;
+            updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
+        });
+
+        btnMenuGraphPieIngresos.setOnClickListener(v -> {
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.chartFragmentContainer, ingresosPieChartFragment)
+                    .commit();
+            markSelectedFilter(filterAll);
+            currentFragment = ingresosPieChartFragment;
             updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
         });
 
@@ -349,7 +352,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
      */
     private void addEntrysToGraphs(List<Gasto> gs) {
         linearChartFragment.updateData(gs);
-        pieChartFragment.updateData(gs);
+        gastosPieChartFragment.updateData(gs);
+        ingresosPieChartFragment.updateData(gs);
     }
 
 
@@ -367,7 +371,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     .commit();
         }
         linearChartFragment.updateFilter(filter);
-        pieChartFragment.updateFilter(filter);
+        gastosPieChartFragment.updateFilter(filter);
+        ingresosPieChartFragment.updateFilter(filter);
 
     }
 
@@ -380,7 +385,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 .commit();
 
         //we disable the buttons to change the graph
-        btnMenuGraphPie.setEnabled(false);
+        btnMenuGraphPieGastos.setEnabled(false);
+        btnMenuGraphPieIngresos.setEnabled(false);
         btnMenuGraphLine.setEnabled(false);
     }
 
@@ -390,7 +396,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
         linearChartFragment.onResume();
         //we disable the buttons to change the graph
-        btnMenuGraphPie.setEnabled(true);
+        btnMenuGraphPieGastos.setEnabled(true);
+        btnMenuGraphPieIngresos.setEnabled(true);
         btnMenuGraphLine.setEnabled(true);
         if(!getChildFragmentManager().isStateSaved())
             getChildFragmentManager().beginTransaction()

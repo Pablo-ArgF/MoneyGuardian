@@ -104,7 +104,6 @@
     <string name="addIngreso">Añadir nuevo ingreso</string>
     <string name="addGasto">Añadir nuevo gasto</string>
     <string name="title_linear_graph">Balance</string>
-    <string name="title_pie_graph">Por categorías</string>
     <string name="graph_legend_gastos">Gastos</string>
     <string name="graph_legend_ingresos">Ingresos</string>
     <string name="description_line_graph">Gastos/Ingresos</string>
@@ -125,4 +124,8 @@
     <string name="loginBtnText">Login</string>
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="noDataChart_gastos">Aún no tienes gastos registrados. Introduce nuevos gastos para ver la división por categoría.</string>
+    <string name="noDataChart_ingresos">Aún no tienes ingresos registrados. Introduce nuevos ingresos para ver la división por categoría.</string>
+    <string name="title_pie_graph_gastos">Gastos</string>
+    <string name="title_pie_graph_ingresos">Ingresos</string>
+    <string name="center_pie_chart_ingresos">Ingresos por categoría</string>
 </resources>

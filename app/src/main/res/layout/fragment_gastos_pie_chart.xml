@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:text="@string/noDataChart_gastos"
             android:gravity="center"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:padding="3dp"
             />
     </LinearLayout>

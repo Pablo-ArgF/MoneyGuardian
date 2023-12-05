@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.charts.LinearChartFragment"
+    android:padding="10dp"
+    >
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieChartIngresos"
+        android:layout_width="380dp"
+        android:layout_height="270dp"
+        android:layout_gravity="center"
+        android:layout_margin="3dp"
+        >
+    </com.github.mikephil.charting.charts.PieChart>
+
+    <LinearLayout
+        android:id="@+id/msg_no_ingresos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/ic_money_off">
+        </ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/noDataChart_ingresos"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:padding="3dp"
+            />
+    </LinearLayout>
+
+</FrameLayout>
