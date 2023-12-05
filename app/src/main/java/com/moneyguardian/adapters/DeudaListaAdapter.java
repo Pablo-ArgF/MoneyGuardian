@@ -4,9 +4,11 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -78,6 +80,8 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
         TextView total;
         CircleImageView imageViewUsuario;
         CircleImageView imageViewAmigo;
+        ImageView flechaEnd;
+        ImageView flechaInicio;
 
         public DeudaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,26 +91,35 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
             total = itemView.findViewById(R.id.textMoneyDeuda);
             imageViewUsuario = itemView.findViewById(R.id.imgUserDeuda);
             imageViewAmigo = itemView.findViewById(R.id.imgPagadorDeuda);
+            flechaEnd = itemView.findViewById(R.id.flechaDeuda2);
+            flechaInicio = itemView.findViewById(R.id.flechaDeuda);
         }
 
         public void bindDeuda(DeudaDTO deuda) {
-            if (deuda.isUserPagador()) {
+            if (deuda.getPagador().getId().equals(auth.getUid())) {
                 nombreUsuario.setText(deuda.getPagador().getNombre());
                 nombreAmigo.setText(deuda.getUsuario().getNombre());
                 if (deuda.getPagador().getImageURI() != null)
                     Picasso.get().load(Uri.parse(deuda.getPagador().getImageURI())).into(imageViewUsuario);
                 if (deuda.getUsuario().getImageURI() != null)
                     Picasso.get().load(Uri.parse(deuda.getUsuario().getImageURI())).into(imageViewAmigo);
+                flechaInicio.setImageResource(R.drawable.ic_flecha_gasto_izquierda);
+                flechaEnd.setImageResource(R.drawable.ic_flecha_gasto_izquierda_final
+                );
+                total.setText(String.valueOf(deuda.getCantidad() * -1));
+                total.setTextColor(ContextCompat.getColor(this.itemView.getContext(), R.color.green));
             } else {
-                // TODO el getNombre da nullpointer
                 nombreUsuario.setText(deuda.getUsuario().getNombre());
                 nombreAmigo.setText(deuda.getPagador().getNombre());
                 if (deuda.getUsuario().getImageURI() != null)
                     Picasso.get().load(Uri.parse(deuda.getUsuario().getImageURI())).into(imageViewUsuario);
                 if (deuda.getPagador().getImageURI() != null)
                     Picasso.get().load(Uri.parse(deuda.getPagador().getImageURI())).into(imageViewAmigo);
+                flechaEnd.setImageResource(R.drawable.ic_flecha_gasto_derecha);
+                flechaInicio.setImageResource(R.drawable.ic_flecha_gasto_derecha_inicio);
+                total.setText(String.valueOf(deuda.getCantidad()));
+                total.setTextColor(ContextCompat.getColor(this.itemView.getContext(), R.color.red));
             }
-            total.setText(String.valueOf(deuda.getCantidad()));
         }
     }
 
