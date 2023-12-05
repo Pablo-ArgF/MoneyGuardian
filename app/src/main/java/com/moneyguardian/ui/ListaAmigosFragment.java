@@ -13,12 +13,14 @@ import android.widget.LinearLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.ListaAmigosAdapter;
 import com.moneyguardian.adapters.ListaGruposAdapter;
@@ -51,11 +53,13 @@ public class ListaAmigosFragment extends Fragment {
 
     private RecyclerView listaAmigosView;
     private RecyclerView listaGruposView;
+    private SwipeRefreshLayout swipeRefreshLayoutAmigos;
+    private SwipeRefreshLayout swipeRefreshLayoutGrupos;
 
     private ListaAmigosAdapter amigosAdapter;
     private Button btnGestionAmigos;
     private Button btnAddGroup;
-
+    private MainActivity mainActivity;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private LinearLayout msgNoFriends;
@@ -126,25 +130,25 @@ public class ListaAmigosFragment extends Fragment {
     private void updateUIFriends() {
         if (amigosAdapter.getItemCount() == 0) {
             msgNoFriends.setVisibility(View.VISIBLE);
-            listaAmigosView.setVisibility(View.GONE);
+            swipeRefreshLayoutAmigos.setVisibility(View.GONE);
         } else {
             msgNoFriends.setVisibility(View.GONE);
-            listaAmigosView.setVisibility(View.VISIBLE);
+            swipeRefreshLayoutAmigos.setVisibility(View.VISIBLE);
         }
     }
 
     private void updateUIGroups() {
         if (gruposAdapter.getItemCount() == 0) {
             msgNoGroups.setVisibility(View.VISIBLE);
-            listaGruposView.setVisibility(View.GONE);
+            swipeRefreshLayoutGrupos.setVisibility(View.GONE);
         } else {
             msgNoGroups.setVisibility(View.GONE);
-            listaGruposView.setVisibility(View.VISIBLE);
+            swipeRefreshLayoutGrupos.setVisibility(View.VISIBLE);
         }
     }
 
     private void cargarListaAmigos() {
-        this.listaAmigos.clear();
+        mainActivity.getAmigos().clear();
         //we load current user info related to friends
         db.collection("users")
                 .document(auth.getUid())
@@ -155,8 +159,11 @@ public class ListaAmigosFragment extends Fragment {
                         List<DocumentReference> friendRefs =
                                 (List<DocumentReference>) documentSnapshot.get("friends");
 
-                        if (friendRefs == null)
+                        if (friendRefs == null || friendRefs.size() == 0){
+                            amigosAdapter.clear();
+                            updateUIFriends();
                             return;
+                        }
 
                         //we load all the friends
                         for (int i = 0; i < friendRefs.size(); i++) {
@@ -168,6 +175,7 @@ public class ListaAmigosFragment extends Fragment {
                                             //of friends
                                             Usuario usuario = UsuarioMapper.mapBasics(documentSnapshot);
                                             amigosAdapter.addAmigo(usuario);
+                                            mainActivity.getAmigos().add(usuario);
                                             updateUIFriends();
                                         }
                                     });
@@ -218,12 +226,29 @@ public class ListaAmigosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_lista_amigos, container, false);
+        mainActivity = (MainActivity) getActivity();
         listaGruposView = root.findViewById(R.id.recyclerListaGruposAmigos);
         listaAmigosView = root.findViewById(R.id.recyclerListaAmigos);
         btnGestionAmigos = root.findViewById(R.id.btnGestionAmigos);
         btnAddGroup = root.findViewById(R.id.btnNuevoGrupoAmigos);
         msgNoFriends = root.findViewById(R.id.msgNoFriends);
         msgNoGroups = root.findViewById(R.id.msgNoGroups);
+        swipeRefreshLayoutAmigos = root.findViewById(R.id.swipeRefreshAmigos);
+        swipeRefreshLayoutAmigos.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                cargarListaAmigos();
+                swipeRefreshLayoutAmigos.setRefreshing(false);
+            }
+        });
+        swipeRefreshLayoutGrupos = root.findViewById(R.id.swipeRefreshGruposAmigos);
+        swipeRefreshLayoutGrupos.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                cargarListaGruposAmigos();
+                swipeRefreshLayoutGrupos.setRefreshing(false);
+            }
+        });
 
 
         //we add the layout manager to the group list
@@ -258,7 +283,10 @@ public class ListaAmigosFragment extends Fragment {
 
         //cargamos los datos en la vista
         cargarListaGruposAmigos();
-        cargarListaAmigos();
+        if(mainActivity.getAmigos() == null || mainActivity.getAmigos().size() == 0)
+            cargarListaAmigos();
+        else
+            mainActivity.getAmigos().forEach(a -> amigosAdapter.addAmigo(a));
         //si no hay amigos enseñamos el mensaje
         updateUIFriends();
 
@@ -293,6 +321,16 @@ public class ListaAmigosFragment extends Fragment {
                 updateUIGroups();
             }
         });
+
+
+        //listener to document changes in the db
+        db.collection("users").document(auth.getUid())
+                .addSnapshotListener((value, error) -> {
+                    mainActivity.setUser(UsuarioMapper.mapBasics(value));
+                    cargarListaAmigos();
+                    cargarListaGruposAmigos();
+                });
+
         return root;
     }
 

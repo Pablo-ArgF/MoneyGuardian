@@ -47,14 +47,14 @@ public class MainActivity extends AppCompatActivity {
     private AlphaAnimation inAnimation;
     private AlphaAnimation outAnimation;
     private FrameLayout progressBarHolder;
+    private boolean loading;
 
     //-----------
     //atributes common to more than one view, we avoid reloading
     private Usuario user;
     private List<Gasto> gastos = new ArrayList<>();
     private List<PagoConjunto> pagosConjuntos = new ArrayList<>();
-    private boolean loading;
-
+    private List<Usuario> amigos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,5 +142,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setPagosConjuntos(List<PagoConjunto> pagosConjuntos) {
         this.pagosConjuntos = pagosConjuntos;
+    }
+
+    public List<Usuario> getAmigos() {
+        return amigos;
+    }
+
+    public void setAmigos(List<Usuario> amigos) {
+        this.amigos = amigos;
     }
 }

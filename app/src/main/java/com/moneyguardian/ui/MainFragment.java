@@ -323,7 +323,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             mainActivity.setGastos(gastos.get());
             addEntrysToGraphs(mainActivity.getGastos());
             //disable the loading of the data
-            ((MainActivity)getActivity()).setLoading(false);
+            mainActivity.setLoading(false);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

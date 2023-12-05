@@ -197,6 +197,14 @@ public class SolicitudesAmistadFragment extends Fragment {
             }
         });
 
+
+        //listener for changes in the friendRequests
+        db.collection("users").document(auth.getUid())
+                .addSnapshotListener((value, error) -> {
+                    //we reload the friend requests
+                    showFriendRequestsFromDocument(value);
+                });
+
         return root;
     }
 
@@ -225,31 +233,35 @@ public class SolicitudesAmistadFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        //obtenemos las referencias de los usuarios que le piden solicitud
-                        ArrayList<DocumentReference> refsSolicitantes = (ArrayList<DocumentReference>)  documentSnapshot.get("friendRequests");
-                        if(refsSolicitantes == null)
-                            return;
-
-                        updateEmptyRequestsView(refsSolicitantes.size());
-
-                        //iteramos por la lista de referencias de usuarios que nos solicitan
-                        for(DocumentReference ref : refsSolicitantes){
-                            ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document != null && document.exists()) {
-                                            //convertimos este usuario en un Usuario y lo añadimos a la lista
-                                            Usuario u = UsuarioMapper.mapBasics(task.getResult());
-                                            solicitudesAdapter.addSolicitante(u);
-                                            listRequests.add(u);
-                                        }
-                                    }
-                                }
-                            });
-                        }
+                        showFriendRequestsFromDocument(documentSnapshot);
                     }
                 });
+    }
+
+    private void showFriendRequestsFromDocument(DocumentSnapshot documentSnapshot) {
+        //obtenemos las referencias de los usuarios que le piden solicitud
+        ArrayList<DocumentReference> refsSolicitantes = (ArrayList<DocumentReference>)  documentSnapshot.get("friendRequests");
+        if(refsSolicitantes == null)
+            return;
+
+        updateEmptyRequestsView(refsSolicitantes.size());
+
+        //iteramos por la lista de referencias de usuarios que nos solicitan
+        for(DocumentReference ref : refsSolicitantes){
+            ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            //convertimos este usuario en un Usuario y lo añadimos a la lista
+                            Usuario u = UsuarioMapper.mapBasics(task.getResult());
+                            solicitudesAdapter.addSolicitante(u);
+                            listRequests.add(u);
+                        }
+                    }
+                }
+            });
+        }
     }
 }

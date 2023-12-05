@@ -31,6 +31,11 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<ListaAmigosAdapter.
     private OnItemClickListener listener;
     private ViewGroup parent;
 
+    public void clear() {
+        notifyItemRangeRemoved(0,listaAmigos.size());
+        this.listaAmigos.clear();
+    }
+
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
         void onItemClick(Usuario item);

@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginEnd="10dp"
-    android:layout_marginStart="10dp"
     >
 
     <RelativeLayout
@@ -40,6 +38,11 @@
 
     </RelativeLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerListaPeticiones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/msgNoSolicitudes"
         android:layout_width="match_parent"
@@ -63,10 +66,6 @@
             android:textSize="17sp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerListaPeticiones"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/textView9"
