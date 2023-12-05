@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -30,10 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
-import com.moneyguardian.adapters.DeudaListaAdapter;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
-import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.util.Animations;
 import com.moneyguardian.util.GastosUtil;
 
@@ -103,7 +100,7 @@ public class ListaGastosFragment extends Fragment {
         if (adapter == null || adapter.getItemCount() == 0) {
             //we enable the loading view until data is loaded
             mainActivity.setLoading(true);
-            cargarDatos();
+            recuperarGastos();
         } else {
             mainActivity.setLoading(false);
         }
@@ -176,18 +173,28 @@ public class ListaGastosFragment extends Fragment {
         if (adapter.getItemCount() == 0) {
             //we enable the loading screen
             mainActivity.setLoading(true);
-            cargarDatos();
+            recuperarGastos();
         }
     }
 
-    private void cargarDatos() {
+    /**
+     * Diferencia principal con cargar gastos: va a buscarlos al MainActivity si
+     * es que ya están cargados
+     * SOLO UTILZIAR cuando se inicializa el fragmento para no dar sobrecarga a la carga de listas
+     * pero es importante que cuando se borra un gasto se actualize la lista actual y la de
+     * MainActivity
+     */
+    private void recuperarGastos(){
         if (mainActivity.getGastos() != null && mainActivity.getGastos().size() > 0) {
             mainActivity.getGastos().forEach(g -> adapter.add(g));
             //we disable the loading screen
             mainActivity.setLoading(false);
             return;
         }
+        cargarDatos();
+    }
 
+    private void cargarDatos() {
         db.collection("users/").document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(Task task) {
@@ -245,7 +252,7 @@ public class ListaGastosFragment extends Fragment {
                         // Si hay mapa y hay gastos seleccionados
                         if (adapter.getCheckedGastos() != null && adapter.getNumberOfChecked() > 0) {
                             gastosList = GastosUtil.deleteGastos(adapter.getCheckedGastos());
-                            adapter.update(gastosList);
+                            adapter.deleteGastos(gastosList);
                             // Si no hay mapa, o no hay ninguno seleccionado
                         } else {
                             Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();

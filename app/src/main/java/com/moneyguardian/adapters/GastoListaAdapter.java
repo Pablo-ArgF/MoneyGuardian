@@ -1,9 +1,5 @@
 package com.moneyguardian.adapters;
 
-import static java.util.Map.entry;
-
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.GastosUtil;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,8 +65,8 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         checkedGastos.put(g, false);
         notifyDataSetChanged();
     }
-
-    public void update(List<Gasto> gastosList) {
+    
+    public void deleteGastos(List<Gasto> gastosList) {
         this.listaGastos.removeAll(gastosList);
         for (Gasto g : gastosList) {
             checkedGastos.remove(g);
