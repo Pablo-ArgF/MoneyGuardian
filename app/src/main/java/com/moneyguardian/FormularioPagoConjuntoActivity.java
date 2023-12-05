@@ -185,7 +185,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     }
 
                     // Guardamos el pago conjunto
-                    PagosConjuntosUtil.addPagoConjunto(pagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
+                    pagoConjunto = PagosConjuntosUtil.addPagoConjunto(pagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
 
                     Intent intentResult = new Intent();
                     intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);

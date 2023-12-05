@@ -105,7 +105,7 @@ public class DeudasListFragment extends Fragment {
                                     Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
                                     Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
 
-                                    String owner = ((ArrayList<String>) document.getData().get("pagador")).get(0);
+                                    String owner = ((DocumentReference) document.getData().get("pagador")).getId();
 
                                     List<DocumentReference> users = (List<DocumentReference>) document.getData().get("participantes");
 

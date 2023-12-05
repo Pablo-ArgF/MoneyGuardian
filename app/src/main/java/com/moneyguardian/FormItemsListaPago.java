@@ -140,17 +140,7 @@ public class FormItemsListaPago extends AppCompatActivity {
                                     });
                             });
 
-                            List< String > pagador =
-                                    (List< String >) task.getResult().get("pagador");
-                            db.collection("users").document(pagador.get(0)).get()
-                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        adapterSpinner.add(UsuarioMapper.mapBasicsParcelable(task.getResult()));
-                                    }
-                                }
-                            });
+
                         }
                     }
                 });

@@ -46,6 +46,7 @@ public class PagosConjuntosFragment extends Fragment {
 
     // Identificador de activiy
     public static final int GESTION_ACTIVITY = 1;
+    public static final String PAGO_CONJUNTO_CREADO = "NEW_PAGO";
 
     // Modelo de datos
     SwipeRefreshLayout swipeRefreshLayout;
@@ -162,7 +163,7 @@ public class PagosConjuntosFragment extends Fragment {
                                                 Date fechaPago = ((Timestamp) document1.getData().get("fechaPago")).toDate();
                                                 Date fechaLimite = ((Timestamp) document1.getData().get("fechaLimite")).toDate();
 
-                                                String owner = ((ArrayList<String>) document1.getData().get("pagador")).get(0);
+                                                String owner = ((DocumentReference) document1.getData().get("pagador")).getId();
 
                                                 List<DocumentReference> users =
                                                         (List<DocumentReference>) document1.getData().get("participantes");

@@ -19,7 +19,7 @@ public class PagosConjuntosUtil {
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-    public static void addPagoConjunto(PagoConjunto pagoConjunto, List<UsuarioParaParcelable> participantes, String UUID) {
+    public static PagoConjunto addPagoConjunto(PagoConjunto pagoConjunto, List<UsuarioParaParcelable> participantes, String UUID) {
         // Creación del Map para persistencia
         Map<String, Object> pagoConjuntoDoc = new HashMap<>();
         pagoConjuntoDoc.put("nombre", pagoConjunto.getNombre());
@@ -38,7 +38,7 @@ public class PagosConjuntosUtil {
         pagoConjuntoDoc.put("participantes", nestedParticipantes);
 
         // Guardamos al usuario actual como el creador
-        pagoConjuntoDoc.put("creador", creadorReference);
+        pagoConjuntoDoc.put("pagador", creadorReference);
 
         // La referencia al documento
         DocumentReference pagoRef = db.collection("pagosConjuntos").document(UUID);
@@ -51,6 +51,9 @@ public class PagosConjuntosUtil {
         for (DocumentReference ref : nestedParticipantes) {
             ref.update("pagosConjuntos", FieldValue.arrayUnion(pagoRef));
         }
+        pagoConjunto.setOwner(auth.getCurrentUser().getUid());
+
+        return pagoConjunto;
     }
 
 }
