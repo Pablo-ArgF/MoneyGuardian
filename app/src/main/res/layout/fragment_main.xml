@@ -10,20 +10,22 @@
     <RelativeLayout
         android:id="@+id/nombreYFotoDePerfil"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="19dp">
+        android:layout_marginTop="10dp"
+        >
 
         <TextView
             android:id="@+id/txtWelcome"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="17dp"
+            android:layout_marginStart="5dp"
+            android:layout_toStartOf="@+id/profileButton"
             android:fontFamily="@font/roboto_condensed_regular"
+            android:layout_centerVertical="true"
             android:text="@string/welcome_msg"
             android:textSize="20sp"
-            android:maxWidth="280dp"
             />
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -41,10 +43,8 @@
         android:id="@+id/chartLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/tipsLayout"
+        android:layout_above="@+id/buttonsBotomLayoutMainPage"
         android:layout_below="@id/nombreYFotoDePerfil"
-        android:layout_marginTop="-5dp"
-        android:layout_marginBottom="5dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -52,7 +52,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="14dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -72,18 +71,15 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/chartFragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="381dp"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/menu_filters"
-            android:layout_below="@+id/menu_graphs"
-            android:layout_marginTop="1dp"
-            android:layout_marginBottom="-3dp" />
+            android:layout_below="@+id/menu_graphs"/>
 
         <LinearLayout
             android:id="@+id/menu_filters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="13dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -124,52 +120,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/tipsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingEnd="10dp"
-        android:paddingStart="10dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/rounded_edge"
-        android:orientation="horizontal"
-        android:visibility="visible"
-        android:layout_above="@+id/buttonsBotomLayoutMainPage"
-        >
-
-
-        <LinearLayout
-            android:layout_width="210dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="15dp">
-
-
-            <TextView
-                android:id="@+id/txtTitleTips"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/title_tips"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtTipsBody"
-                android:layout_width="match_parent"
-                android:layout_height="43dp"
-                android:text="@string/body_tips"
-                android:textColor="@color/black"
-                android:textSize="11dp" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="123dp"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/tips_icon" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonsBotomLayoutMainPage"

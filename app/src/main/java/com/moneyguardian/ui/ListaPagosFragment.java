@@ -192,8 +192,10 @@ public class ListaPagosFragment extends Fragment {
                     cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
                 }
 
+                UsuarioParaParcelable userThatPays =
+                        new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
 
-                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers));
+                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userThatPays));
             }
 
             pagoConjunto.setItems(itemsPago);

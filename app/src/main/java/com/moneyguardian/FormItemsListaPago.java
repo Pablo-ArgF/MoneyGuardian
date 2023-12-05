@@ -231,7 +231,7 @@ public class FormItemsListaPago extends AppCompatActivity {
                                     (dialog, which) -> {
 
                                         ItemPagoConjunto itemPago = new ItemPagoConjunto(UUID.randomUUID().toString(),
-                                                name.getText().toString(), usersSelected);
+                                                name.getText().toString(), usersSelected,usuarioSeleccionado);
 
                                         saveInDataBase(itemPago);
 
@@ -292,20 +292,14 @@ public class FormItemsListaPago extends AppCompatActivity {
         }
 
         itemsPagoConj.put("UsuariosConPagos",usersWithMoney);
+        itemsPagoConj.put("usuarioPago",usuarioSeleccionado.getId());
+
 
         db.collection("pagosConjuntos").document(pagoConjunto.getId()).
                 collection("itemsPago").document(itemPago.getId())
-                .set(itemsPagoConj).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.i("FIREBASE SET", "Se añadió el objeto");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("FIRBASE SET", "Error writing document", e);
-                    }
-                });
+                .set(itemsPagoConj).addOnSuccessListener(unused ->
+                        Log.i("FIREBASE SET", "Se añadió el objeto")).
+                addOnFailureListener(e -> Log.w("FIRBASE SET", "Error writing document", e));
 
     }
 

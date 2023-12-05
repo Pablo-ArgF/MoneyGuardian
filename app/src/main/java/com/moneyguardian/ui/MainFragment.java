@@ -128,7 +128,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         root = inflater.inflate(R.layout.fragment_main,container, false);
         profileBtn = root.findViewById(R.id.profileButton);
         txtWelcome = root.findViewById(R.id.txtWelcome);
-        tipsLayout = root.findViewById(R.id.tipsLayout);
         chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
         btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
         btnMenuGraphPie = root.findViewById(R.id.btn_pieChart);

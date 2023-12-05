@@ -139,11 +139,11 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validarPagoConjunto()) {
-                    List<UsuarioParaParcelable> participantesNombres = new ArrayList<UsuarioParaParcelable>();
+                    List<UsuarioParaParcelable> participantes = new ArrayList<UsuarioParaParcelable>();
                     // Rellenamos la lista de usuarios
                     for (int i = 0; i < usuarios.size(); i++) {
                         if (usuarioArrayAdapter.isChecked(i)) {
-                            participantesNombres.add(usuarios.get(i));
+                            participantes.add(usuarios.get(i));
                         }
                     }
 
@@ -159,10 +159,10 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
                     // Si no tenemos imagen
                     if (selectedImageUri == null) {
-                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantesNombres, dateLimite);
+                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantes, dateLimite);
                     } else {
                         // Si tenemos imagen
-                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantesNombres, selectedImageUri, dateLimite);
+                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantes, selectedImageUri, dateLimite);
 
                         // Añadimos la imagen a la BD
                         Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
@@ -195,10 +195,10 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     pagoConjuntoDoc.put("imagen", pagoConjunto.getImagen());
                     pagoConjuntoDoc.put("fechaLimite", pagoConjunto.getFechaLimite());
                     pagoConjuntoDoc.put("fechaPago", pagoConjunto.getFechaPago());
-                    // Guardamos los participantesNombres como una lista de referencias
+                    // Guardamos los participantes como una lista de referencias
                     ArrayList<DocumentReference> nestedParticipantes = new ArrayList<DocumentReference>();
                     nestedParticipantes.addAll(usuariosUUIDs);
-                    pagoConjuntoDoc.put("participantesNombres", nestedParticipantes);
+                    pagoConjuntoDoc.put("participantes", nestedParticipantes);
                     // OJO: el usuario pagador debe ir dentro de un Map para poder realizar la query en Firestore
                     List<String> userId = new ArrayList<String>();
                     userId.add(mAuth.getCurrentUser().getUid());

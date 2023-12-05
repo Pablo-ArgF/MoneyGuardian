@@ -135,6 +135,10 @@ public class DeudasListFragment extends Fragment {
                                                 HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
                                                 String id = itemPago.getId();
                                                 String nombre = itemPago.getString("nombre");
+
+                                                UsuarioParaParcelable userTHatPays =
+                                                        new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
+
                                                 HashMap<String, Double> cantidadesConUsersReferences =
                                                         (HashMap<String, Double>) itemPago.get("UsuariosConPagos");
 
@@ -143,7 +147,7 @@ public class DeudasListFragment extends Fragment {
                                                 }
 
 
-                                                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers));
+                                                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userTHatPays));
                                             }
 
                                             if (nombre == null || fechaLimite == null || fechaPago == null) {
@@ -164,20 +168,5 @@ public class DeudasListFragment extends Fragment {
                 }
             }
         });
-
-/*        DocumentReference referenceUser = db.document("users/" + auth.getUid());
-        // Obtenemos todos los pagos en los que el usuario está participando
-        db.collection("/pagosConjuntos").whereArrayContains("participantes", referenceUser).
-                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                pagosConjuntos.add(PagosConjuntosUtil.getPagoConjuntoFrom(document));
-                            }
-                            adapter.update(pagosConjuntos, auth.getUid());
-                        }
-                    }
-                });*/
     }
 }

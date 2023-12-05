@@ -152,80 +152,74 @@ public class PagosConjuntosFragment extends Fragment {
                             for (DocumentReference document : referenciasPagos) {
 
                                 db.collection("pagosConjuntos").document(document.getId()).
-                                        get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot document) {
-                                                if (document.getData() != null) {
-                                                    String nombre = (String) document.getData().get("nombre");
-                                                    Uri imagen = null;
-                                                    if (document.getData().get("imagen") != null) {
-                                                        imagen = Uri.parse((String) document.getData().get("imagen"));
-                                                    }
-                                                    Date fechaPago = ((Timestamp) document.getData().get("fechaPago")).toDate();
-                                                    Date fechaLimite = ((Timestamp) document.getData().get("fechaLimite")).toDate();
-
-                                                    String owner = ((ArrayList<String>) document.getData().get("pagador")).get(0);
-
-                                                    List<DocumentReference> users =
-                                                            (List<DocumentReference>) document.getData().get("participantes");
-
-                                                    List<UsuarioParaParcelable> participantes = new ArrayList<>();
-
-                                                    users.forEach(user ->
-                                                    {
-                                                        user.get()
-                                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                    @Override
-                                                                    public void onSuccess(DocumentSnapshot d) {
-                                                                        participantes.add(UsuarioMapper.mapBasicsParcelable(d));
-                                                                    }
-                                                                });
-                                                    });
-
-                                                    List<ItemPagoConjunto> itemsPago = new ArrayList<>();
-
-                                                    Uri finalImagen = imagen;
-
-                                                    db.collection("pagosConjuntos")
-                                                            .document(document.getId()).collection("itemsPago")
-                                                            .orderBy("nombre").get()
-                                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                                    List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
-
-                                                                    for (DocumentSnapshot itemPago : itemsPagoSnapshot) {
-                                                                        HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
-                                                                        String id = itemPago.getId();
-                                                                        String nombre = itemPago.getString("nombre");
-                                                                        HashMap<String, Double> cantidadesConUsersReferences =
-                                                                                (HashMap<String, Double>) itemPago
-                                                                                        .get("UsuariosConPagos");
-
-                                                                        for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
-                                                                            cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
-                                                                        }
-
-
-                                                                        itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers));
-                                                                    }
-
-                                                                    if (nombre == null || fechaLimite == null || fechaPago == null) {
-                                                                        throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
-                                                                    }
-
-                                                                    Log.i("Firebase GET", document.getData().toString());
-
-                                                                    pagos.add(new PagoConjunto(document.getId(), nombre,
-                                                                            fechaPago, new ArrayList<>(participantes),
-                                                                            finalImagen, fechaLimite, itemsPago, owner));
-                                                                    mainActivity.setPagosConjuntos(pagos);
-                                                                    pagosConjuntosListaAdapter.updateList(pagos);
-                                                                }
-                                                            });
-                                                } else {
-                                                    pagosConjuntosListaAdapter.updateList(new ArrayList<>());
+                                        get().addOnSuccessListener(document1 -> {
+                                            if (document1.getData() != null) {
+                                                String nombre = (String) document1.getData().get("nombre");
+                                                Uri imagen = null;
+                                                if (document1.getData().get("imagen") != null) {
+                                                    imagen = Uri.parse((String) document1.getData().get("imagen"));
                                                 }
+                                                Date fechaPago = ((Timestamp) document1.getData().get("fechaPago")).toDate();
+                                                Date fechaLimite = ((Timestamp) document1.getData().get("fechaLimite")).toDate();
+
+                                                String owner = ((ArrayList<String>) document1.getData().get("pagador")).get(0);
+
+                                                List<DocumentReference> users =
+                                                        (List<DocumentReference>) document1.getData().get("participantes");
+
+                                                List<UsuarioParaParcelable> participantes = new ArrayList<>();
+
+                                                users.forEach(user ->
+                                                {
+                                                    user.get()
+                                                            .addOnSuccessListener(d -> participantes.add(UsuarioMapper.mapBasicsParcelable(d)));
+                                                });
+
+                                                List<ItemPagoConjunto> itemsPago = new ArrayList<>();
+
+                                                Uri finalImagen = imagen;
+
+                                                db.collection("pagosConjuntos")
+                                                        .document(document1.getId()).collection("itemsPago")
+                                                        .orderBy("nombre").get()
+                                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                                List<DocumentSnapshot> itemsPagoSnapshot = queryDocumentSnapshots.getDocuments();
+
+                                                                for (DocumentSnapshot itemPago : itemsPagoSnapshot) {
+                                                                    HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+                                                                    String id = itemPago.getId();
+                                                                    String nombre = itemPago.getString("nombre");
+                                                                    HashMap<String, Double> cantidadesConUsersReferences =
+                                                                            (HashMap<String, Double>) itemPago
+                                                                                    .get("UsuariosConPagos");
+
+                                                                    for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
+                                                                        cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
+                                                                    }
+
+                                                                    UsuarioParaParcelable userThatPays =
+                                                                            new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
+
+                                                                    itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userThatPays));
+                                                                }
+
+                                                                if (nombre == null || fechaLimite == null || fechaPago == null) {
+                                                                    throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
+                                                                }
+
+                                                                Log.i("Firebase GET", document1.getData().toString());
+
+                                                                pagos.add(new PagoConjunto(document1.getId(), nombre,
+                                                                        fechaPago, new ArrayList<>(participantes),
+                                                                        finalImagen, fechaLimite, itemsPago, owner));
+                                                                mainActivity.setPagosConjuntos(pagos);
+                                                                pagosConjuntosListaAdapter.updateList(pagos);
+                                                            }
+                                                        });
+                                            } else {
+                                                pagosConjuntosListaAdapter.updateList(new ArrayList<>());
                                             }
                                         });
                             }
