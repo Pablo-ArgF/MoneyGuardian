@@ -19,18 +19,21 @@ import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
 
-    private boolean[] checked;
+    private Map<UsuarioParaParcelable, Boolean> checkboxMap;
 
     public UsuarioArrayAdapter(@NonNull Context context, int resource, ArrayList<UsuarioParaParcelable> usuarios) {
         super(context, resource, usuarios);
-        this.checked = new boolean[usuarios.toArray().length];
-        for (int i = 0; i < this.checked.length; i++) {
-            this.checked[i] = false;
+        checkboxMap = new HashMap<>();
+        for (UsuarioParaParcelable user : usuarios) {
+            checkboxMap.put(user, false);
         }
     }
 
@@ -59,8 +62,8 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
             }
 
             CheckBox cBox = (CheckBox) currentItemView.findViewById(R.id.checkBoxUsuarios);
-            cBox.setTag(Integer.valueOf(position)); // set the tag so we can identify the correct row in the listener
-            cBox.setChecked(checked[position]); // set the status as we stored it
+            cBox.setTag(currentUser); // set the tag so we can identify the correct row in the listener
+            cBox.setChecked(false); // set the status as we stored it
             cBox.setOnCheckedChangeListener(mListener); // set the listener
         }
 
@@ -73,14 +76,41 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
     CompoundButton.OnCheckedChangeListener mListener = new CompoundButton.OnCheckedChangeListener() {
 
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            checked[(Integer) buttonView.getTag()] = isChecked;
-
-            Log.i("Checkbox: " + buttonView.getTag() + " status: ", String.valueOf(checked[(Integer) buttonView.getTag()]));
+            //checked[(Integer) buttonView.getTag()] = isChecked;
+            checkboxMap.put((UsuarioParaParcelable) buttonView.getTag(), isChecked);
+            //Log.i("Checkbox: " + buttonView.getTag() + " status: ", String.valueOf(checked[(Integer) buttonView.getTag()]));
         }
     };
 
     public boolean isChecked(int i) {
-        return checked[i];
+        //return checked[i];
+        return false;
     }
 
+    public List<UsuarioParaParcelable> getChecked() {
+        List<UsuarioParaParcelable> lista = new ArrayList<>();
+        for (Map.Entry<UsuarioParaParcelable, Boolean> entry : checkboxMap.entrySet()) {
+            if (entry.getValue()) {
+                lista.add(entry.getKey());
+            }
+        }
+        return lista;
+    }
+
+    public boolean atLeastOneUserSelected() {
+        for (Map.Entry<UsuarioParaParcelable, Boolean> entry : checkboxMap.entrySet()) {
+            if (entry.getValue()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void update(ArrayList<UsuarioParaParcelable> usuarios) {
+        checkboxMap = new HashMap<>();
+        for (UsuarioParaParcelable user : usuarios) {
+            checkboxMap.put(user, false);
+        }
+        notifyDataSetChanged();
+    }
 }

@@ -36,6 +36,7 @@ public class UsuarioParaParcelable implements Parcelable {
     public UsuarioParaParcelable(String id) {
         this.id = id;
     }
+
     public UsuarioParaParcelable(String nombre, String email, String imageURI) {
         this(nombre, email);
         this.imageURI = imageURI;
@@ -47,6 +48,7 @@ public class UsuarioParaParcelable implements Parcelable {
         nombre = in.readString();
         email = in.readString();
         imageURI = in.readString();
+        id = in.readString();
     }
 
     @Override
@@ -55,6 +57,7 @@ public class UsuarioParaParcelable implements Parcelable {
         dest.writeString(nombre);
         dest.writeString(email);
         dest.writeString(imageURI);
+        dest.writeString(id);
     }
 
     public String getImageURI() {
