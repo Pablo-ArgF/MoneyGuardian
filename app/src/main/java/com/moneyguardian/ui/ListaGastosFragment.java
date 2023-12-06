@@ -8,8 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -52,7 +51,9 @@ public class ListaGastosFragment extends Fragment {
 
     // Botones
     private Animations animations;
+    // UI
     private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayout msgNoGastos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,7 +74,23 @@ public class ListaGastosFragment extends Fragment {
         FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
         FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
 
+        // UI
         animations.setOnClickAnimationAndVisibility(buttonOpen, Arrays.asList(buttonAddIngreso, buttonAddGasto));
+        msgNoGastos = root.findViewById(R.id.msgNoGastos);
+
+        // Manejo de refresh
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshGastos);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ((MainActivity) getActivity()).setLoading(true);
+                adapter = new GastoListaAdapter();
+                recyclerView.setAdapter(adapter);
+                cargarDatos();
+                swipeRefreshLayout.setRefreshing(false);
+                updateUIGastos();
+            }
+        });
 
         recyclerView = root.findViewById(R.id.recyclerGastos);
         recyclerView.setHasFixedSize(true);
@@ -95,7 +112,7 @@ public class ListaGastosFragment extends Fragment {
 
         // Recuperar gastos del usuario
 
-
+        updateUIGastos();
         // Si no hay adapter, o no hay items los cargamos
         if (adapter == null || adapter.getItemCount() == 0) {
             //we enable the loading view until data is loaded
@@ -129,38 +146,26 @@ public class ListaGastosFragment extends Fragment {
             }
         });
 
-        // Borrado y seleccionado de  gastos
-        CheckBox checkBoxSelectAll = root.findViewById(R.id.cbSelectAllGastos);
-        checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                adapter.selectAll(isChecked);
-                // TODO No funciona
-                View recycler = root.findViewById(R.id.recyclerGastos);
-                CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
-                if (cb != null)
-                    cb.setSelected(isChecked);
-            }
+        /**
+         // Borrado y seleccionado de  gastos
+         CheckBox checkBoxSelectAll = root.findViewById(R.id.cbSelectAllGastos);
+         checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        adapter.selectAll(isChecked);
+        // TODO No funciona
+        View recycler = root.findViewById(R.id.recyclerGastos);
+        CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
+        if (cb != null)
+        cb.setSelected(isChecked);
+        }
         });
+         */
 
         Button buttonDelete = root.findViewById(R.id.btnEliminarGasto);
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertBorrarGasto();
-            }
-        });
-
-        // Manejo de refresh
-        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshGastos);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                ((MainActivity) getActivity()).setLoading(true);
-                adapter = new GastoListaAdapter();
-                recyclerView.setAdapter(adapter);
-                cargarDatos();
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -174,6 +179,7 @@ public class ListaGastosFragment extends Fragment {
             //we enable the loading screen
             mainActivity.setLoading(true);
             recuperarGastos();
+            updateUIGastos();
         }
     }
 
@@ -184,7 +190,7 @@ public class ListaGastosFragment extends Fragment {
      * pero es importante que cuando se borra un gasto se actualize la lista actual y la de
      * MainActivity
      */
-    private void recuperarGastos(){
+    private void recuperarGastos() {
         if (mainActivity.getGastos() != null && mainActivity.getGastos().size() > 0) {
             mainActivity.getGastos().forEach(g -> adapter.add(g));
             //we disable the loading screen
@@ -192,6 +198,7 @@ public class ListaGastosFragment extends Fragment {
             return;
         }
         cargarDatos();
+        updateUIGastos();
     }
 
     private void cargarDatos() {
@@ -217,13 +224,14 @@ public class ListaGastosFragment extends Fragment {
                                         g.setReference(gasto);
                                         g.setUUID(gasto.getId());
                                         adapter.add(g);
-                                        //we disable the loading screen
-                                        mainActivity.setLoading(false);
                                     }
                                 }
                             });
                         });
                     }
+                    //we disable the loading screen
+                    mainActivity.setLoading(false);
+                    updateUIGastos();
                 }
             }
         });
@@ -237,6 +245,7 @@ public class ListaGastosFragment extends Fragment {
             if (b.get(GASTO_CREADO) != null) {
                 Gasto gastoCreado = (Gasto) b.get(GASTO_CREADO);
                 gastoCreado.setReference(db.document("/gastos/" + gastoCreado.getUUID()));
+                this.mainActivity.getGastos().add(gastoCreado);
                 this.adapter.add(gastoCreado);
             }
         }
@@ -252,7 +261,11 @@ public class ListaGastosFragment extends Fragment {
                         // Si hay mapa y hay gastos seleccionados
                         if (adapter.getCheckedGastos() != null && adapter.getNumberOfChecked() > 0) {
                             gastosList = GastosUtil.deleteGastos(adapter.getCheckedGastos());
+                            // TODO este removeAll puede no funcionar con algunos gastos, y entonces
+                            // al no borrar gastos de la lista, siguen guardandose en persistenciaate
+                            mainActivity.getGastos().removeAll(gastosList);
                             adapter.deleteGastos(gastosList);
+                            updateUIGastos();
                             // Si no hay mapa, o no hay ninguno seleccionado
                         } else {
                             Toast.makeText(getContext(), getString(R.string.no_gasto_selected), Toast.LENGTH_SHORT).show();
@@ -264,5 +277,15 @@ public class ListaGastosFragment extends Fragment {
                         // CANCEL
                     }
                 }).create().show();
+    }
+
+    private void updateUIGastos() {
+        if (adapter.getItemCount() == 0 && mainActivity.getGastos().size() == 0) {
+            msgNoGastos.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+        } else {
+            msgNoGastos.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
     }
 }

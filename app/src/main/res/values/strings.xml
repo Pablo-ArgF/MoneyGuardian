@@ -126,4 +126,5 @@
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="noDataChart_gastos">Aún no tienes gastos registrados. Introduce nuevos gastos para ver la división por categoría.</string>
     <string name="ListaDeudas">Lista de deudas</string>
+    <string name="no_gastos">No tienes ningún gasto/ingreso todavía, añade alguno para poder verlos aquí.</string>
 </resources>

@@ -7,12 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -176,10 +179,14 @@ public class DeudasListFragment extends Fragment {
                                                                     adapter.updateList(new PagoConjunto(document.getId(), nombre,
                                                                             fechaPago, new ArrayList<>(participantes),
                                                                             finalImagen, fechaLimite, itemsPago, owner));
-                                                                    ((MainActivity) getActivity()).setLoading(false);
                                                                 }
                                                             });
                                                 }
+                                            }
+                                        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                ((MainActivity) getActivity()).setLoading(false);
                                             }
                                         });
                             }

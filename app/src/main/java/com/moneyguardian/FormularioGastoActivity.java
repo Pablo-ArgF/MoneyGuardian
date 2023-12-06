@@ -22,6 +22,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.ui.DatePickerFragment;
@@ -98,7 +99,13 @@ public class FormularioGastoActivity extends AppCompatActivity {
         });
 
         // Manejo del spinner con las categorías
-        db.collection("categorias/").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query query = null;
+        if (isIngreso) {
+            query = db.collection("categorias/").whereEqualTo("tipo", "ingreso");
+        } else {
+            query = db.collection("categorias/").whereEqualTo("tipo", "gasto");
+        }
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
@@ -125,8 +132,7 @@ public class FormularioGastoActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
-        }
-        else
+        } else
             fecha = new Date();
 
         Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);

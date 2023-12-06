@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/textView11"
-            android:layout_width="wrap_content"
+            android:layout_width="326dp"
             android:layout_height="wrap_content"
             android:layout_gravity="clip_horizontal|center|center_horizontal|fill_horizontal"
             android:layout_marginStart="39dp"
