@@ -1,38 +1,42 @@
 @file:JvmName("LoadDataHelper")
+
 package com.moneyguardian.util
 
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.moneyguardian.modelo.Gasto
+import com.moneyguardian.modelo.UsuarioParaParcelable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.function.Consumer
 
 class LoadDataHelper {
 
 
-        /*suspend fun loadGastosData(lifecycleScope : CoroutineScope, refs : List<DocumentReference>): List<Gasto> {
-            val gastosList = mutableListOf<Gasto>()
-            lifecycleScope.launch(Dispatchers.IO) {
-                refs.forEach { ref ->
-                    // Perform asynchronous operation to get data from Firestore
-                    val documentSnapshot = ref.get().await()
+    /*suspend fun loadGastosData(lifecycleScope : CoroutineScope, refs : List<DocumentReference>): List<Gasto> {
+        val gastosList = mutableListOf<Gasto>()
+        lifecycleScope.launch(Dispatchers.IO) {
+            refs.forEach { ref ->
+                // Perform asynchronous operation to get data from Firestore
+                val documentSnapshot = ref.get().await()
 
-                    // Map the document snapshot to a Gasto object
-                    val gasto = GastoMapper.map(documentSnapshot)
+                // Map the document snapshot to a Gasto object
+                val gasto = GastoMapper.map(documentSnapshot)
 
-                    // Add the Gasto object to the list
-                    gastosList.add(gasto)
-                }
+                // Add the Gasto object to the list
+                gastosList.add(gasto)
             }
-            return gastosList
-        }*/
+        }
+        return gastosList
+    }*/
 
     companion object {
         @JvmStatic
-        suspend fun loadGastosData(lifecycleScope: CoroutineScope, refs: List<DocumentReference>) : List<Gasto> {
+        suspend fun loadGastosData(lifecycleScope: CoroutineScope, refs: List<DocumentReference>): List<Gasto> {
             val gastosList = mutableListOf<Gasto>()
             lifecycleScope.launch(Dispatchers.IO) {
                 // Create a list of deferred tasks
@@ -55,5 +59,4 @@ class LoadDataHelper {
             return gastosList
         }
     }
-
 }

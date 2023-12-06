@@ -5,7 +5,7 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvMensajeWarning"
         android:layout_width="wrap_content"
         android:layout_height="66dp"
         android:layout_alignParentStart="true"

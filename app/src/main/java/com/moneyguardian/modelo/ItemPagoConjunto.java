@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 
 public class ItemPagoConjunto implements Parcelable {
+    private Double totalDinero;
     private UsuarioParaParcelable userThatPays;
     private String id;
     private String nombre;
@@ -17,11 +18,12 @@ public class ItemPagoConjunto implements Parcelable {
     private HashMap<UsuarioParaParcelable, Double> pagos;
 
     public ItemPagoConjunto(String id,String nombre, HashMap<UsuarioParaParcelable, Double> pagos,
-                            UsuarioParaParcelable userThatPays) {
+                            UsuarioParaParcelable userThatPays,Double totalDinero) {
         this.id = id;
         this.nombre = nombre;
         this.pagos = pagos;
         this.userThatPays = userThatPays;
+        this.totalDinero = totalDinero;
     }
 
 
@@ -32,6 +34,7 @@ public class ItemPagoConjunto implements Parcelable {
         pagos = new HashMap<>();
         pagos = in.readHashMap(UsuarioParaParcelable.class.getClassLoader());
         userThatPays = in.readParcelable(UsuarioParaParcelable.class.getClassLoader());
+        totalDinero = in.readDouble();
     }
 
     @Override
@@ -40,6 +43,7 @@ public class ItemPagoConjunto implements Parcelable {
         dest.writeString(nombre);
         dest.writeMap(pagos);
         dest.writeParcelable(userThatPays,0);
+        dest.writeDouble(totalDinero);
     }
 
     @Override
@@ -84,13 +88,7 @@ public class ItemPagoConjunto implements Parcelable {
     }
 
     public double getMoney(){
-        double total = 0;
-
-        for(UsuarioParaParcelable u : pagos.keySet()){
-            total += abs(pagos.getOrDefault(u,0.0));
-        }
-
-        return Math.round(total*100.0)/100.0;
+        return totalDinero;
     }
 
     public String getUser() {

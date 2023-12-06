@@ -94,6 +94,9 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
                 lista.add(entry.getKey());
             }
         }
+
+
+
         return lista;
     }
 

@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 
 import static androidx.core.util.ObjectsCompat.requireNonNull;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,15 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.moneyguardian.FormItemsListaPago;
+import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.ItemListaAdapter;
 import com.moneyguardian.modelo.ItemPagoConjunto;
@@ -44,7 +42,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ListaPagosFragment extends Fragment {
 
@@ -59,6 +56,8 @@ public class ListaPagosFragment extends Fragment {
     FloatingActionButton fabDelete;
     FloatingActionButton fabEdit;
     SwipeRefreshLayout swipeRefreshLayout;
+
+    private MainActivity mainActivity;
     private Uri imagen;
     private String namePago;
     private List<ItemPagoConjunto> listaPagos;
@@ -81,6 +80,7 @@ public class ListaPagosFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainActivity = (MainActivity) getActivity();
         if (getArguments() != null) {
             pagoConjunto = getArguments().getParcelable(PAGO_CONJUNTO);
             listaPagos = getArguments().getParcelableArrayList(LISTA_PAGOS);
@@ -122,7 +122,7 @@ public class ListaPagosFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        fabDelete.setOnClickListener(v -> delete());
+        fabDelete.setOnClickListener(v -> delete(v));
 
 
         new Animations(root).setOnClickAnimationAndVisibility(mainOpenButton, Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
@@ -162,17 +162,26 @@ public class ListaPagosFragment extends Fragment {
 
     }
 
-    private void delete() {
-        DocumentReference docReference = db.collection("pagosConjuntos").document(pagoConjunto.getId());
+    private void delete(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        LayoutInflater inflater = builder.create().getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.dialog_delete_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
+            DocumentReference docReference = db.collection("pagosConjuntos").document(pagoConjunto.getId());
 
-        docReference.delete().addOnCompleteListener(task -> {
-            for (UsuarioParaParcelable p : pagoConjunto.getParticipantes()) {
-                db.collection("users").document(p.getId()).update("pagosConjuntos", FieldValue.arrayRemove(docReference));
-            }
+            docReference.delete().addOnCompleteListener(task -> {
+                for (UsuarioParaParcelable p : pagoConjunto.getParticipantes()) {
+                    db.collection("users").document(p.getId()).update("pagosConjuntos", FieldValue.arrayRemove(docReference));
+                }
 
-            db.collection("users").document(pagoConjunto.getOwner()).update("pagosConjuntos", FieldValue.arrayRemove(docReference));
-            getParentFragmentManager().popBackStack();
+                db.collection("users").document(pagoConjunto.getOwner()).update("pagosConjuntos", FieldValue.arrayRemove(docReference));
+                mainActivity.getPagosConjuntos().remove(pagoConjunto);
+                getParentFragmentManager().popBackStack();
+            });
         });
+        builder.setView(inflater.inflate(R.layout.dialog_delete_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void updateFromDB() {
@@ -186,6 +195,7 @@ public class ListaPagosFragment extends Fragment {
                 HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
                 String id = itemPago.getId();
                 String nombre = itemPago.getString("nombre");
+                Double cantidadTotal = itemPago.getDouble("totalDinero");
                 HashMap<String, Double> cantidadesConUsersReferences = (HashMap<String, Double>) itemPago.get("UsuariosConPagos");
 
                 for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
@@ -195,7 +205,7 @@ public class ListaPagosFragment extends Fragment {
                 UsuarioParaParcelable userThatPays =
                         new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
 
-                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userThatPays));
+                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userThatPays,cantidadTotal));
             }
 
             pagoConjunto.setItems(itemsPago);

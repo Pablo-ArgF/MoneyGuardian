@@ -125,4 +125,6 @@
     <string name="loginBtnText">Login</string>
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="noDataChart_gastos">Aún no tienes gastos registrados. Introduce nuevos gastos para ver la división por categoría.</string>
+    <string name="no_se_puede_crear_un_pago_en_conjunto_tu_solo">No se puede crear un pago en conjunto tu solo</string>
+    <string name="deleteQuestion">¿Esta de seguro que quiere eliminarlo?</string>
 </resources>

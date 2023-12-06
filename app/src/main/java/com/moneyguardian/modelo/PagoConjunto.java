@@ -144,6 +144,15 @@ public class PagoConjunto implements Parcelable {
         items.add(ipc);
     }
 
+    public void upadteItem(ItemPagoConjunto ipc){
+        for(int i = 0;i < getItems().size(); i++){
+            if(getItems().get(i).getId().equals(ipc.getId())){
+                items.remove(i);
+                items.add(i,ipc);
+                break;
+            }
+        }
+    }
     public void setItems(List<ItemPagoConjunto> items) {
         this.items = items;
     }

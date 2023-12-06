@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UsersFormItemsListaAdapter extends
         RecyclerView.Adapter<UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder>{
-    private final UsuarioParaParcelable usuarioSeleccionado;
+    private UsuarioParaParcelable usuarioSeleccionado;
     private List<UsuarioParaParcelable> usuariosDelPago;
     private double cantidad;
     private  double cantidadPorUser;
@@ -44,16 +43,15 @@ public class UsersFormItemsListaAdapter extends
     private boolean dontCheck;
 
     public UsersFormItemsListaAdapter(List<UsuarioParaParcelable> usuariosDelPago,
-                            double cantidad,boolean activated,UsuarioParaParcelable userSelected,
-                                                                        boolean changeMoneyActive) {
+                            double cantidad,boolean activated,boolean changeMoneyActive,UsuarioParaParcelable usuarioSeleccionado) {
         this.usuariosDelPago = usuariosDelPago;
         this.usuariosSeleccionados = new HashMap<>();
         this.holders = new ArrayList<>();
         this.cantidad = cantidad;
         this.checkBoxesActivated = activated;
-        this.usuarioSeleccionado = userSelected;
-        usuariosSeleccionados.put(usuarioSeleccionado,cantidad);
         this.changeMoneyActive = changeMoneyActive;
+        this.usuarioSeleccionado = usuarioSeleccionado;
+        usuariosSeleccionados.put(usuarioSeleccionado,cantidad);
     }
 
     @NonNull
@@ -64,9 +62,45 @@ public class UsersFormItemsListaAdapter extends
         return new UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder(itemView);
     }
 
-    public void addUser(UsuarioParaParcelable user){
-        usuariosDelPago.add(user);
-        notifyItemInserted(usuariosDelPago.size()-1);
+    public void changeSelecctedUser(UsuarioParaParcelable usuario, HashMap<UsuarioParaParcelable, Double> usersSelected){
+        if(usuarioSeleccionado != null){
+            for(Map.Entry<UsuarioParaParcelable, Double> user : usersSelected.entrySet()){
+                if(user.getKey().getId().equals(usuarioSeleccionado.getId())){
+                    usersSelected.put(user.getKey(),user.getValue() - cantidad);
+                }
+            }
+
+            this.usuarioSeleccionado = usuario;
+
+            Boolean existsInPago = false;
+
+            for(Map.Entry<UsuarioParaParcelable, Double> user : usersSelected.entrySet()) {
+                if (user.getKey().getId().equals(usuarioSeleccionado.getId())) {
+                    existsInPago = true;
+                    usersSelected.put(user.getKey(), user.getValue() + cantidad);
+                    break;
+                }
+            }
+            if(!existsInPago){
+                usersSelected.put(usuarioSeleccionado,cantidad);
+            }
+        }
+    }
+
+    public void activateEditMoney(Boolean activate){
+
+        changeMoneyActive = activate;
+
+        for(UsersFormItemsListaViewHolder h : holders){
+            if(h.participantesPayment.isChecked()) {
+                h.moneyToPay.setEnabled(activate);
+                h.isEdited = true;
+            }
+        }
+    }
+
+    public void changeCantidadTotal(Double cantidadNueva){
+        this.cantidad = cantidadNueva;
     }
 
     @Override
@@ -75,36 +109,35 @@ public class UsersFormItemsListaAdapter extends
         UsuarioParaParcelable user= usuariosDelPago.get(position);
 
         holder.bindUser(user);
-        holder.participantesPayment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if( holder.participantesPayment.isChecked()){
-                    if(changeMoneyActive){
-                        double moneyLeftToPay = controlEqMoneyWhenEdited();
-                        holder.moneyToPay.setText(dfZero.format(moneyLeftToPay).replace(',','.'));
-                        if(moneyLeftToPay != 0.0){
-                            if(user.equals(usuarioSeleccionado)){
-                                usuariosSeleccionados.put(user, Math.round((cantidad-moneyLeftToPay)*100.0)/100.0);
-                            }else{
-                                usuariosSeleccionados.put(user, Math.round(-moneyLeftToPay*100.0)/100.0);
-                            }
+        holder.participantesPayment.setOnClickListener(v -> {
+            if( holder.participantesPayment.isChecked()){
+                totalUsuariosseleccionados++;
+                if(changeMoneyActive){
+                    holder.isEdited = true;
+                    double moneyLeftToPay = controlEqMoneyWhenEdited();
+                    holder.moneyToPay.setText(dfZero.format(moneyLeftToPay).replace(',','.'));
+                    if(moneyLeftToPay != 0.0){
+                        if(user.equals(usuarioSeleccionado)){
+                            usuariosSeleccionados.put(user, Math.round((cantidad-moneyLeftToPay)*100.0)/100.0);
+                        }else{
+                            usuariosSeleccionados.put(user, Math.round(-moneyLeftToPay*100.0)/100.0);
                         }
-                        holder.moneyToPay.setEnabled(true);
-                    }else{
-                        totalUsuariosseleccionados++;
-                        cantidadPorUser = cantidad/totalUsuariosseleccionados;
-                        updateHolders();
                     }
+                    holder.moneyToPay.setEnabled(true);
                 }else{
-                    if(changeMoneyActive){
-                        holder.moneyToPay.setText("");
-                        usuariosSeleccionados.remove(user);
-                        holder.moneyToPay.setEnabled(false);
-                    }else {
-                        totalUsuariosseleccionados--;
-                        cantidadPorUser = cantidad / totalUsuariosseleccionados;
-                        updateHolders();
-                    }
+                    cantidadPorUser =  moneyToUser();
+                    updateHolders();
+                }
+            }else{
+                totalUsuariosseleccionados--;
+                holder.isEdited = false;
+                if(changeMoneyActive){
+                    holder.moneyToPay.setText("");
+                    usuariosSeleccionados.remove(user);
+                    holder.moneyToPay.setEnabled(false);
+                }else {
+                    cantidadPorUser = moneyToUser();
+                    updateHolders();
                 }
             }
         });
@@ -123,8 +156,10 @@ public class UsersFormItemsListaAdapter extends
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().isEmpty()){
+                if(s.toString().isEmpty() && !user.equals(usuarioSeleccionado)){
                     usuariosSeleccionados.remove(user);
+                }else if(s.toString().isEmpty() && user.equals(usuarioSeleccionado)){
+                    usuariosSeleccionados.put(user,cantidad);
                 }else{
                     double moneyToPay = Double.parseDouble(holder.moneyToPay.getText()
                             .toString().replace(',','.'));
@@ -143,8 +178,33 @@ public class UsersFormItemsListaAdapter extends
         holders.add(holder);
     }
 
+    public void activateAllCheckBox(Boolean activate){
+        for(UsersFormItemsListaViewHolder h : holders){
+            h.participantesPayment.setEnabled(activate);
+        }
+    }
+
+    private double moneyToUser(){
+        double totalPagado = 0.0,totalAPagar,editText = 0.0;
+        for (UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder h : holders){
+            if(h.participantesPayment.isChecked() && !h.moneyToPay.getText().toString().isEmpty()
+                && h.isEdited){
+                totalPagado += Double.parseDouble(h.moneyToPay.getText().toString());
+                editText++;
+            }
+        }
+
+        totalAPagar = cantidad - totalPagado;
+
+        if(totalAPagar > 0.0){
+            return totalAPagar / (totalUsuariosseleccionados-editText);
+        }
+
+        return 0.0;
+    }
+
     private double controlEqMoneyWhenEdited() {
-        double totalPagado = 0.0,totalAPagar = 0.0;
+        double totalPagado = 0.0,totalAPagar;
         for (UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder h : holders){
             if(h.participantesPayment.isChecked() && !h.moneyToPay.getText().toString().isEmpty()){
                 totalPagado += Double.parseDouble(h.moneyToPay.getText().toString());
@@ -164,21 +224,26 @@ public class UsersFormItemsListaAdapter extends
     public boolean allMoneyIspaid(){
         double totalPagado = 0.0;
 
-        for(Map.Entry<UsuarioParaParcelable, Double> u : usuariosSeleccionados.entrySet()){
-            totalPagado += Math.round(u.getValue() * 100.0)/100.0;
+        for(UsersFormItemsListaViewHolder h : holders){
+            if(h.participantesPayment.isChecked()){
+                totalPagado += Math.round(Double.parseDouble
+                        (h.moneyToPay.getText().toString()) * 100.0)/100.0;
+            }
         }
 
-        totalPagado =  Math.round(totalPagado * 100.0)/100.0;
+        totalPagado =  Math.round(totalPagado * 100.0)/100.0 - cantidad;
 
         return  totalPagado <= 0.1 && totalPagado >= -0.1;
     }
 
     private void updateHolders(){
         for (UsersFormItemsListaAdapter.UsersFormItemsListaViewHolder h : holders){
-            if(h.participantesPayment.isChecked()){
-                h.moneyToPay.setText(dfZero.format(cantidadPorUser).replace(',','.'));
-            }else{
-                h.moneyToPay.setText("");
+            if(!h.isEdited) {
+                if (h.participantesPayment.isChecked()) {
+                    h.moneyToPay.setText(dfZero.format(cantidadPorUser).replace(',', '.'));
+                } else {
+                    h.moneyToPay.setText("");
+                }
             }
         }
     }

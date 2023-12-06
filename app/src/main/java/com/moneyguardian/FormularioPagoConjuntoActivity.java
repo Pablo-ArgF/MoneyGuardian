@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeUrl;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,6 +44,7 @@ import com.moneyguardian.ui.DatePickerFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
 import com.moneyguardian.util.ImageProcessor;
 import com.moneyguardian.util.PagosConjuntosUtil;
+import com.moneyguardian.util.UsuarioMapper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -78,6 +80,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
     private StorageReference userImageRef;
     private String pagoConjuntoUUID;
 
+    private UsuarioParaParcelable actualUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +95,11 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         pagoConjuntoUUID = UUID.randomUUID().toString();
         userImageRef = FirebaseStorage.getInstance().getReference().child("pagosConjuntos/" + pagoConjuntoUUID + ".jpg");
+
+        db.collection("users").document(mAuth.getCurrentUser().getUid()).get().
+                addOnSuccessListener(documentSnapshot -> {
+            actualUser = UsuarioMapper.mapBasicsParcelable(documentSnapshot);
+        });
 
         //Inicializar la lista con la BD
         this.cargarAmigos();
@@ -139,10 +148,12 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validarPagoConjunto()) {
-                    List<UsuarioParaParcelable> participantes = new ArrayList<UsuarioParaParcelable>();
+                    List<UsuarioParaParcelable> participantes;
 
                     // Rellenamos la lista de usuarios
                     participantes = usuarioArrayAdapter.getChecked();
+
+                    participantes.add(actualUser);
 
                     String[] fechaTexto = fechaPago.getText().toString().trim().split("/");
                     Calendar fechaLimite = Calendar.getInstance();
@@ -165,22 +176,15 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                         Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
                         // Si la imagen se añade correctamente
                         UploadTask task = ImageProcessor.processImage(imageBitmap, userImageRef, getApplicationContext());
-                        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                //we store the link to the image in the store in the db
-                                userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        db.collection("pagosConjuntos").document(pagoConjuntoUUID).update("imagen", uri).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getApplicationContext(), getString(R.string.error_upload_pago_image), Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                                    }
-                                });
-                            }
+                        task.addOnSuccessListener(taskSnapshot -> {
+                            //we store the link to the image in the store in the db
+                            userImageRef.getDownloadUrl().addOnSuccessListener(uri ->
+                                    db.collection("pagosConjuntos").
+                                            document(pagoConjuntoUUID).update("imagen", uri).
+                                            addOnFailureListener(e ->
+                                                    Toast.makeText(getApplicationContext(),
+                                                            getString(R.string.error_upload_pago_image),
+                                                            Toast.LENGTH_LONG).show()));
                         });
                     }
 

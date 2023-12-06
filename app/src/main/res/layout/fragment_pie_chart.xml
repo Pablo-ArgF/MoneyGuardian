@@ -4,17 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.charts.LinearChartFragment"
-    android:padding="10dp"
     >
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
-        android:layout_width="380dp"
-        android:layout_height="270dp"
-        android:layout_gravity="center"
-        android:layout_margin="3dp"
-        >
-    </com.github.mikephil.charting.charts.PieChart>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <LinearLayout
         android:id="@+id/msg_no_gastos"

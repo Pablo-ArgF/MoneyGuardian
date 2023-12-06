@@ -140,6 +140,10 @@ public class MainActivity extends AppCompatActivity {
         return pagosConjuntos;
     }
 
+    public void addPagoCOnjunto(PagoConjunto pg){
+        this.pagosConjuntos.add(pg);
+    }
+
     public void setPagosConjuntos(List<PagoConjunto> pagosConjuntos) {
         this.pagosConjuntos = pagosConjuntos;
     }

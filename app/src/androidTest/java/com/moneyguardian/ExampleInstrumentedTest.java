@@ -53,7 +53,7 @@ public class ExampleInstrumentedTest {
         usuario = new Usuario();
         pagoConjunto = new PagoConjunto("id", testName, testDate, testParticipants, imagen, testDate);
         // Initialize the ItemPagoConjunto object using the constructor
-        itemPagoConjunto = new ItemPagoConjunto(UUID.randomUUID().toString(),testName, testPagos,null);
+        itemPagoConjunto = new ItemPagoConjunto(UUID.randomUUID().toString(),testName, testPagos,null,0.0);
         // Initialize the GrupoUsuarios object using the constructor
         grupoUsuarios = new GrupoUsuarios(testName, testUsuarios);
     }

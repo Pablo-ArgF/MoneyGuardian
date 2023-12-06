@@ -136,6 +136,8 @@ public class DeudasListFragment extends Fragment {
                                                 String id = itemPago.getId();
                                                 String nombre = itemPago.getString("nombre");
 
+                                                Double cantidadTotal = itemPago.getDouble("totalDinero");
+
                                                 UsuarioParaParcelable userTHatPays =
                                                         new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
 
@@ -147,7 +149,7 @@ public class DeudasListFragment extends Fragment {
                                                 }
 
 
-                                                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userTHatPays));
+                                                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userTHatPays,cantidadTotal));
                                             }
 
                                             if (nombre == null || fechaLimite == null || fechaPago == null) {

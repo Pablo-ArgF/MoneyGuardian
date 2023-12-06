@@ -1,12 +1,6 @@
 package com.moneyguardian;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,23 +16,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moneyguardian.adapters.UsersFormItemsListaAdapter;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.DecimalFilterForInput;
-import com.moneyguardian.util.UsuarioMapper;
-import com.moneyguardian.adapters.UsersFormItemsListaAdapter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +50,8 @@ public class FormItemsListaPago extends AppCompatActivity {
     private PagoConjunto pagoConjunto;
 
     private FirebaseFirestore db;
+    private UsersFormItemsListaAdapter usersFormItemsListaAdapter;
+    private String itemPagoid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,42 +64,33 @@ public class FormItemsListaPago extends AppCompatActivity {
         super.onResume();
 
         db = FirebaseFirestore.getInstance();
-        totalMoney = (EditText) findViewById(R.id.editTextTotalMoneyItemPago);
-        btnCreateNewItemPago = (Button) findViewById(R.id.btnCreteItemPago);
-        name = (EditText) findViewById(R.id.formItemPagoNameTextField);
-        moneyChangeActivatedCheckBox = (CheckBox) findViewById(R.id.checkBoxChangeMoney);
+        totalMoney = findViewById(R.id.editTextTotalMoneyItemPago);
+        btnCreateNewItemPago = findViewById(R.id.btnCreteItemPago);
+        name = findViewById(R.id.formItemPagoNameTextField);
+        moneyChangeActivatedCheckBox = findViewById(R.id.checkBoxChangeMoney);
 
-        usersToAdd = (RecyclerView)findViewById(R.id.recicledViewUsersToSelect);
+        usersToAdd = findViewById(R.id.recicledViewUsersToSelect);
         usersToAdd.setHasFixedSize(true);
 
-        RecyclerView.LayoutManager layoutManager =
-                new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         usersToAdd.setLayoutManager(layoutManager);
 
         pagoConjunto = getIntent().getExtras().getParcelable("PAGO");
 
-        usuariosDelPago = new ArrayList<>();
+        usuariosDelPago = pagoConjunto.getParticipantes();
 
-        UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,checkBoxesActivated
-                        ,usuarioSeleccionado,changeMoneyActivated);
 
-        usersToAdd.setAdapter(usersFormItemsListaAdapter);
-
-        whoPaysSpinner = (Spinner) findViewById(R.id.spinnerWhoPays);
-        ArrayAdapter<UsuarioParaParcelable> adapterSpinner = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,usuariosDelPago);
+        whoPaysSpinner = findViewById(R.id.spinnerWhoPays);
+        ArrayAdapter<UsuarioParaParcelable> adapterSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, usuariosDelPago);
         whoPaysSpinner.setAdapter(adapterSpinner);
         whoPaysSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 usuarioSeleccionado = usuariosDelPago.get(position);
 
-                UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
-                                checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
-                usersToAdd.setAdapter(usersFormItemsListaAdapter);
+                HashMap<UsuarioParaParcelable, Double> usuarios = usersFormItemsListaAdapter.getUsersSelected();
 
+                usersFormItemsListaAdapter.changeSelecctedUser(usuarioSeleccionado, usuarios);
             }
 
             @Override
@@ -118,146 +99,103 @@ public class FormItemsListaPago extends AppCompatActivity {
             }
         });
 
-        db.collection("pagosConjuntos")
-                .document(pagoConjunto.getId())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful())
-                        {
-                            List< DocumentReference> users =
-                                    (List< DocumentReference >) task.getResult().get("participantes");
 
-                            users.forEach(user ->
-                            {
-                                user.get()
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot d) {
-                                            adapterSpinner.add(UsuarioMapper.mapBasicsParcelable(d));
-                                        }
-                                    });
+        if (getIntent().getExtras().getParcelable("ITEM") != null) {
+            ItemPagoConjunto itemPagoConjunto = getIntent().getExtras().getParcelable("ITEM");
+            name.setText(itemPagoConjunto.getNombre());
+            totalMoney.setText("" + itemPagoConjunto.getMoney());
+            for (int i = 0; i < pagoConjunto.getParticipantes().size(); i++) {
+                if (pagoConjunto.getParticipantes().get(i).getId().equals(itemPagoConjunto.getUserThatPays().getId())) {
+                    whoPaysSpinner.setSelection(i);
+                    usuarioSeleccionado = pagoConjunto.getParticipantes().get(i);
+                    itemPagoid = itemPagoConjunto.getId();
+                    cantidadTotal = itemPagoConjunto.getMoney();
+                    checkBoxesActivated = true;
+                    break;
+                }
+            }
+        } else {
+            itemPagoid = UUID.randomUUID().toString();
+            for (int i = 0; i < pagoConjunto.getParticipantes().size(); i++) {
+                if (pagoConjunto.getParticipantes().get(i).getId().equals(pagoConjunto.getOwner())) {
+                    whoPaysSpinner.setSelection(i);
+                    usuarioSeleccionado = pagoConjunto.getParticipantes().get(i);
+                    break;
+                }
+            }
+        }
+
+        usersFormItemsListaAdapter = new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal, checkBoxesActivated, changeMoneyActivated, usuarioSeleccionado);
+
+        usersToAdd.setAdapter(usersFormItemsListaAdapter);
+
+        totalMoney.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkBoxesActivated = !s.toString().isEmpty();
+                if (s.toString().isEmpty()) {
+                    cantidadTotal = 0;
+                } else {
+                    cantidadTotal = Double.parseDouble(s.toString());
+                }
+
+                usersFormItemsListaAdapter.activateAllCheckBox(checkBoxesActivated);
+                usersFormItemsListaAdapter.changeCantidadTotal(cantidadTotal);
+            }
+        });
+        totalMoney.setFilters(new InputFilter[]{new DecimalFilterForInput(2)});
+
+        btnCreateNewItemPago.setOnClickListener(v -> {
+            HashMap<UsuarioParaParcelable, Double> usersSelected = ((UsersFormItemsListaAdapter) usersToAdd.getAdapter()).getUsersSelected();
+            if (checkAllFields()) {
+                if (usersFormItemsListaAdapter.allMoneyIspaid()) {
+                    if (usersSelected.size() > 0) {
+                        if (checkIfYouAreLonely(v, usersSelected)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                            LayoutInflater inflater = builder.create().getLayoutInflater();
+                            builder.setView(inflater.inflate(R.layout.dialog_warning_create_item_pago, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
+
+                                ItemPagoConjunto itemPago = new ItemPagoConjunto(itemPagoid, name.getText().toString(), usersSelected, usuarioSeleccionado, cantidadTotal);
+
+                                saveInDataBase(itemPago);
+
+                                Intent intent = new Intent();
+                                intent.putExtra("NEW_ITEM", itemPago);
+                                setResult(RESULT_OK, intent);
+                                finish();
                             });
-
-
-                        }
-                    }
-                });
-
-
-
-
-        totalMoney.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                checkBoxesActivated = !s.toString().isEmpty();
-                if(s.toString().isEmpty()){
-                    cantidadTotal = 0;
-                }else{
-                    cantidadTotal = Double.parseDouble(s.toString());
-                }
-
-
-                UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
-                                    checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
-                usersToAdd.setAdapter(usersFormItemsListaAdapter);
-            }
-        });
-        totalMoney.setFilters(new InputFilter[]{new DecimalFilterForInput(2)});
-
-        totalMoney.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                checkBoxesActivated = !s.toString().isEmpty();
-                if(s.toString().isEmpty()){
-                    cantidadTotal = 0;
-                }else{
-                    cantidadTotal = Double.parseDouble(s.toString());
-                }
-
-
-                UsersFormItemsListaAdapter usersFormItemsListaAdapter =
-                        new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
-                                checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
-                usersToAdd.setAdapter(usersFormItemsListaAdapter);
-            }
-        });
-        totalMoney.setFilters(new InputFilter[]{new DecimalFilterForInput(2)});
-
-        btnCreateNewItemPago.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<UsuarioParaParcelable, Double> usersSelected = ((UsersFormItemsListaAdapter)
-                        usersToAdd.getAdapter()).getUsersSelected();
-                if(checkAllFields()){
-                    if(((UsersFormItemsListaAdapter)usersToAdd.getAdapter()).allMoneyIspaid()){
-                        if(usersSelected.size() > 0){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            LayoutInflater inflater = builder.create().getLayoutInflater();
-                            builder.setView(inflater.inflate(R.layout.dialog_warning_create_item_pago,
-                                    null)).setPositiveButton(R.string.acceptBtn,
-                                    (dialog, which) -> {
-
-                                        ItemPagoConjunto itemPago = new ItemPagoConjunto(UUID.randomUUID().toString(),
-                                                name.getText().toString(), usersSelected,usuarioSeleccionado);
-
-                                        saveInDataBase(itemPago);
-
-                                        Intent intent = new Intent();
-                                        intent.putExtra("NEW_ITEM",itemPago);
-                                        setResult(RESULT_OK,intent);
-                                        finish();
-                                    });
-                            builder.setView(inflater.inflate(R.layout.dialog_warning_create_item_pago,
-                                    null)).setNegativeButton(R.string.cancel,
-                                    (dialog, which) -> dialog.cancel());
-
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                        }else{
-                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            LayoutInflater inflater = builder.create().getLayoutInflater();
-                            builder.setView(inflater.inflate(R.layout.dialog_warning_user_selected,
-                                    null)).setPositiveButton(R.string.acceptBtn,
-                                    (dialog, which) -> dialog.cancel());
-
+                            builder.setView(inflater.inflate(R.layout.dialog_warning_create_item_pago, null)).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
 
                             AlertDialog dialog = builder.create();
                             dialog.show();
                         }
-                    }else{
+                    } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                         LayoutInflater inflater = builder.create().getLayoutInflater();
-                        builder.setView(inflater.inflate(R.layout.dialog_warning_not_all_pay,
-                                null)).setPositiveButton(R.string.acceptBtn,
-                                (dialog, which) -> dialog.cancel());
+                        builder.setView(inflater.inflate(R.layout.dialog_warning_user_selected, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> dialog.cancel());
 
 
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    LayoutInflater inflater = builder.create().getLayoutInflater();
+                    builder.setView(inflater.inflate(R.layout.dialog_warning_not_all_pay, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> dialog.cancel());
+
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             }
         });
@@ -265,40 +203,50 @@ public class FormItemsListaPago extends AppCompatActivity {
         moneyChangeActivatedCheckBox.setOnClickListener(v -> {
             changeMoneyActivated = moneyChangeActivatedCheckBox.isChecked();
 
-            UsersFormItemsListaAdapter usersFormItemsListaAdapter1 =
-                    new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal,
-                            checkBoxesActivated,usuarioSeleccionado,changeMoneyActivated);
-            usersToAdd.setAdapter(usersFormItemsListaAdapter1);
+            usersFormItemsListaAdapter.activateEditMoney(changeMoneyActivated);
+
         });
 
     }
 
+    private boolean checkIfYouAreLonely(View v, HashMap<UsuarioParaParcelable, Double> usersSelected) {
+        if (usersSelected.size() == 1 && usersSelected.containsKey(usuarioSeleccionado)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+            LayoutInflater inflater = builder.create().getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.dialog_lonely, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> dialog.cancel());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            return false;
+        }
+        return true;
+    }
+
     private void saveInDataBase(ItemPagoConjunto itemPago) {
         Map<String, Object> itemsPagoConj = new HashMap<>();
-        itemsPagoConj.put("nombre",itemPago.getNombre());
+        itemsPagoConj.put("nombre", itemPago.getNombre());
         Map<String, Double> usersWithMoney = new HashMap<>();
-        for(Map.Entry<UsuarioParaParcelable, Double> u : itemPago.getPagos().entrySet()){
-            usersWithMoney.put(u.getKey().getId(),u.getValue());
+        for (Map.Entry<UsuarioParaParcelable, Double> u : itemPago.getPagos().entrySet()) {
+            usersWithMoney.put(u.getKey().getId(), u.getValue());
         }
 
-        itemsPagoConj.put("UsuariosConPagos",usersWithMoney);
-        itemsPagoConj.put("usuarioPago",usuarioSeleccionado.getId());
+        itemsPagoConj.put("totalDinero", cantidadTotal);
+
+        itemsPagoConj.put("UsuariosConPagos", usersWithMoney);
+        itemsPagoConj.put("usuarioPago", usuarioSeleccionado.getId());
 
 
-        db.collection("pagosConjuntos").document(pagoConjunto.getId()).
-                collection("itemsPago").document(itemPago.getId())
-                .set(itemsPagoConj).addOnSuccessListener(unused ->
-                        Log.i("FIREBASE SET", "Se añadió el objeto")).
-                addOnFailureListener(e -> Log.w("FIRBASE SET", "Error writing document", e));
+        db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPago.getId()).set(itemsPagoConj).addOnSuccessListener(unused -> Log.i("FIREBASE SET", "Se añadió el objeto")).addOnFailureListener(e -> Log.w("FIRBASE SET", "Error writing document", e));
 
     }
 
     private boolean checkAllFields() {
-        if(name.getText().toString().trim().isEmpty()){
+        if (name.getText().toString().trim().isEmpty()) {
             name.setError("Este campo es obligatorio");
             return false;
         }
-        if(totalMoney.getText().toString().trim().isEmpty()){
+        if (totalMoney.getText().toString().trim().isEmpty()) {
             totalMoney.setError("Este campo es obligatorio");
             return false;
         }
