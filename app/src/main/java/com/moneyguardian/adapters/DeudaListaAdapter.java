@@ -63,9 +63,13 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
                 for (Map.Entry<UsuarioParaParcelable, Double> users : ipg.getPagos().entrySet()) {
                     db.collection("users").document(users.getKey().getId()).get().addOnSuccessListener(d -> {
                         UsuarioParaParcelable user = UsuarioMapper.mapBasicsParcelable(d);
+                        // Evita deudas a si mismo
                         if (!owner.getId().equals(user.getId())) {
-                            deudas.add(new DeudaDTO(owner, user, users.getValue()));
-                            notifyItemChanged(deudas.size() - 1);
+                            // Evita que el usuario no esté en la deuda
+                            if ((owner.getId().equals(auth.getUid())) || user.getId().equals(auth.getUid())) {
+                                deudas.add(new DeudaDTO(owner, user, users.getValue()));
+                                notifyItemChanged(deudas.size() - 1);
+                            }
                         }
                     });
                 }
