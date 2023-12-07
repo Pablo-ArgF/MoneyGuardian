@@ -128,4 +128,6 @@
     <string name="title_pie_graph_gastos">Gastos</string>
     <string name="title_pie_graph_ingresos">Ingresos</string>
     <string name="center_pie_chart_ingresos">Ingresos por categoría</string>
+    <string name="title_estadisticas">Estadisticas</string>
+    <string name="stats_balance_titulo">Balance de este mes</string>
 </resources>

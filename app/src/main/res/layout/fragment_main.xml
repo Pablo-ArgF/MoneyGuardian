@@ -56,6 +56,12 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btn_estadisticas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_estadisticas"
+                android:textSize="12sp" />
+            <Button
                 android:id="@+id/btn_lineChart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
