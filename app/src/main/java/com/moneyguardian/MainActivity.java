@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private MainFragment fragmentMain;
     private PagosConjuntosFragment fragmentPagosConjuntos;
     private ListaAmigosFragment amigosFragment;
-    private ListaGastosFragment gastosFragment;
-    private DeudasListFragment deudasListFragment;
+    private ListasGastosDuedasFragment listDeudasGastosFragment;
 
     //for the loading
     private AlphaAnimation inAnimation;
@@ -66,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentMain = new MainFragment();
         fragmentPagosConjuntos = new PagosConjuntosFragment();
         amigosFragment = new ListaAmigosFragment();
-        gastosFragment = new ListaGastosFragment();
-        deudasListFragment = new DeudasListFragment();
+        listDeudasGastosFragment = new ListasGastosDuedasFragment();
 
         //we load main fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
@@ -84,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (id == R.id.lista_menu_btn) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerMain,
-                                deudasListFragment).commit();
+                                listDeudasGastosFragment).commit();
                         return true;
                     }
                     if (id == R.id.amigos_menu_btn) {
@@ -102,17 +100,16 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    public void setLoading(boolean activate){
-        if(loading == activate)
+    public void setLoading(boolean activate) {
+        if (loading == activate)
             return;
         this.loading = activate;
-        if(activate) {
+        if (activate) {
             inAnimation = new AlphaAnimation(0f, 1f);
             inAnimation.setDuration(200);
             progressBarHolder.setAnimation(inAnimation);
             progressBarHolder.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             outAnimation = new AlphaAnimation(1f, 0f);
             outAnimation.setDuration(200);
             progressBarHolder.setAnimation(outAnimation);
