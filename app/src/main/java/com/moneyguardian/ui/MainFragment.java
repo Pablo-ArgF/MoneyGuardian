@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import kotlin.coroutines.Continuation;
@@ -322,8 +323,10 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 }
                 );
         try {
-            mainActivity.setGastos(gastos.get());
-            addEntrysToGraphs(mainActivity.getGastos());
+            List<Gasto> gs = gastos.get();
+            gs = gs.stream().filter(g -> g.getUUID() != null).collect(Collectors.toList()); //filter the empty gastos that could come from a listener trigger on removed items
+            mainActivity.setGastos(gs);
+            addEntrysToGraphs(gs);
             //disable the loading of the data
             mainActivity.setLoading(false);
         } catch (ExecutionException | InterruptedException e) {
