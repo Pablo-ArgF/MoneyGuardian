@@ -114,12 +114,11 @@ public class LinearChartFragment extends AbstractChartFragment {
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
         xAxis.setValueFormatter(dateXFormatter);
-        xAxis.setLabelCount(7);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
         if(couldGetColor)
             xAxis.setTextColor(color);
-        xAxis.setLabelRotationAngle(-45);
+        xAxis.setLabelRotationAngle(-20);
 
 
         xAxis.setDrawLabels(true);

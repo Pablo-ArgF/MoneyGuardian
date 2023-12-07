@@ -48,51 +48,73 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/generalInfoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_balance_titulo"
+                android:textSize="18sp"
+                android:padding="3dp"
+                />
+
+            <TextView
+                android:id="@+id/balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="33333€"
+                android:textSize="30sp"
+                android:padding="3dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/menu_graphs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_below="@id/generalInfoContainer"
+            android:layout_marginTop="80dp"
+            >
 
-            <Button
-                android:id="@+id/btn_estadisticas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/title_estadisticas"
-                android:textSize="12sp" />
             <Button
                 android:id="@+id/btn_lineChart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_linear_graph"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
 
             <Button
                 android:id="@+id/btn_pieChartGastos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_pie_graph_gastos"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
 
             <Button
                 android:id="@+id/btn_pieChartIngresos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_pie_graph_ingresos"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/chartFragmentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="395dp"
+            android:layout_height="327dp"
             android:layout_above="@+id/menu_filters"
             android:layout_below="@+id/menu_graphs"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_alignParentBottom="true"/>
 
         <LinearLayout
             android:id="@+id/menu_filters"
@@ -102,7 +124,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="230dp"
+            android:layout_marginBottom="183dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 

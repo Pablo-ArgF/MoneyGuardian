@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -91,7 +93,6 @@ public class IngresosPieChartFragment extends AbstractChartFragment {
             PieEntry entry = new PieEntry(acc.get(category), category);
             entriesIngresos.add(entry);
             //we indicate the icon for each cat
-            //TODO hacer lo mismo de gastosUtil pero con ingresosUtil para los iconos de las categorias
             entry.setIcon(getResources().getDrawable(GastosUtil.getImageFor(category)));
         }
 

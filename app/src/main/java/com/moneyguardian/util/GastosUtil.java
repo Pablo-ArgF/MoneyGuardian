@@ -94,6 +94,12 @@ public class GastosUtil {
                 return R.drawable.ic_transport;
             case "Educación":
                 return R.drawable.ic_educacion;
+            case "Trabajo":
+                return R.drawable.ic_trabajo;
+            case "Ingresos pasivos":
+                return R.drawable.ic_inv_pasivo;
+            case "Inversion":
+                return R.drawable.ic_inversion;
             default:
                 return R.drawable.ic_money_off;
         }

@@ -5,36 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.charts.NoChartFragment"
     >
-    <LinearLayout
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/stats_balance_titulo"
-            android:textSize="18sp"
-            android:padding="3dp"
-            />
-        <ImageView
-            android:id="@+id/iconBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </ImageView>
-        <TextView
-            android:id="@+id/balance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="33333€"
-            android:textSize="30sp"
-            android:padding="3dp"
-            />
-        <com.github.mikephil.charting.charts.BarChart
-            android:layout_width="380dp"
-            android:layout_height="270dp">
-
-        </com.github.mikephil.charting.charts.BarChart>
-    </LinearLayout>
+    </com.github.mikephil.charting.charts.BarChart>
 </FrameLayout>

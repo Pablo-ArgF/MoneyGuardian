@@ -9,8 +9,8 @@
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChartIngresos"
-        android:layout_width="380dp"
-        android:layout_height="270dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="3dp"
         >
