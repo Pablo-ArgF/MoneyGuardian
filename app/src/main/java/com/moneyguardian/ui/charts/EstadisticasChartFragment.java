@@ -69,6 +69,7 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
         //we transform the list of Gasto objects into a list of entry objects
         entriesIngresos.clear();
         entriesGastos.clear();
+        mapGastos.clear();
 
         List<Gasto> array = datos.stream()
                 .sorted((g, g1) -> g.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()))
@@ -99,10 +100,13 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
                 mapGastos.put(key,current);
             }
         });
-        int maxXAxis = 0;
+        int maxXAxis = Integer.MIN_VALUE;
+        int minXAxis = Integer.MAX_VALUE;
         for(Map.Entry<Integer, float[]> entry : mapGastos.entrySet()){
             if(entry.getKey() > maxXAxis)
                 maxXAxis = entry.getKey();
+            if(entry.getKey() < minXAxis)
+                minXAxis = entry.getKey();
 
             entriesGastos.add(new BarEntry(
                     entry.getKey() + 0f
@@ -131,14 +135,15 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
         BarData data = new BarData(dataSetGastos, dataSetIngresos);
         data.setBarWidth(barWidth); // set the width of each bar
 
+        chart.setData(data);
+        chart.groupBars(minXAxis + 0f
+               , groupSpace, barSpace); // perform the "explicit" grouping
+
+        chart.getDescription().setText("");
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setCenterAxisLabels(true);
 
-
-        chart.setData(data);
-        chart.groupBars(getXAxisRepresentation(array.get(0))
-                , groupSpace, barSpace); // perform the "explicit" grouping
-        chart.getDescription().setText("");
         chart.invalidate(); // refresh
     }
 
@@ -157,7 +162,7 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
 
         return Integer.parseInt(
                 calendar.get(Calendar.MONTH)+ "" +
-                        calendar.get(Calendar.YEAR)
+                        calendar.get(Calendar.MONTH)
         );
     }
 }
