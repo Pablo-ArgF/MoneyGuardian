@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,6 +40,8 @@ import com.moneyguardian.util.LoadDataHelper;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -80,6 +83,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private ColorStateList notSelectedColors; //color of not selected filter
     private Button btnRegistrarGasto;
     private Button btnRegistrarIngreso;
+    private TextView balanceThisMonth;
+    private TextView compareBalanceLastMonth;
+    private ImageView iconCompareBalanceLastMonth;
 
 
     public MainFragment() {
@@ -121,6 +127,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         root = inflater.inflate(R.layout.fragment_main,container, false);
         profileBtn = root.findViewById(R.id.profileButton);
         txtWelcome = root.findViewById(R.id.txtWelcome);
+        balanceThisMonth = root.findViewById(R.id.balance);
+        compareBalanceLastMonth = root.findViewById(R.id.compareBalance);
+        iconCompareBalanceLastMonth = root.findViewById(R.id.iconCompareBalance);
         chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
         btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
         btnMenuGraphPieGastos = root.findViewById(R.id.btn_pieChartGastos);
@@ -327,10 +336,80 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             gs = gs.stream().filter(g -> g.getUUID() != null).collect(Collectors.toList()); //filter the empty gastos that could come from a listener trigger on removed items
             mainActivity.setGastos(gs);
             addEntrysToGraphs(gs);
+            computeThisMonthData(gs);
             //disable the loading of the data
             mainActivity.setLoading(false);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void setToLastMinuteOfTheDay(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+    }
+
+    /**
+     * Shows information on the balance for this month and the comparisson with last month
+     */
+    private void computeThisMonthData(List<Gasto> gs) {
+        if(getContext() == null)
+            return; //avoid no context attached
+
+        Calendar calendar = Calendar.getInstance();
+
+        // Last day of two months ago
+        calendar.add(Calendar.MONTH, -2);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        setToLastMinuteOfTheDay(calendar);
+        Date lastDayOfTwoMonthsAgo = calendar.getTime();
+
+        // Last day of last month
+        calendar.setTime(new Date()); // Reset to the current date
+        calendar.set(Calendar.DAY_OF_MONTH, 1); // Set to the first day of the current month
+        calendar.add(Calendar.DAY_OF_MONTH, -1); // Move to the last day of the previous month
+        setToLastMinuteOfTheDay(calendar);
+        Date lastDayOfLastMonth = calendar.getTime();
+
+        // Last day of this month
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        setToLastMinuteOfTheDay(calendar);
+        Date lastDayOfThisMonth = calendar.getTime();
+
+
+        List<Gasto> gastosLastMonth = gs.stream()
+                .filter(gasto ->
+                        gasto.getFechaCreacionAsDate().after(lastDayOfTwoMonthsAgo) &&
+                        gasto.getFechaCreacionAsDate().before(lastDayOfLastMonth))
+                .collect(Collectors.toList());
+        float lastMonth = gastosLastMonth.stream().map(Gasto::getBalance).reduce(0f,Float::sum);
+
+        List<Gasto> gastosThisMonth = gs.stream()
+                .filter(gasto ->
+                        gasto.getFechaCreacionAsDate().after(lastDayOfLastMonth) &&
+                        gasto.getFechaCreacionAsDate().before(lastDayOfThisMonth)
+                ).collect(Collectors.toList());
+        float thisMonth = gastosThisMonth.stream().map(Gasto::getBalance).reduce(0f,Float::sum);
+
+
+        //we personalize the balance for this month
+        balanceThisMonth.setText(thisMonth + "€");
+        if(thisMonth >= 0)
+            balanceThisMonth.setTextColor(getResources().getColor(R.color.green));
+        else
+            balanceThisMonth.setTextColor(getResources().getColor(R.color.red));
+        //we personalize the last month comparison
+        if(thisMonth >= lastMonth){
+            iconCompareBalanceLastMonth.setImageDrawable(getResources().getDrawable(R.drawable.check_circle));
+            compareBalanceLastMonth.setText(getResources().getString(R.string.stats_balance_masQueElMesPasado,
+                    thisMonth -lastMonth));
+        }else{
+            iconCompareBalanceLastMonth.setImageDrawable(getResources().getDrawable(R.drawable.circle_minus));
+            compareBalanceLastMonth.setText(getResources().getString(R.string.stats_balance_menosQueElMesPasado,
+                    lastMonth - thisMonth));
         }
     }
 
