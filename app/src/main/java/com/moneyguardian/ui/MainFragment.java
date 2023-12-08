@@ -31,6 +31,7 @@ import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.ui.charts.AbstractChartFragment;
+import com.moneyguardian.ui.charts.EstadisticasChartFragment;
 import com.moneyguardian.ui.charts.IngresosPieChartFragment;
 import com.moneyguardian.ui.charts.LinearChartFragment;
 import com.moneyguardian.ui.charts.NoChartFragment;
@@ -66,9 +67,11 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private FirebaseFirestore db;
     private View root;
     private FragmentContainerView chartFragmentContainer;
+    private Button btnMenuBarChart;
     private Button btnMenuGraphLine;
     private Button btnMenuGraphPieGastos;
     private Button btnMenuGraphPieIngresos;
+    private EstadisticasChartFragment barChartFragment = EstadisticasChartFragment.newInstance(new ArrayList<>());
     private LinearChartFragment linearChartFragment = LinearChartFragment.newInstance(new ArrayList<>());
     private GastosPieChartFragment gastosPieChartFragment = GastosPieChartFragment.newInstance(new ArrayList<>());
     private IngresosPieChartFragment ingresosPieChartFragment = IngresosPieChartFragment.newInstance(new ArrayList<>());
@@ -131,6 +134,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         compareBalanceLastMonth = root.findViewById(R.id.compareBalance);
         iconCompareBalanceLastMonth = root.findViewById(R.id.iconCompareBalance);
         chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
+        btnMenuBarChart = root.findViewById(R.id.btn_barChart);
         btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
         btnMenuGraphPieGastos = root.findViewById(R.id.btn_pieChartGastos);
         btnMenuGraphPieIngresos = root.findViewById(R.id.btn_pieChartIngresos);
@@ -158,6 +162,21 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             public void onClick(View v) {
                 Intent i = new Intent(root.getContext(), ProfileActivity.class);
                 startActivity(i);
+            }
+        });
+
+        btnMenuBarChart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.chartFragmentContainer, barChartFragment)
+                        .commit();
+                markSelectedFilter(filterAll);
+                currentFragment = barChartFragment;
+                //filter selector to all
+                updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
+
             }
         });
 
@@ -433,6 +452,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
      * @param gs
      */
     private void addEntrysToGraphs(List<Gasto> gs) {
+        barChartFragment.updateData(gs);
         linearChartFragment.updateData(gs);
         gastosPieChartFragment.updateData(gs);
         ingresosPieChartFragment.updateData(gs);
@@ -452,6 +472,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     .replace(R.id.chartFragmentContainer,currentFragment)
                     .commit();
         }
+        barChartFragment.updateFilter(filter);
         linearChartFragment.updateFilter(filter);
         gastosPieChartFragment.updateFilter(filter);
         ingresosPieChartFragment.updateFilter(filter);
@@ -467,6 +488,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 .commit();
 
         //we disable the buttons to change the graph
+        btnMenuBarChart.setEnabled(false);
         btnMenuGraphPieGastos.setEnabled(false);
         btnMenuGraphPieIngresos.setEnabled(false);
         btnMenuGraphLine.setEnabled(false);
@@ -478,6 +500,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
         linearChartFragment.onResume();
         //we disable the buttons to change the graph
+        btnMenuBarChart.setEnabled(true);
         btnMenuGraphPieGastos.setEnabled(true);
         btnMenuGraphPieIngresos.setEnabled(true);
         btnMenuGraphLine.setEnabled(true);

@@ -111,13 +111,8 @@ public class IngresosPieChartFragment extends AbstractChartFragment {
 
         chart.getDescription().setText("");
         chart.setEntryLabelTextSize(textSize);
+
         chart.setData(data);
-        Legend legend = chart.getLegend();
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-        legend.setTextSize(textSize);
-        legend.setWordWrapEnabled(true);
         chart.setCenterText(getResources().getString(R.string.center_pie_chart_ingresos));
         chart.setCenterTextSize(18);
         chart.animateXY(800,300);

@@ -103,7 +103,7 @@
     <string name="CrearGasto">Crear nueva transacción</string>
     <string name="addIngreso">Añadir nuevo ingreso</string>
     <string name="addGasto">Añadir nuevo gasto</string>
-    <string name="title_linear_graph">Balance</string>
+    <string name="title_linear_graph">Histórico</string>
     <string name="title_pie_graph">Por categorías</string>
     <string name="graph_legend_gastos">Gastos</string>
     <string name="graph_legend_ingresos">Ingresos</string>
@@ -135,4 +135,5 @@
     <string name="no_gastos">No tienes ningún gasto/ingreso todavía, añade alguno para poder verlos aquí.</string>
     <string name="stats_balance_masQueElMesPasado">%1$.2f€ más que \n el mes pasado</string>
     <string name="stats_balance_menosQueElMesPasado">%1$.2f€ menos que \n el mes pasado</string>
+    <string name="title_barChart">Balance</string>
 </resources>
