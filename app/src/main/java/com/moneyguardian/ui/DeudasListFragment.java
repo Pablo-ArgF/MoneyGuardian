@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -35,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class DeudasListFragment extends Fragment {
 
@@ -44,6 +46,8 @@ public class DeudasListFragment extends Fragment {
     // Base de datos
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+    // UI
+    private LinearLayout msgNoDeudas;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public DeudasListFragment() {
@@ -67,6 +71,7 @@ public class DeudasListFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(root.getContext().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
 
+
         if (adapter == null) {
             adapter = new DeudaListaAdapter();
         }
@@ -81,7 +86,10 @@ public class DeudasListFragment extends Fragment {
             ((MainActivity) getActivity()).setLoading(false);
         }
 
+        // UI
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshDeudas);
+        msgNoDeudas = root.findViewById(R.id.msgNoDeudas);
+        updateUIGastos();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -178,7 +186,16 @@ public class DeudasListFragment extends Fragment {
 
                                                                     adapter.updateList(new PagoConjunto(document.getId(), nombre,
                                                                             fechaPago, new ArrayList<>(participantes),
-                                                                            finalImagen, fechaLimite, itemsPago, owner));
+                                                                            finalImagen, fechaLimite, itemsPago, owner), new Callable<Void>() {
+                                                                        @Override
+                                                                        public Void call() throws Exception {
+                                                                            // TODO ¿Funcional approach en Java? Como te quedas
+                                                                            // Ojalá haber hecho esta clase en Kotlin
+                                                                            updateUIGastos();
+                                                                            return null;
+                                                                        }
+                                                                    });
+
                                                                 }
                                                             });
                                                 }
@@ -187,11 +204,23 @@ public class DeudasListFragment extends Fragment {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                 ((MainActivity) getActivity()).setLoading(false);
+                                                updateUIGastos();
                                             }
                                         });
                             }
                         }
                     }
                 });
+
+    }
+
+    private void updateUIGastos() {
+        if (adapter.getItemCount() == 0) {
+            msgNoDeudas.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+        } else {
+            msgNoDeudas.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
     }
 }

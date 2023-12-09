@@ -128,7 +128,7 @@
             android:layout_marginBottom="9dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imgNoGastos"
