@@ -3,6 +3,8 @@ package com.moneyguardian.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 public class UsuarioParaParcelable implements Parcelable {
 
     private String nombre;
@@ -104,5 +106,28 @@ public class UsuarioParaParcelable implements Parcelable {
     @Override
     public String toString() {
         return getNombre();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj == null){
+            return false;
+        }
+
+        if(obj.getClass() != this.getClass()){
+            return false;
+        }
+        UsuarioParaParcelable newUser = (UsuarioParaParcelable) obj;
+
+        if(!newUser.getId().equals(getId())){
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return 1;
     }
 }

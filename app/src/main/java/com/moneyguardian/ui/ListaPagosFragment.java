@@ -1,7 +1,6 @@
 package com.moneyguardian.ui;
 
 import static android.app.Activity.RESULT_OK;
-
 import static androidx.core.util.ObjectsCompat.requireNonNull;
 
 import android.app.AlertDialog;
@@ -28,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.FormItemsListaPago;
+import com.moneyguardian.FormularioPagoConjuntoActivity;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.ItemListaAdapter;
@@ -35,6 +35,7 @@ import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.Animations;
+import com.moneyguardian.util.UserChecks;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class ListaPagosFragment extends Fragment {
     private static final String NAME_PAGO = "Nombre";
     private static final String IMAGEN = "Imagen";
     private static final String PAGO_CONJUNTO = "Pago Conjunto";
+    private static final int AVTIVITY_RETURN = 2;
     RecyclerView listItemsPagosView;
     FloatingActionButton mainOpenButton;
     FloatingActionButton btnAddNewItem;
@@ -65,6 +67,8 @@ public class ListaPagosFragment extends Fragment {
     private ItemListaAdapter lpAdapter;
 
     private FirebaseFirestore db;
+    private TextView tvName;
+    private ImageView ivImagen;
 
     public static ListaPagosFragment newInstance(PagoConjunto param1) {
         ListaPagosFragment fragment = new ListaPagosFragment();
@@ -100,34 +104,52 @@ public class ListaPagosFragment extends Fragment {
 
         //Mostramos el fragmento en el contenedor
         View root = inflater.inflate(R.layout.fragment_lista_pagos, container, false);
-        TextView tvName = root.findViewById(R.id.namePagos);
-        tvName.setText(namePago);
-        ImageView ivImagen = root.findViewById(R.id.iconPago);
-        if (imagen != null) Picasso.get().load(imagen).into(ivImagen);
+
+        tvName = root.findViewById(R.id.namePagos);
+        tvName.setText(pagoConjunto.getNombre());
+        ivImagen = root.findViewById(R.id.iconPago);
+        if (imagen != null) Picasso.get().load(pagoConjunto.getImagen()).into(ivImagen);
         mainOpenButton = root.findViewById(R.id.floatingActionButtonMainPagoConjunto);
         btnAddNewItem = root.findViewById(R.id.btnNewItemPago);
         fabDelete = root.findViewById(R.id.floatingActionButtonDeletePagoConjunto);
         fabEdit = root.findViewById(R.id.floatingActionButtonEditPagoConjunto);
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshListaPagos);
 
-        btnAddNewItem.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
-            intent.putExtra("PAGO", pagoConjunto);
-            startActivityForResult(intent, GESTION_ACTIVITY);
-            mainOpenButton.callOnClick();
-        });
-
         swipeRefreshLayout.setOnRefreshListener(() -> {
             updateFromDB();
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        fabDelete.setOnClickListener(v -> delete(v));
+        if (!new UserChecks().checkUser(pagoConjunto.getOwner())) {
+            mainOpenButton.setVisibility(View.INVISIBLE);
+            btnAddNewItem.setVisibility(View.INVISIBLE);
+            fabEdit.setVisibility(View.INVISIBLE);
+            fabDelete.setVisibility(View.INVISIBLE);
+            mainOpenButton.setClickable(false);
+            btnAddNewItem.setClickable(false);
+            fabEdit.setClickable(false);
+            fabDelete.setClickable(false);
+        } else {
+            btnAddNewItem.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), FormItemsListaPago.class);
+                intent.putExtra("PAGO", pagoConjunto);
+                startActivityForResult(intent, GESTION_ACTIVITY);
+                mainOpenButton.callOnClick();
+            });
+            fabDelete.setOnClickListener(this::delete);
+            fabEdit.setOnClickListener(v -> {editPagoConjunto();});
 
-
-        new Animations(root).setOnClickAnimationAndVisibility(mainOpenButton, Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
+            new Animations(root).setOnClickAnimationAndVisibility(mainOpenButton, Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
+        }
 
         return root;
+    }
+
+    private void editPagoConjunto() {
+        Intent intent = new Intent(getActivity(), FormularioPagoConjuntoActivity.class);
+        intent.putExtra("OLD_PAGO", pagoConjunto);
+        startActivityForResult(intent, AVTIVITY_RETURN);
+        mainOpenButton.callOnClick();
     }
 
     @Override
@@ -155,9 +177,21 @@ public class ListaPagosFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK && requestCode == GESTION_ACTIVITY){
+        if (resultCode == RESULT_OK && requestCode == GESTION_ACTIVITY) {
             assert data != null;
             lpAdapter.addItem(requireNonNull(data.getExtras()).getParcelable("NEW_ITEM"));
+        }
+
+        if (resultCode == RESULT_OK && requestCode == AVTIVITY_RETURN) {
+
+            mainActivity.getPagosConjuntos().remove(pagoConjunto);
+            pagoConjunto = data.getExtras().getParcelable("PAGO");
+            mainActivity.addPagoCOnjunto(pagoConjunto);
+            lpAdapter = new ItemListaAdapter(pagoConjunto.getItems(), this::clickonItem);
+            listItemsPagosView.setAdapter(lpAdapter);
+
+            if (imagen != null) Picasso.get().load(pagoConjunto.getImagen()).into(ivImagen);
+            tvName.setText(pagoConjunto.getNombre());
         }
 
     }
@@ -202,10 +236,9 @@ public class ListaPagosFragment extends Fragment {
                     cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
                 }
 
-                UsuarioParaParcelable userThatPays =
-                        new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
+                UsuarioParaParcelable userThatPays = new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
 
-                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers,userThatPays,cantidadTotal));
+                itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers, userThatPays, cantidadTotal));
             }
 
             pagoConjunto.setItems(itemsPago);

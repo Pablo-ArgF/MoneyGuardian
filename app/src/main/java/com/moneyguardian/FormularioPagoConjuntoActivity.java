@@ -2,13 +2,7 @@ package com.moneyguardian;
 
 import static android.widget.AbsListView.CHOICE_MODE_MULTIPLE;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,20 +10,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.ActionCodeUrl;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moneyguardian.adapters.UsuarioArrayAdapter;
+import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.ui.DatePickerFragment;
@@ -46,41 +40,52 @@ import com.moneyguardian.util.ImageProcessor;
 import com.moneyguardian.util.PagosConjuntosUtil;
 import com.moneyguardian.util.UsuarioMapper;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class FormularioPagoConjuntoActivity extends AppCompatActivity {
-
-    // El botón de la imagen
-    private Button BSelectImage;
 
     // Manejo de imagen
     private ImageView IVPreviewImage;
     private boolean isImageSet;
     private Uri selectedImageUri;
+    ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null && data.getData() != null) {
+                Uri selectedImageUri = data.getData();
+                Bitmap selectedImageBitmap = null;
+                try {
+                    selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                    this.selectedImageUri = selectedImageUri;
+                    // Para saber que la imagen está colocada y no es la default
+                    this.isImageSet = true;
+                } catch (IOException ef) {
+                    // TODO
+                    ef.printStackTrace();
+                }
+                IVPreviewImage.setImageBitmap(selectedImageBitmap);
+            }
+        }
+    });
     private ListView listViewUsuarios;
     private ArrayList<UsuarioParaParcelable> usuarios;
-    private ArrayList<DocumentReference> usuariosUUIDs;
     private UsuarioArrayAdapter usuarioArrayAdapter;
 
     // Valores del pago conjunto
     private EditText nombrePago;
     private EditText fechaPago;
-
-    // Firebase
-    private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private StorageReference userImageRef;
     private String pagoConjuntoUUID;
-
     private UsuarioParaParcelable actualUser;
+    private ArrayList<ItemPagoConjunto> itemsPago;
+    private String owner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,166 +95,140 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         // Manejo de imagen
         this.isImageSet = false;
 
+        usuarios = new ArrayList<>();
+
         // Manejo de base de datos
-        mAuth = FirebaseAuth.getInstance();
+        // Firebase
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         pagoConjuntoUUID = UUID.randomUUID().toString();
         userImageRef = FirebaseStorage.getInstance().getReference().child("pagosConjuntos/" + pagoConjuntoUUID + ".jpg");
 
-        db.collection("users").document(mAuth.getCurrentUser().getUid()).get().
-                addOnSuccessListener(documentSnapshot -> {
-            actualUser = UsuarioMapper.mapBasicsParcelable(documentSnapshot);
-        });
-
-        //Inicializar la lista con la BD
-        this.cargarAmigos();
-
-        BSelectImage = findViewById(R.id.buttonSeleccionarImagenNuevoPagoConjunto);
+        // El botón de la imagen
+        Button BSelectImage = findViewById(R.id.buttonSeleccionarImagenNuevoPagoConjunto);
         IVPreviewImage = findViewById(R.id.imagePreviewNuevoPagoConjunto);
         listViewUsuarios = findViewById(R.id.listUsuariosNuevoPagoConjunto);
+        nombrePago = findViewById(R.id.editTextNombrePagoConjunto);
+        fechaPago = findViewById(R.id.editFechaMaximaPagoConjunto);
 
-        // Manejo del botón de la imágen
-        BSelectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageChooser();
+        db.collection("users").document(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(documentSnapshot -> {
+            actualUser = UsuarioMapper.mapBasicsParcelable(documentSnapshot);
+
+            ArrayList<DocumentReference> amigos = (ArrayList<DocumentReference>) documentSnapshot.getData().get("friends");
+            if (amigos != null) {
+                List<Task<DocumentSnapshot>> taskAmigos = new ArrayList<>();
+
+                for (DocumentReference d : amigos) {
+                    taskAmigos.add(d.get());
+                }
+
+                Tasks.whenAllSuccess(taskAmigos).addOnSuccessListener(objects -> {
+                    for (Object d : objects) {
+                        usuarios.add((UsuarioMapper.mapBasicsParcelable((DocumentSnapshot) d)));
+                    }
+
+                    List<UsuarioParaParcelable> usuariosSeleccionados = new ArrayList<>();
+
+                    itemsPago = new ArrayList<>();
+
+                    if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("OLD_PAGO") != null) {
+                        PagoConjunto oldPago = getIntent().getExtras().getParcelable("OLD_PAGO");
+                        nombrePago.setText(oldPago.getNombre());
+                        pagoConjuntoUUID = oldPago.getId();
+
+                        itemsPago = new ArrayList<>(oldPago.getItems());
+                        owner = oldPago.getOwner();
+
+                        String pattern = "dd/MM/yyyy";
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                        if(oldPago.getImagen() != null){
+                            this.selectedImageUri = oldPago.getImagen() ;
+                            this.isImageSet = true;
+                        }
+
+                        fechaPago.setText(simpleDateFormat.format(oldPago.getFechaLimite()));
+                        usuariosSeleccionados = oldPago.getParticipantes();
+                    }
+
+                    usuarioArrayAdapter = new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios, usuariosSeleccionados);
+                    listViewUsuarios.setChoiceMode(CHOICE_MODE_MULTIPLE);
+
+                    listViewUsuarios.setAdapter(usuarioArrayAdapter);
+
+                });
             }
+
         });
 
-        // Manjeo de la lista de usuarios
-
-        usuarioArrayAdapter = new UsuarioArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, usuarios);
-        listViewUsuarios.setChoiceMode(CHOICE_MODE_MULTIPLE);
-
-        listViewUsuarios.setAdapter(usuarioArrayAdapter);
+        // Manejo del botón de la imágen
+        BSelectImage.setOnClickListener(v -> imageChooser());
 
         // Manejo de la seleccion de fecha
-        EditText etPlannedDate = (EditText) findViewById(R.id.editFechaMaximaPagoConjunto);
-        etPlannedDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        // +1 because January is zero
-                        final String selectedDate = day + " / " + (month + 1) + " / " + year;
-                        etPlannedDate.setText(selectedDate);
-                    }
-                }, System.currentTimeMillis() - 1000);
+        EditText etPlannedDate = (EditText) fechaPago;
+        etPlannedDate.setOnClickListener(v -> {
+            DatePickerFragment newFragment = DatePickerFragment.newInstance((datePicker, year, month, day) -> {
+                // +1 because January is zero
+                final String selectedDate = day + " / " + (month + 1) + " / " + year;
+                etPlannedDate.setText(selectedDate);
+            }, System.currentTimeMillis() - 1000);
 
-                newFragment.show(getSupportFragmentManager(), "datePicker");
-            }
+            newFragment.show(getSupportFragmentManager(), "datePicker");
         });
 
         // Manejo del botón de crear
 
         Button btnCrear = findViewById(R.id.buttonCrearNuevoPagoConjunto);
-        btnCrear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validarPagoConjunto()) {
-                    List<UsuarioParaParcelable> participantes;
+        btnCrear.setOnClickListener(v -> {
+            if (validarPagoConjunto()) {
+                List<UsuarioParaParcelable> participantes;
 
-                    // Rellenamos la lista de usuarios
-                    participantes = usuarioArrayAdapter.getChecked();
+                // Rellenamos la lista de usuarios
+                participantes = usuarioArrayAdapter.getChecked();
 
-                    participantes.add(actualUser);
+                participantes.add(actualUser);
 
-                    String[] fechaTexto = fechaPago.getText().toString().trim().split("/");
-                    Calendar fechaLimite = Calendar.getInstance();
+                String[] fechaTexto = fechaPago.getText().toString().trim().split("/");
+                Calendar fechaLimite = Calendar.getInstance();
 
-                    fechaLimite.set(Integer.parseInt(fechaTexto[0].trim()), Integer.parseInt(fechaTexto[1].trim()), Integer.parseInt(fechaTexto[2].trim()));
+                fechaLimite.set(Integer.parseInt(fechaTexto[2].trim()), Integer.parseInt(fechaTexto[1].trim())-1, Integer.parseInt(fechaTexto[0].trim()));
 
-                    Date dateLimite = fechaLimite.getTime();
+                Date dateLimite = fechaLimite.getTime();
 
-                    // La fecha se inicializa automáticamente a la actual
-                    PagoConjunto pagoConjunto = null;
+                // La fecha se inicializa automáticamente a la actual
+                PagoConjunto pagoConjunto = null;
 
-                    // Si no tenemos imagen
-                    if (selectedImageUri == null) {
-                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantes, dateLimite);
-                    } else {
-                        // Si tenemos imagen
-                        pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), participantes, selectedImageUri, dateLimite);
-
-                        // Añadimos la imagen a la BD
-                        Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
-                        // Si la imagen se añade correctamente
-                        UploadTask task = ImageProcessor.processImage(imageBitmap, userImageRef, getApplicationContext());
-                        task.addOnSuccessListener(taskSnapshot -> {
-                            //we store the link to the image in the store in the db
-                            userImageRef.getDownloadUrl().addOnSuccessListener(uri ->
-                                    db.collection("pagosConjuntos").
-                                            document(pagoConjuntoUUID).update("imagen", uri).
-                                            addOnFailureListener(e ->
-                                                    Toast.makeText(getApplicationContext(),
-                                                            getString(R.string.error_upload_pago_image),
-                                                            Toast.LENGTH_LONG).show()));
-                        });
-                    }
-
-                    // Guardamos el pago conjunto
-                    pagoConjunto = PagosConjuntosUtil.addPagoConjunto(pagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
-
-                    Intent intentResult = new Intent();
-                    intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
-                    setResult(RESULT_OK, intentResult);
-                    finish();
-                }
-                Log.i("Estado Pago Conjunto", "No validado");
-            }
-        });
-
-    }
-
-    private void cargarAmigos() {
-        this.usuarios = new ArrayList<>();
-        this.usuariosUUIDs = new ArrayList<>();
-        DocumentReference amigosRef = db.collection("users/").
-                document(mAuth.getCurrentUser().getUid());
-        amigosRef.get().addOnCompleteListener(new OnCompleteListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot result = (DocumentSnapshot) task.getResult();
-                    // result: Usuario -> Usuario.get("friends"): String[]
-                    ArrayList<DocumentReference> amigos = (ArrayList<DocumentReference>) result.getData().get("friends");
-                    if (amigos != null) {
-                        for (DocumentReference amigo : amigos) {
-                            String id = amigo.getId();
-                            DocumentReference amigoReference = db.collection("users/").document(id);
-                            // Guardamos la referencia al amigo como un DocumentReference
-                            usuariosUUIDs.add(amigoReference);
-                            amigoReference.get().addOnCompleteListener(getAmigoListener);
-                        }
-                    } else {
-                        throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosAmigos));
-                    }
-
+                // Si no tenemos imagen
+                if (selectedImageUri == null) {
+                    pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), new ArrayList<>(participantes), selectedImageUri, dateLimite,
+                            itemsPago, owner);
                 } else {
-                    // TODO: handle error?
+                    // Si tenemos imagen
+                    pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), new ArrayList<>(participantes), selectedImageUri, dateLimite,
+                            itemsPago, owner);
 
+                    // Añadimos la imagen a la BD
+                    Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
+                    // Si la imagen se añade correctamente
+                    UploadTask task = ImageProcessor.processImage(imageBitmap, userImageRef, getApplicationContext());
+                    task.addOnSuccessListener(taskSnapshot -> {
+                        //we store the link to the image in the store in the db
+                        userImageRef.getDownloadUrl().addOnSuccessListener(uri -> db.collection("pagosConjuntos").document(pagoConjuntoUUID).update("imagen", uri).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getString(R.string.error_upload_pago_image), Toast.LENGTH_LONG).show()));
+                    });
                 }
+
+                // Guardamos el pago conjunto
+                PagosConjuntosUtil.addPagoConjunto(pagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
+
+                Intent intentResult = new Intent();
+                intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
+                setResult(RESULT_OK, intentResult);
+                finish();
             }
+            Log.i("Estado Pago Conjunto", "No validado");
         });
+
     }
-
-
-    private OnCompleteListener<DocumentSnapshot> getAmigoListener = new OnCompleteListener<DocumentSnapshot>() {
-
-        @Override
-        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-            if (task.isSuccessful()) {
-                DocumentSnapshot queryResult = task.getResult();
-                // Guardamos el usuario para la UI y parcelable
-                usuarios.add(new UsuarioParaParcelable((String) queryResult.get("name"),
-                        (String) queryResult.get("email"), (String) queryResult.get("profilePicture"), queryResult.getId()));
-
-                usuarioArrayAdapter.update(usuarios);
-            }
-        }
-    };
-
 
     private void imageChooser() {
 
@@ -279,7 +258,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
             selectedImageUri = null;
         }
 
-        fechaPago = findViewById(R.id.editFechaMaximaPagoConjunto);
         if (fechaPago.getText().toString().trim().isEmpty()) {
             fechaPago.setError(getString(R.string.ErrorFechaVacia));
             return false;
@@ -296,29 +274,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
         return true;
     }
-
-    ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            Intent data = result.getData();
-            if (data != null && data.getData() != null) {
-                Uri selectedImageUri = data.getData();
-                Bitmap selectedImageBitmap = null;
-                try {
-                    selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                    this.selectedImageUri = selectedImageUri;
-                    // Para saber que la imagen está colocada y no es la default
-                    this.isImageSet = true;
-                } catch (FileNotFoundException ef) {
-                    // TODO
-                    ef.printStackTrace();
-                } catch (IOException e) {
-                    // TODO
-                    e.printStackTrace();
-                }
-                IVPreviewImage.setImageBitmap(selectedImageBitmap);
-            }
-        }
-    });
 
     /**
      * Para guardar un archivo local en Firebase

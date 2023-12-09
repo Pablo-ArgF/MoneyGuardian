@@ -81,14 +81,16 @@ public class FormItemsListaPago extends AppCompatActivity {
 
 
         whoPaysSpinner = findViewById(R.id.spinnerWhoPays);
-        ArrayAdapter<UsuarioParaParcelable> adapterSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, usuariosDelPago);
+        ArrayAdapter<UsuarioParaParcelable> adapterSpinner = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, usuariosDelPago);
         whoPaysSpinner.setAdapter(adapterSpinner);
         whoPaysSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 usuarioSeleccionado = usuariosDelPago.get(position);
 
-                HashMap<UsuarioParaParcelable, Double> usuarios = usersFormItemsListaAdapter.getUsersSelected();
+                HashMap<UsuarioParaParcelable, Double> usuarios =
+                        usersFormItemsListaAdapter.getUsersSelected();
 
                 usersFormItemsListaAdapter.changeSelecctedUser(usuarioSeleccionado, usuarios);
             }
@@ -99,6 +101,7 @@ public class FormItemsListaPago extends AppCompatActivity {
             }
         });
 
+        HashMap<UsuarioParaParcelable, Double> usuariosSeleccionados = new HashMap<>();
 
         if (getIntent().getExtras().getParcelable("ITEM") != null) {
             ItemPagoConjunto itemPagoConjunto = getIntent().getExtras().getParcelable("ITEM");
@@ -111,6 +114,7 @@ public class FormItemsListaPago extends AppCompatActivity {
                     itemPagoid = itemPagoConjunto.getId();
                     cantidadTotal = itemPagoConjunto.getMoney();
                     checkBoxesActivated = true;
+                    usuariosSeleccionados = itemPagoConjunto.getPagos();
                     break;
                 }
             }
@@ -125,7 +129,9 @@ public class FormItemsListaPago extends AppCompatActivity {
             }
         }
 
-        usersFormItemsListaAdapter = new UsersFormItemsListaAdapter(usuariosDelPago, cantidadTotal, checkBoxesActivated, changeMoneyActivated, usuarioSeleccionado);
+        usersFormItemsListaAdapter = new UsersFormItemsListaAdapter(usuariosDelPago,
+                cantidadTotal, checkBoxesActivated, changeMoneyActivated, usuarioSeleccionado,
+                usuariosSeleccionados);
 
         usersToAdd.setAdapter(usersFormItemsListaAdapter);
 
@@ -156,7 +162,8 @@ public class FormItemsListaPago extends AppCompatActivity {
         totalMoney.setFilters(new InputFilter[]{new DecimalFilterForInput(2)});
 
         btnCreateNewItemPago.setOnClickListener(v -> {
-            HashMap<UsuarioParaParcelable, Double> usersSelected = ((UsersFormItemsListaAdapter) usersToAdd.getAdapter()).getUsersSelected();
+            HashMap<UsuarioParaParcelable, Double> usersSelected =
+                    ((UsersFormItemsListaAdapter) usersToAdd.getAdapter()).getUsersSelected();
             if (checkAllFields()) {
                 if (usersFormItemsListaAdapter.allMoneyIspaid()) {
                     if (usersSelected.size() > 0) {
@@ -165,7 +172,9 @@ public class FormItemsListaPago extends AppCompatActivity {
                             LayoutInflater inflater = builder.create().getLayoutInflater();
                             builder.setView(inflater.inflate(R.layout.dialog_warning_create_item_pago, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
 
-                                ItemPagoConjunto itemPago = new ItemPagoConjunto(itemPagoid, name.getText().toString(), usersSelected, usuarioSeleccionado, cantidadTotal);
+                                ItemPagoConjunto itemPago = new ItemPagoConjunto(itemPagoid,
+                                        name.getText().toString(), usersSelected,
+                                        usuarioSeleccionado, cantidadTotal);
 
                                 saveInDataBase(itemPago);
 
@@ -182,7 +191,9 @@ public class FormItemsListaPago extends AppCompatActivity {
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                         LayoutInflater inflater = builder.create().getLayoutInflater();
-                        builder.setView(inflater.inflate(R.layout.dialog_warning_user_selected, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> dialog.cancel());
+                        builder.setView(inflater.inflate(R.layout.dialog_warning_user_selected,
+                                null)).setPositiveButton(R.string.acceptBtn,
+                                (dialog, which) -> dialog.cancel());
 
 
                         AlertDialog dialog = builder.create();
@@ -209,7 +220,8 @@ public class FormItemsListaPago extends AppCompatActivity {
 
     }
 
-    private boolean checkIfYouAreLonely(View v, HashMap<UsuarioParaParcelable, Double> usersSelected) {
+    private boolean checkIfYouAreLonely(View v,
+                                        HashMap<UsuarioParaParcelable, Double> usersSelected) {
         if (usersSelected.size() == 1 && usersSelected.containsKey(usuarioSeleccionado)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             LayoutInflater inflater = builder.create().getLayoutInflater();

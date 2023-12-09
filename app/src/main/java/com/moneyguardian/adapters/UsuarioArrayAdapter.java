@@ -29,11 +29,15 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
 
     private Map<UsuarioParaParcelable, Boolean> checkboxMap;
 
-    public UsuarioArrayAdapter(@NonNull Context context, int resource, ArrayList<UsuarioParaParcelable> usuarios) {
+    public UsuarioArrayAdapter(@NonNull Context context, int resource, ArrayList<UsuarioParaParcelable> usuarios,List<UsuarioParaParcelable> usersSelected) {
         super(context, resource, usuarios);
         checkboxMap = new HashMap<>();
         for (UsuarioParaParcelable user : usuarios) {
-            checkboxMap.put(user, false);
+            if(usersSelected.contains(user)){
+                checkboxMap.put(user, true);
+            }else{
+                checkboxMap.put(user, false);
+            }
         }
     }
 
@@ -63,7 +67,10 @@ public class UsuarioArrayAdapter extends ArrayAdapter<UsuarioParaParcelable> {
 
             CheckBox cBox = (CheckBox) currentItemView.findViewById(R.id.checkBoxUsuarios);
             cBox.setTag(currentUser); // set the tag so we can identify the correct row in the listener
-            cBox.setChecked(false); // set the status as we stored it
+
+            // set the status as we stored it
+            cBox.setChecked(Boolean.TRUE.equals(checkboxMap.get(currentUser)));
+            cBox.setEnabled(Boolean.FALSE.equals(checkboxMap.get(currentUser)));
             cBox.setOnCheckedChangeListener(mListener); // set the listener
         }
 
