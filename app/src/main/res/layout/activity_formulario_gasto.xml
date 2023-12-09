@@ -4,7 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:autofillHints="dd/mm/YYYY"
     tools:context=".FormularioGastoActivity">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Categoria"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.048"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/balanceGastoNuevo"
+        app:layout_constraintVertical_bias="0.038" />
 
     <TextView
         android:id="@+id/textViewNombreGasto"
@@ -13,14 +26,14 @@
         android:text="@string/NombreGasto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.063"
+        app:layout_constraintHorizontal_bias="0.067"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.057" />
+        app:layout_constraintVertical_bias="0.04" />
 
     <EditText
         android:id="@+id/nombreGastoNuevo"
-        android:layout_width="228dp"
+        android:layout_width="217dp"
         android:layout_height="49dp"
         android:ems="10"
         android:hint="@string/NombreGasto"
@@ -30,7 +43,7 @@
         app:layout_constraintHorizontal_bias="0.087"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNombreGasto"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintVertical_bias="0.019" />
 
     <TextView
         android:id="@+id/textView10"
@@ -39,24 +52,24 @@
         android:text="@string/Cantidad"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombreGastoNuevo"
-        app:layout_constraintVertical_bias="0.044" />
+        app:layout_constraintTop_toBottomOf="@+id/editDateGasto"
+        app:layout_constraintVertical_bias="0.045" />
 
     <EditText
         android:id="@+id/balanceGastoNuevo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="294dp"
+        android:layout_height="59dp"
         android:ems="10"
         android:hint="0,0€"
         android:inputType="numberDecimal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
-        app:layout_constraintVertical_bias="0.046" />
+        app:layout_constraintVertical_bias="0.021" />
 
     <Button
         android:id="@+id/buttonCrearGasto"
@@ -66,48 +79,49 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/balanceGastoNuevo"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerCategoriasGasto"
         app:layout_constraintVertical_bias="0.855" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="568dp"
         android:text="@string/fecha"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.039"
+        app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/balanceGastoNuevo"
-        app:layout_constraintVertical_bias="0.063" />
+        app:layout_constraintTop_toBottomOf="@+id/nombreGastoNuevo"
+        app:layout_constraintVertical_bias="0.457" />
 
     <EditText
         android:id="@+id/editDateGasto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="154dp"
+        android:layout_height="50dp"
         android:layout_weight="1"
-        android:focusable="false"
         android:ems="10"
+        android:focusable="false"
         android:hint="dd/mm/YYYY"
         android:inputType="date"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.069"
+        app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:layout_constraintVertical_bias="0.067" />
+        app:layout_constraintVertical_bias="0.021" />
 
     <Spinner
         android:id="@+id/spinnerCategoriasGasto"
-        android:layout_width="134dp"
-        android:layout_height="44dp"
+        android:layout_width="295dp"
+        android:layout_height="53dp"
         android:theme="@style/Base.Theme.MoneyGuardian"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toEndOf="@+id/nombreGastoNuevo"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNombreGasto"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintHorizontal_bias="0.146"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.025" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +55,18 @@ public class FormularioGastoActivity extends AppCompatActivity {
             isIngreso = b.getBoolean("Ingreso");
         }
         setContentView(R.layout.activity_formulario_gasto);
+
+        TextView textViewNombre = findViewById(R.id.textViewNombreGasto);
+        EditText editTextNombre = findViewById(R.id.nombreGastoNuevo);
+        if (!isIngreso) {
+            // Si es un gasto
+            textViewNombre.setText(R.string.nombreGastoNuevo);
+            editTextNombre.setHint(R.string.nombreGastoNuevo);
+        } else {
+            // Si es un ingreso
+            textViewNombre.setText(R.string.nombreIngresoNuevo);
+            editTextNombre.setHint(R.string.nombreIngresoNuevo);
+        }
 
         // Manejo de base de datos
         mAuth = FirebaseAuth.getInstance();

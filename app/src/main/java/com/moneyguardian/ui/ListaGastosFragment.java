@@ -261,8 +261,6 @@ public class ListaGastosFragment extends Fragment {
                         // Si hay mapa y hay gastos seleccionados
                         if (adapter.getCheckedGastos() != null && adapter.getNumberOfChecked() > 0) {
                             gastosList = GastosUtil.deleteGastos(adapter.getCheckedGastos());
-                            // TODO este removeAll puede no funcionar con algunos gastos, y entonces
-                            // al no borrar gastos de la lista, siguen guardandose en persistenciaate
                             mainActivity.getGastos().removeAll(gastosList);
                             adapter.deleteGastos(gastosList);
                             updateUIGastos();
