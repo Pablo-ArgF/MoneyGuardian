@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
+import com.moneyguardian.util.MonthXValueFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 
 public class EstadisticasChartFragment extends AbstractChartFragment {
 
-    private Map<Integer,float[]> mapGastos = new HashMap<>();
+    private Map<Float,float[]> mapGastos = new HashMap<>();
     private List<BarEntry> entriesIngresos = new ArrayList<>();
     private List<BarEntry> entriesGastos = new ArrayList<>();
     private BarChart chart;
@@ -64,7 +65,7 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
             getContext().getTheme().resolveAttribute(androidx.appcompat.R.attr.colorAccent,val,true);
             color = val.data;
             couldGetColor = true;
-        }
+        }//TODO meter colores
 
         //we transform the list of Gasto objects into a list of entry objects
         entriesIngresos.clear();
@@ -76,7 +77,7 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
                 .collect(Collectors.toList());
 
         array.forEach( gasto ->{
-            int key = getXAxisRepresentation(gasto);
+            float key = getXAxisRepresentation(gasto);
             if(mapGastos.containsKey(key)){
                 float[] current = mapGastos.get(key);
                 //we store in it the iformation
@@ -100,19 +101,19 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
                 mapGastos.put(key,current);
             }
         });
-        int maxXAxis = Integer.MIN_VALUE;
-        int minXAxis = Integer.MAX_VALUE;
-        for(Map.Entry<Integer, float[]> entry : mapGastos.entrySet()){
+        float maxXAxis = Float.MIN_VALUE;
+        float minXAxis = Float.MAX_VALUE;
+        for(Map.Entry<Float, float[]> entry : mapGastos.entrySet()){
             if(entry.getKey() > maxXAxis)
                 maxXAxis = entry.getKey();
             if(entry.getKey() < minXAxis)
                 minXAxis = entry.getKey();
 
             entriesGastos.add(new BarEntry(
-                    entry.getKey() + 0f
+                    entry.getKey()
                     ,entry.getValue()[0]));
             entriesIngresos.add(new BarEntry(
-                    entry.getKey() +0f
+                    entry.getKey()
                     ,entry.getValue()[1]));
         }
 
@@ -128,21 +129,31 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
         dataSetIngresos.setColor(colorGreen);
         dataSetIngresos.setValueTextSize(textSize);
 
-        float groupSpace = 0.06f;
-        float barSpace = 0.02f; // x2 dataset
-        float barWidth = 0.45f; // x2 dataset
+        float groupSpace = 0.0005f;
+        float barSpace = 0.00025f; // x2 dataset
+        float barWidth = 0.0045f; // x2 dataset
 
         BarData data = new BarData(dataSetGastos, dataSetIngresos);
         data.setBarWidth(barWidth); // set the width of each bar
 
         chart.setData(data);
-        chart.groupBars(minXAxis + 0f
+        chart.setFitBars(true);
+
+        chart.groupBars(minXAxis
                , groupSpace, barSpace); // perform the "explicit" grouping
 
         chart.getDescription().setText("");
 
+        chart.getAxisRight().setEnabled(false);
+        chart.getAxisLeft().setAxisMinimum(0f);
+
         XAxis xAxis = chart.getXAxis();
-        xAxis.setCenterAxisLabels(true);
+        //xAxis.setPosition(XAxis.XAxisPosition.TOP);
+        //xAxis.setCenterAxisLabels(true);
+        //xAxis.setValueFormatter(new MonthXValueFormatter());
+
+        xAxis.setAxisMinimum(minXAxis);
+        xAxis.setAxisMaximum(maxXAxis + (barSpace + barWidth) *2);
 
         chart.invalidate(); // refresh
     }
@@ -153,16 +164,17 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         this.root = inflater.inflate(R.layout.fragment_estadisticas, container, false);
         chart = root.findViewById(R.id.barChart);
+        chart.setDragEnabled(true);
         return root;
     }
 
-    private int getXAxisRepresentation(Gasto g){
+    private float getXAxisRepresentation(Gasto g){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(g.getFechaCreacionAsDate());
+        int month = (calendar.get(Calendar.MONTH)+1);
 
-        return Integer.parseInt(
-                calendar.get(Calendar.MONTH)+ "" +
-                        calendar.get(Calendar.MONTH)
+        return Float.parseFloat(
+                calendar.get(Calendar.YEAR)+ "." + String.format("%02d", month)
         );
     }
 }
