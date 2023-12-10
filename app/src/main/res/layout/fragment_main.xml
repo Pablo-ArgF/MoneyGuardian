@@ -43,10 +43,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginEnd="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,19 +89,44 @@
 
 
     <LinearLayout
+        android:id="@+id/buttonsBotomLayoutMainPage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnGasto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/red"
+            android:text="@string/registrar_gasto"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnIngreso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
+            android:text="@string/registrar_ingreso"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <RelativeLayout
         android:id="@+id/chartLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         >
 
         <LinearLayout
             android:id="@+id/menu_graphs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:gravity="center"
             android:orientation="horizontal"
+            android:layout_alignParentTop="true"
             >
 
             <Button
@@ -134,9 +159,10 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/chartFragmentContainer"
-            android:layout_width="395dp"
-            android:layout_height="327dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_graphs"
+            android:layout_above="@+id/menu_filters"
             />
 
         <LinearLayout
@@ -146,7 +172,9 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            >
 
             <TextView
                 android:id="@+id/filter_1month"
@@ -184,36 +212,7 @@
                 android:textSize="17sp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttonsBotomLayoutMainPage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="visible"
-        android:gravity="center"
-        android:layout_marginTop="10dp">
-
-        <Button
-            android:id="@+id/btnGasto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/red"
-            android:text="@string/registrar_gasto"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            />
-
-        <Button
-            android:id="@+id/btnIngreso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
-            android:text="@string/registrar_ingreso"
-            android:textColor="@color/white"
-            android:textSize="14sp"/>
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </LinearLayout>

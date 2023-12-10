@@ -163,6 +163,8 @@ public class DeudasListFragment extends Fragment {
                                                                         HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
                                                                         String id = itemPago.getId();
                                                                         String nombre = itemPago.getString("nombre");
+                                                                        Double totalMOney = itemPago.getDouble("totalDinero");
+
 
                                                                         UsuarioParaParcelable userTHatPays =
                                                                                 new UsuarioParaParcelable(itemPago.getString("usuarioPago"));
@@ -175,7 +177,7 @@ public class DeudasListFragment extends Fragment {
                                                                         }
 
 
-                                                                        itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers, userTHatPays));
+                                                                        itemsPago.add(new ItemPagoConjunto(id, nombre, cantidadesConUsers, userTHatPays,totalMOney));
                                                                     }
 
                                                                     if (nombre == null || fechaLimite == null || fechaPago == null) {
