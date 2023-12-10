@@ -133,6 +133,10 @@
     <string name="stats_balance_titulo">Balance de este mes</string>
     <string name="ListaDeudas">Lista de deudas</string>
     <string name="no_gastos">No tienes ningún gasto/ingreso todavía, añade alguno para poder verlos aquí.</string>
+    <string name="Categoria">Categoría</string>
+    <string name="nombreGastoNuevo">Nombre del gasto\n</string>
+    <string name="nombreIngresoNuevo">Nombre del ingreso</string>
+    <string name="no_deudas">No tienes ninguna deuda pendiente con ningún usuario.</string>
     <string name="stats_balance_masQueElMesPasado">%1$.2f€ más que \n el mes pasado</string>
     <string name="stats_balance_menosQueElMesPasado">%1$.2f€ menos que \n el mes pasado</string>
     <string name="title_barChart">Balance</string>

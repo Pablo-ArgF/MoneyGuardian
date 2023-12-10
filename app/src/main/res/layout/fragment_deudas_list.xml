@@ -7,6 +7,38 @@
     tools:context=".ui.DeudasListFragment">
 
     <LinearLayout
+        android:id="@+id/msgNoDeudas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="9dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/imgNoDeudas"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/list_empty" />
+
+        <TextView
+            android:id="@+id/txtNoDeudas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_deudas"
+            android:textAlignment="center"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -39,8 +71,8 @@
                 android:layout_marginTop="13dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="3dp" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

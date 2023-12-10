@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,7 +56,7 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
         return deudas.size();
     }
 
-    public void updateList(PagoConjunto pago) {
+    public void updateList(PagoConjunto pago, Callable<Void> callback) {
 
         for (ItemPagoConjunto ipg : pago.getItems()) {
             db.collection("users").document(ipg.getUserThatPays().getId()).get().addOnSuccessListener(documentSnapshot -> {
@@ -69,6 +70,11 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
                             if ((owner.getId().equals(auth.getUid())) || user.getId().equals(auth.getUid())) {
                                 deudas.add(new DeudaDTO(owner, user, users.getValue()));
                                 notifyItemChanged(deudas.size() - 1);
+                                try {
+                                    callback.call();
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         }
                     });
