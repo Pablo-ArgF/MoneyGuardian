@@ -6,29 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".ui.DeudasListFragment">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/msgNoDeudas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="9dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/imgNoDeudas"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/list_empty" />
+
+        <TextView
+            android:id="@+id/txtNoDeudas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_deudas"
+            android:textAlignment="center"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView11"
+            android:layout_width="326dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="clip_horizontal|center|center_horizontal|fill_horizontal"
+            android:layout_marginStart="39dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/ListaDeudas"
+            android:textAlignment="center"
+            android:textSize="34sp"
+            tools:layout_gravity="center_vertical" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshDeudas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="TextView"
-            android:textSize="24sp" />
+            android:layout_above="@+id/btnNewPagoConjunto"
+            android:layout_below="@+id/textNombrePagoConjunto">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerDeudas"
-            android:layout_width="345dp"
-            android:layout_height="446dp"
-            android:layout_below="@+id/textView11"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp" />
-    </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerDeudas"
+                android:layout_width="match_parent"
+                android:layout_height="667dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="3dp" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
 </FrameLayout>

@@ -7,21 +7,11 @@ public class DeudaDTO {
     private UsuarioParaParcelable usuario;
     private UsuarioParaParcelable pagador;
     private double cantidad;
-    private boolean isUserPagador;
 
-    public DeudaDTO(UsuarioParaParcelable usuario, UsuarioParaParcelable pagador, double cantidad) {
+    public DeudaDTO(UsuarioParaParcelable pagador, UsuarioParaParcelable usuario, double cantidad) {
         this.usuario = usuario;
         this.cantidad = cantidad;
         this.pagador = pagador;
-        this.isUserPagador = false;
-    }
-
-    public boolean isUserPagador() {
-        return isUserPagador;
-    }
-
-    public void setUserPagador(boolean userPagador) {
-        isUserPagador = userPagador;
     }
 
     public UsuarioParaParcelable getUsuario() {

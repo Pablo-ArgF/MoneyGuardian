@@ -1,27 +1,30 @@
 package com.moneyguardian;
 
+import static java.security.AccessController.getContext;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.ui.DatePickerFragment;
@@ -53,6 +56,19 @@ public class FormularioGastoActivity extends AppCompatActivity {
             isIngreso = b.getBoolean("Ingreso");
         }
         setContentView(R.layout.activity_formulario_gasto);
+
+        TextView textViewNombre = findViewById(R.id.textViewNombreGasto);
+        EditText editTextNombre = findViewById(R.id.nombreGastoNuevo);
+        if (!isIngreso) {
+            // Si es un gasto
+            textViewNombre.setText(R.string.nombreGastoNuevo);
+            editTextNombre.setHint(R.string.nombreGastoNuevo);
+        } else {
+            // Si es un ingreso
+            textViewNombre.setText(R.string.nombreIngresoNuevo);
+            editTextNombre.setHint(R.string.nombreIngresoNuevo);
+        }
+
 
         // Manejo de base de datos
         mAuth = FirebaseAuth.getInstance();
@@ -98,10 +114,16 @@ public class FormularioGastoActivity extends AppCompatActivity {
         });
 
         // Manejo del spinner con las categorías
-        db.collection("categorias/").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
+        Query query = null;
+        if (isIngreso) {
+            query = db.collection("categorias/").whereEqualTo("tipo", "ingreso");
+        } else {
+            query = db.collection("categorias/").whereEqualTo("tipo", "gasto");
+        }
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
                 List<String> categorias = new ArrayList<>();
                 List<DocumentSnapshot> refs = task.getResult().getDocuments();
                 refs.forEach(ref -> {
@@ -109,6 +131,18 @@ public class FormularioGastoActivity extends AppCompatActivity {
                 });
                 spCategorias.setAdapter(new ArrayAdapter<String>(getBaseContext(),
                         android.R.layout.simple_spinner_item, categorias));
+            }
+        });
+
+
+        spCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                modoOscuro(parent);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
@@ -125,8 +159,7 @@ public class FormularioGastoActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
-        }
-        else
+        } else
             fecha = new Date();
 
         Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
@@ -152,5 +185,23 @@ public class FormularioGastoActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Este metodo no rebería realmente usarse, ya que la interfaz solo
+     * debería depender de los themes
+     */
+    private void modoOscuro(AdapterView<?> parent) {
+        int nightModeFlags =
+                getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+                break;
+
+            default:
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
+                break;
+        }
+    }
 
 }

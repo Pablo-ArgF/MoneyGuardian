@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/menu_graph_linear"
-        android:title= "@string/title_linear_graph" />
-    <item
-        android:id="@+id/menu_graph_pie"
-        android:title="@string/title_pie_graph" />
-</menu>

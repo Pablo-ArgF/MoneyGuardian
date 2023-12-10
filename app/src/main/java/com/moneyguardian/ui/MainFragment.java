@@ -5,7 +5,6 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -16,48 +15,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.ProfileActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
-import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.ui.charts.AbstractChartFragment;
+import com.moneyguardian.ui.charts.EstadisticasChartFragment;
+import com.moneyguardian.ui.charts.IngresosPieChartFragment;
 import com.moneyguardian.ui.charts.LinearChartFragment;
 import com.moneyguardian.ui.charts.NoChartFragment;
-import com.moneyguardian.ui.charts.PieChartFragment;
+import com.moneyguardian.ui.charts.GastosPieChartFragment;
 import com.moneyguardian.userAuth.LoginActivity;
-import com.moneyguardian.userAuth.SignInActivity;
-import com.moneyguardian.util.GastoMapper;
 import com.moneyguardian.util.LoadDataHelper;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.EmptyCoroutineContext;
-import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.CoroutineScopeKt;
 import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.GlobalScope;
-import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.future.FutureKt;
 
 
@@ -72,10 +67,14 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private FirebaseFirestore db;
     private View root;
     private FragmentContainerView chartFragmentContainer;
+    private Button btnMenuBarChart;
     private Button btnMenuGraphLine;
-    private Button btnMenuGraphPie;
+    private Button btnMenuGraphPieGastos;
+    private Button btnMenuGraphPieIngresos;
+    private EstadisticasChartFragment barChartFragment = EstadisticasChartFragment.newInstance(new ArrayList<>());
     private LinearChartFragment linearChartFragment = LinearChartFragment.newInstance(new ArrayList<>());
-    private PieChartFragment pieChartFragment = PieChartFragment.newInstance(new ArrayList<>());
+    private GastosPieChartFragment gastosPieChartFragment = GastosPieChartFragment.newInstance(new ArrayList<>());
+    private IngresosPieChartFragment ingresosPieChartFragment = IngresosPieChartFragment.newInstance(new ArrayList<>());
     private NoChartFragment noChartFragment = new NoChartFragment();
     private AbstractChartFragment currentFragment = linearChartFragment;
 
@@ -87,6 +86,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private ColorStateList notSelectedColors; //color of not selected filter
     private Button btnRegistrarGasto;
     private Button btnRegistrarIngreso;
+    private TextView balanceThisMonth;
+    private TextView compareBalanceLastMonth;
+    private ImageView iconCompareBalanceLastMonth;
 
 
     public MainFragment() {
@@ -128,9 +130,14 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         root = inflater.inflate(R.layout.fragment_main,container, false);
         profileBtn = root.findViewById(R.id.profileButton);
         txtWelcome = root.findViewById(R.id.txtWelcome);
+        balanceThisMonth = root.findViewById(R.id.balance);
+        compareBalanceLastMonth = root.findViewById(R.id.compareBalance);
+        iconCompareBalanceLastMonth = root.findViewById(R.id.iconCompareBalance);
         chartFragmentContainer = root.findViewById(R.id.chartFragmentContainer);
+        btnMenuBarChart = root.findViewById(R.id.btn_barChart);
         btnMenuGraphLine = root.findViewById(R.id.btn_lineChart);
-        btnMenuGraphPie = root.findViewById(R.id.btn_pieChart);
+        btnMenuGraphPieGastos = root.findViewById(R.id.btn_pieChartGastos);
+        btnMenuGraphPieIngresos = root.findViewById(R.id.btn_pieChartIngresos);
         filter1Month = root.findViewById(R.id.filter_1month);
         filter3Month = root.findViewById(R.id.filter_3month);
         filter1Year = root.findViewById(R.id.filter_1year);
@@ -158,6 +165,21 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             }
         });
 
+        btnMenuBarChart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.chartFragmentContainer, barChartFragment)
+                        .commit();
+                markSelectedFilter(filterAll);
+                currentFragment = barChartFragment;
+                //filter selector to all
+                updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
+
+            }
+        });
+
         btnMenuGraphLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,13 +195,23 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             }
         });
 
-        btnMenuGraphPie.setOnClickListener(v -> {
+        btnMenuGraphPieGastos.setOnClickListener(v -> {
             getChildFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.chartFragmentContainer, pieChartFragment)
+                    .replace(R.id.chartFragmentContainer, gastosPieChartFragment)
                     .commit();
             markSelectedFilter(filterAll);
-            currentFragment = pieChartFragment;
+            currentFragment = gastosPieChartFragment;
+            updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
+        });
+
+        btnMenuGraphPieIngresos.setOnClickListener(v -> {
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.chartFragmentContainer, ingresosPieChartFragment)
+                    .commit();
+            markSelectedFilter(filterAll);
+            currentFragment = ingresosPieChartFragment;
             updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
         });
 
@@ -319,12 +351,84 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 }
                 );
         try {
-            mainActivity.setGastos(gastos.get());
-            addEntrysToGraphs(mainActivity.getGastos());
+            List<Gasto> gs = gastos.get();
+            gs = gs.stream().filter(g -> g.getUUID() != null).collect(Collectors.toList()); //filter the empty gastos that could come from a listener trigger on removed items
+            mainActivity.setGastos(gs);
+            addEntrysToGraphs(gs);
+            computeThisMonthData(gs);
             //disable the loading of the data
             mainActivity.setLoading(false);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void setToLastMinuteOfTheDay(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+    }
+
+    /**
+     * Shows information on the balance for this month and the comparisson with last month
+     */
+    private void computeThisMonthData(List<Gasto> gs) {
+        if(getContext() == null)
+            return; //avoid no context attached
+
+        Calendar calendar = Calendar.getInstance();
+
+        // Last day of two months ago
+        calendar.add(Calendar.MONTH, -2);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        setToLastMinuteOfTheDay(calendar);
+        Date lastDayOfTwoMonthsAgo = calendar.getTime();
+
+        // Last day of last month
+        calendar.setTime(new Date()); // Reset to the current date
+        calendar.set(Calendar.DAY_OF_MONTH, 1); // Set to the first day of the current month
+        calendar.add(Calendar.DAY_OF_MONTH, -1); // Move to the last day of the previous month
+        setToLastMinuteOfTheDay(calendar);
+        Date lastDayOfLastMonth = calendar.getTime();
+
+        // Last day of this month
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        setToLastMinuteOfTheDay(calendar);
+        Date lastDayOfThisMonth = calendar.getTime();
+
+
+        List<Gasto> gastosLastMonth = gs.stream()
+                .filter(gasto ->
+                        gasto.getFechaCreacionAsDate().after(lastDayOfTwoMonthsAgo) &&
+                        gasto.getFechaCreacionAsDate().before(lastDayOfLastMonth))
+                .collect(Collectors.toList());
+        float lastMonth = gastosLastMonth.stream().map(Gasto::getBalance).reduce(0f,Float::sum);
+
+        List<Gasto> gastosThisMonth = gs.stream()
+                .filter(gasto ->
+                        gasto.getFechaCreacionAsDate().after(lastDayOfLastMonth) &&
+                        gasto.getFechaCreacionAsDate().before(lastDayOfThisMonth)
+                ).collect(Collectors.toList());
+        float thisMonth = gastosThisMonth.stream().map(Gasto::getBalance).reduce(0f,Float::sum);
+
+
+        //we personalize the balance for this month
+        balanceThisMonth.setText(thisMonth + "€");
+        if(thisMonth >= 0)
+            balanceThisMonth.setTextColor(getResources().getColor(R.color.green));
+        else
+            balanceThisMonth.setTextColor(getResources().getColor(R.color.red));
+        //we personalize the last month comparison
+        if(thisMonth >= lastMonth){
+            iconCompareBalanceLastMonth.setImageDrawable(getResources().getDrawable(R.drawable.check_circle));
+            compareBalanceLastMonth.setText(getResources().getString(R.string.stats_balance_masQueElMesPasado,
+                    thisMonth -lastMonth));
+        }else{
+            iconCompareBalanceLastMonth.setImageDrawable(getResources().getDrawable(R.drawable.circle_minus));
+            compareBalanceLastMonth.setText(getResources().getString(R.string.stats_balance_menosQueElMesPasado,
+                    lastMonth - thisMonth));
         }
     }
 
@@ -348,8 +452,10 @@ public class MainFragment extends Fragment implements LifecycleOwner {
      * @param gs
      */
     private void addEntrysToGraphs(List<Gasto> gs) {
+        barChartFragment.updateData(gs);
         linearChartFragment.updateData(gs);
-        pieChartFragment.updateData(gs);
+        gastosPieChartFragment.updateData(gs);
+        ingresosPieChartFragment.updateData(gs);
     }
 
 
@@ -366,8 +472,10 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     .replace(R.id.chartFragmentContainer,currentFragment)
                     .commit();
         }
+        barChartFragment.updateFilter(filter);
         linearChartFragment.updateFilter(filter);
-        pieChartFragment.updateFilter(filter);
+        gastosPieChartFragment.updateFilter(filter);
+        ingresosPieChartFragment.updateFilter(filter);
 
     }
 
@@ -380,7 +488,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 .commit();
 
         //we disable the buttons to change the graph
-        btnMenuGraphPie.setEnabled(false);
+        btnMenuBarChart.setEnabled(false);
+        btnMenuGraphPieGastos.setEnabled(false);
+        btnMenuGraphPieIngresos.setEnabled(false);
         btnMenuGraphLine.setEnabled(false);
     }
 
@@ -390,7 +500,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
         linearChartFragment.onResume();
         //we disable the buttons to change the graph
-        btnMenuGraphPie.setEnabled(true);
+        btnMenuBarChart.setEnabled(true);
+        btnMenuGraphPieGastos.setEnabled(true);
+        btnMenuGraphPieIngresos.setEnabled(true);
         btnMenuGraphLine.setEnabled(true);
         if(!getChildFragmentManager().isStateSaved())
             getChildFragmentManager().beginTransaction()

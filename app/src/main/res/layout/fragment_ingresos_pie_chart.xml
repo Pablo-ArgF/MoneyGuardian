@@ -4,15 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.charts.LinearChartFragment"
+    android:padding="10dp"
     >
 
     <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChart"
+        android:id="@+id/pieChartIngresos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        >
+    </com.github.mikephil.charting.charts.PieChart>
 
     <LinearLayout
-        android:id="@+id/msg_no_gastos"
+        android:id="@+id/msg_no_ingresos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -27,9 +31,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/noDataChart_gastos"
+            android:text="@string/noDataChart_ingresos"
             android:gravity="center"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:padding="3dp"
             />
     </LinearLayout>

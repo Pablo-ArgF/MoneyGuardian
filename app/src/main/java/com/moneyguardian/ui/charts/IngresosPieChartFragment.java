@@ -1,29 +1,21 @@
 package com.moneyguardian.ui.charts;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.firebase.database.collection.LLRBNode;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.GastosUtil;
@@ -34,15 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PieChartFragment extends AbstractChartFragment {
+public class IngresosPieChartFragment extends AbstractChartFragment {
 
-    private LinearLayout msgNoGastos;
+    private LinearLayout msgNoIngresos;
     private PieChart chart;
-    private List<PieEntry> entriesGastos = new ArrayList<>();
+    private List<PieEntry> entriesIngresos = new ArrayList<>();
     private Map<String, Float> acc = new HashMap<>();
 
-    public static PieChartFragment newInstance(List<Gasto> param1) {
-        PieChartFragment fragment = new PieChartFragment();
+    public static IngresosPieChartFragment newInstance(List<Gasto> param1) {
+        IngresosPieChartFragment fragment = new IngresosPieChartFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(AbstractChartFragment.DATOS, new ArrayList<>(param1));
         fragment.setArguments(args);
@@ -53,18 +45,14 @@ public class PieChartFragment extends AbstractChartFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_pie_chart, container, false);
-        this.msgNoGastos =(LinearLayout) root.findViewById(R.id.msg_no_gastos);
-        this.chart = root.findViewById(R.id.pieChart);
+        View root = inflater.inflate(R.layout.fragment_ingresos_pie_chart, container, false);
+        this.msgNoIngresos =(LinearLayout) root.findViewById(R.id.msg_no_ingresos);
+        this.chart = root.findViewById(R.id.pieChartIngresos);
         return root;
     }
 
     @Override
     public void updateUI() {
-        //if no data to display we show the msg
-        if(msgNoGastos!= null && chart!= null ) {
-
-        }
 
         //this if configures the text colors to be the ones of the theme
         int color = 0;
@@ -82,7 +70,7 @@ public class PieChartFragment extends AbstractChartFragment {
         float textSize = 12;
 
 
-        entriesGastos.clear();
+        entriesIngresos.clear();
         acc.clear();
 
         List<Gasto> array = datos.stream()
@@ -90,12 +78,12 @@ public class PieChartFragment extends AbstractChartFragment {
                 .collect(Collectors.toList());
 
         for(Gasto dato : array){
-            if(dato.getBalance() < 0){
+            if(dato.getBalance() > 0){
                 if(acc.containsKey(dato.getCategoria()))
                     //- porque el balance es negativo
-                    acc.put(dato.getCategoria(),acc.get(dato.getCategoria())  - dato.getBalance());
+                    acc.put(dato.getCategoria(),acc.get(dato.getCategoria())  + dato.getBalance());
                 else
-                    acc.put(dato.getCategoria(),-dato.getBalance());
+                    acc.put(dato.getCategoria(),dato.getBalance());
 
             }
         }
@@ -103,17 +91,17 @@ public class PieChartFragment extends AbstractChartFragment {
         //we create the pieEntries
         for(String category : acc.keySet()){
             PieEntry entry = new PieEntry(acc.get(category), category);
-            entriesGastos.add(entry);
+            entriesIngresos.add(entry);
             //we indicate the icon for each cat
             entry.setIcon(getResources().getDrawable(GastosUtil.getImageFor(category)));
         }
 
 
-        PieDataSet set = new PieDataSet(entriesGastos,"");
+        PieDataSet set = new PieDataSet(entriesIngresos,"");
         set.setValueTextSize(textSize);
         set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        set.setColors(ColorTemplate.COLORFUL_COLORS);
+        set.setColors(ColorTemplate.LIBERTY_COLORS);
         if(couldGetColor) {
             set.setValueTextColor(color); //value
             chart.setEntryLabelColor(color); //name of the cat
@@ -123,14 +111,9 @@ public class PieChartFragment extends AbstractChartFragment {
 
         chart.getDescription().setText("");
         chart.setEntryLabelTextSize(textSize);
+
         chart.setData(data);
-        Legend legend = chart.getLegend();
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-        legend.setTextSize(textSize);
-        legend.setWordWrapEnabled(true);
-        chart.setCenterText(getResources().getString(R.string.center_pie_chart));
+        chart.setCenterText(getResources().getString(R.string.center_pie_chart_ingresos));
         chart.setCenterTextSize(18);
         chart.animateXY(800,300);
 

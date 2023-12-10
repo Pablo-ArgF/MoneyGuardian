@@ -108,18 +108,15 @@ public class LinearChartFragment extends AbstractChartFragment {
         lineData.addDataSet(datasetIngresos);
 
         lineData.setValueTextSize(10);
-        if(couldGetColor)
-            lineData.setValueTextColor(color);
+
 
         //format the xaxis to accept dates
         XAxis xAxis = chart.getXAxis();
         xAxis.setValueFormatter(dateXFormatter);
-        xAxis.setLabelCount(7);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
-        if(couldGetColor)
-            xAxis.setTextColor(color);
-        xAxis.setLabelRotationAngle(-45);
+
+        xAxis.setLabelRotationAngle(-20);
 
 
         xAxis.setDrawLabels(true);
@@ -130,14 +127,14 @@ public class LinearChartFragment extends AbstractChartFragment {
         chart.getAxisLeft().setTextSize(textSize);
         chart.getAxisLeft().setAxisMinimum(0);
         chart.getAxisRight().setEnabled(false);
-        if(couldGetColor)
-            chart.getAxisLeft().setTextColor(color);
-
 
         Description description = new Description();
         description.setText("");
 
         if(couldGetColor) {
+            lineData.setValueTextColor(color);
+            xAxis.setTextColor(color);
+            chart.getAxisLeft().setTextColor(color);
             chart.setBorderColor(color);
             chart.getLegend().setTextColor(color);
         }
@@ -146,7 +143,7 @@ public class LinearChartFragment extends AbstractChartFragment {
 
         chart.setDescription(description);
         chart.setData(lineData);
-        chart.animateXY(1000,1000 );
+        chart.animateY(750 );
         chart.invalidate();
     }
 }

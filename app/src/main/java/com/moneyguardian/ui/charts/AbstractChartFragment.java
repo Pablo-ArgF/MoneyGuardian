@@ -45,15 +45,12 @@ public abstract class AbstractChartFragment extends Fragment {
         //we reset the filter to Todos
         currentFilter = Filter.ALL;
         updateFilter(currentFilter);
-        updateUI();
     }
 
 
     public void updateData(List<Gasto> g){
         this.allData = new ArrayList<>(g);
         updateFilter(currentFilter);
-        updateUI();
-
     }
 
     public int numberOfItemsIfFilterApplied(Filter filter){

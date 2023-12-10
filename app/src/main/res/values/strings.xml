@@ -103,7 +103,7 @@
     <string name="CrearGasto">Crear nueva transacción</string>
     <string name="addIngreso">Añadir nuevo ingreso</string>
     <string name="addGasto">Añadir nuevo gasto</string>
-    <string name="title_linear_graph">Balance</string>
+    <string name="title_linear_graph">Histórico</string>
     <string name="title_pie_graph">Por categorías</string>
     <string name="graph_legend_gastos">Gastos</string>
     <string name="graph_legend_ingresos">Ingresos</string>
@@ -127,4 +127,19 @@
     <string name="noDataChart_gastos">Aún no tienes gastos registrados. Introduce nuevos gastos para ver la división por categoría.</string>
     <string name="no_se_puede_crear_un_pago_en_conjunto_tu_solo">No se puede crear un pago en conjunto tu solo</string>
     <string name="deleteQuestion">¿Esta de seguro que quiere eliminarlo?</string>
+    <string name="noDataChart_ingresos">Aún no tienes ingresos registrados. Introduce nuevos ingresos para ver la división por categoría.</string>
+    <string name="title_pie_graph_gastos">Gastos</string>
+    <string name="title_pie_graph_ingresos">Ingresos</string>
+    <string name="center_pie_chart_ingresos">Ingresos por categoría</string>
+    <string name="title_estadisticas">Estadisticas</string>
+    <string name="stats_balance_titulo">Balance de este mes</string>
+    <string name="ListaDeudas">Lista de deudas</string>
+    <string name="no_gastos">No tienes ningún gasto/ingreso todavía, añade alguno para poder verlos aquí.</string>
+    <string name="Categoria">Categoría</string>
+    <string name="nombreGastoNuevo">Nombre del gasto\n</string>
+    <string name="nombreIngresoNuevo">Nombre del ingreso</string>
+    <string name="no_deudas">No tienes ninguna deuda pendiente con ningún usuario.</string>
+    <string name="stats_balance_masQueElMesPasado">%1$.2f€ más que \n el mes pasado</string>
+    <string name="stats_balance_menosQueElMesPasado">%1$.2f€ menos que \n el mes pasado</string>
+    <string name="title_barChart">Balance</string>
 </resources>
