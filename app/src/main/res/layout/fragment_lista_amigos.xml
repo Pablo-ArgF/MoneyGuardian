@@ -24,7 +24,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tituloListaGrupos"
@@ -49,6 +50,7 @@
             android:id="@+id/swipeRefreshGruposAmigos"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:visibility="gone"
             >
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerListaGruposAmigos"
@@ -121,7 +123,7 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshAmigos"
             android:layout_width="match_parent"
-            android:layout_height="390dp"
+            android:layout_height="600dp"
             >
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerListaAmigos"
