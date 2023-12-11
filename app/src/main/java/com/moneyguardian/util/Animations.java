@@ -16,6 +16,8 @@ public class Animations {
     private Animation fromBottom;
     private Animation toBottom;
 
+    private List<FloatingActionButton> otherButtons;
+
     public Animations(View view) {
         rotateOpen = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_open_anim);
         rotateClose = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_close_anim);
@@ -23,8 +25,7 @@ public class Animations {
         toBottom = AnimationUtils.loadAnimation(view.getContext(), R.anim.to_bottom_amim);
     }
 
-    public void setOnClickAnimationAndVisibility(FloatingActionButton mainButton,
-                                                 List<FloatingActionButton> otherButtons) {
+    public void setOnClickAnimationAndVisibility(FloatingActionButton mainButton) {
         mainButton.setOnClickListener(v -> {
             if (otherButtons.get(0).getVisibility() == View.INVISIBLE) {
                 for (FloatingActionButton fab : otherButtons){
@@ -42,6 +43,10 @@ public class Animations {
                 mainButton.startAnimation(rotateClose);
             }
         });
+    }
+
+    public void setOtherButtons(List<FloatingActionButton> newButtons){
+        this.otherButtons = newButtons;
     }
 
 }

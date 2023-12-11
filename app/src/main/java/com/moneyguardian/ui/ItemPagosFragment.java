@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,7 +20,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.FormItemsListaPago;
 import com.moneyguardian.R;
@@ -53,6 +57,7 @@ public class ItemPagosFragment extends Fragment {
     private RecyclerView rvBalance;
     private FloatingActionButton openButton;
     private FloatingActionButton editButton;
+    private FloatingActionButton payButton;
     private FloatingActionButton deleteButton;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -60,6 +65,7 @@ public class ItemPagosFragment extends Fragment {
     // Botones
     private Animations animations;
     private ListaBalanceItemAdapter adapter;
+    private FirebaseAuth auth;
 
     public static ItemPagosFragment newInstance(ItemPagoConjunto itemPago, PagoConjunto pagoConjunto) {
         ItemPagosFragment fragment = new ItemPagosFragment();
@@ -84,12 +90,25 @@ public class ItemPagosFragment extends Fragment {
         }
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onResume() {
+        super.onResume();
+        if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid()))
+                && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney()
+                && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0) {
+            animations.setOtherButtons(Arrays.asList(editButton, deleteButton,payButton));
+        } else {
+            animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_item_pagos, container, false);
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
         tvNombreItem = root.findViewById(R.id.tituloItemPago);
         rvBalance = root.findViewById(R.id.recyclerListaItems);
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshItemsPagosConjunto);
@@ -106,25 +125,38 @@ public class ItemPagosFragment extends Fragment {
         openButton = root.findViewById(R.id.floatingActionButtonItemPago);
         editButton = root.findViewById(R.id.floatingActionButtonEditItemPago);
         deleteButton = root.findViewById(R.id.floatingActionButtonItemDelete);
+        payButton = root.findViewById(R.id.floatingActionButtonPayItemPago);
 
         if (!new UserChecks().checkUser(pagoConjunto.getOwner())) {
-            openButton.setVisibility(View.INVISIBLE);
-            editButton.setVisibility(View.INVISIBLE);
-            deleteButton.setVisibility(View.INVISIBLE);
-            openButton.setClickable(false);
+            editButton.setVisibility(View.GONE);
+            deleteButton.setVisibility(View.GONE);
             editButton.setClickable(false);
             deleteButton.setClickable(false);
+            if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney()) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0)) {
+                openButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.baseline_done_24, getContext().getTheme()));
+                openButton.setOnClickListener(v -> {
+                    showDialog(v);
+                    openButton.setVisibility(View.GONE);
+                    openButton.setClickable(false);
+                });
+            } else {
+                openButton.setVisibility(View.GONE);
+                openButton.setClickable(false);
+            }
+
         } else {
+            animations.setOnClickAnimationAndVisibility(openButton);
 
-            animations.setOnClickAnimationAndVisibility(openButton, Arrays.asList(editButton, deleteButton));
+            payButton.setOnClickListener(v -> {
+                showDialog(v);
+                openButton.performClick();
+                payButton.clearAnimation();
+                animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
+            });
 
-
-            deleteButton.setOnClickListener(v ->
-                    db.collection("pagosConjuntos").document(pagoConjunto.getId()).
-                            collection("itemsPago").document(itemPagoConjunto.getId()).delete().
-                            addOnSuccessListener(unused -> {
-                                delteItem(root);
-                            }));
+            deleteButton.setOnClickListener(v -> db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPagoConjunto.getId()).delete().addOnSuccessListener(unused -> {
+                delteItem(root);
+            }));
 
             editButton.setOnClickListener(v -> {
                 editItemPago();
@@ -142,27 +174,67 @@ public class ItemPagosFragment extends Fragment {
         return root;
     }
 
+    private void showDialog(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        LayoutInflater inflater = builder.create().getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
+            marcarComoPagado();
+        });
+        builder.setView(inflater.inflate(R.layout.dialog_delete_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void marcarComoPagado() {
+        UsuarioParaParcelable completeUser = null;
+        HashMap<UsuarioParaParcelable, Double> pagos = itemPagoConjunto.getPagos();
+
+        for (UsuarioParaParcelable u : pagos.keySet()) {
+            if (u.getId().equals(auth.getCurrentUser().getUid())) {
+                completeUser = u;
+                break;
+            }
+        }
+
+        if (completeUser.getId().equals(itemPagoConjunto.getUserThatPays().getId())) {
+            itemPagoConjunto.getPagos().put(completeUser, itemPagoConjunto.getMoney());
+        } else {
+            itemPagoConjunto.getPagos().put(itemPagoConjunto.getUserThatPays(), pagos.get(itemPagoConjunto.getUserThatPays()) + pagos.get(completeUser));
+            itemPagoConjunto.getPagos().put(completeUser, 0.0);
+        }
+
+        Map<String, Double> usersWithMoney = new HashMap<>();
+        for (Map.Entry<UsuarioParaParcelable, Double> u : pagos.entrySet()) {
+            usersWithMoney.put(u.getKey().getId(), u.getValue());
+        }
+
+        db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPagoConjunto.getId()).update("UsuariosConPagos", usersWithMoney);
+
+        adapter.upadteList(itemPagoConjunto.getPagos());
+
+    }
+
     private void upadteFromDB() {
-        db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPagoConjunto.getId()).get().
-                addOnCompleteListener(task -> {
-                    Map<String, Object> result = task.getResult().getData();
-                    HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
+        db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPagoConjunto.getId()).get().addOnCompleteListener(task -> {
+            Map<String, Object> result = task.getResult().getData();
+            HashMap<UsuarioParaParcelable, Double> cantidadesConUsers = new HashMap<>();
 
-                    String id = task.getResult().getId();
-                    String nombre = (String) result.get("nombre");
-                    Double cantidadTotal = (Double) result.get("totalDinero");
-                    HashMap<String, Double> cantidadesConUsersReferences = (HashMap<String, Double>) result.get("UsuariosConPagos");
+            String id = task.getResult().getId();
+            String nombre = (String) result.get("nombre");
+            Double cantidadTotal = (Double) result.get("totalDinero");
+            HashMap<String, Double> cantidadesConUsersReferences = (HashMap<String, Double>) result.get("UsuariosConPagos");
 
-                    for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
-                        cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
-                    }
+            for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
+                cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
+            }
 
-                    UsuarioParaParcelable userThatPays = new UsuarioParaParcelable((String) result.get("usuarioPago"));
+            UsuarioParaParcelable userThatPays = new UsuarioParaParcelable((String) result.get("usuarioPago"));
 
 
-                    itemPagoConjunto = new ItemPagoConjunto(id,nombre,cantidadesConUsers,userThatPays,cantidadTotal);
-                    getUserParcelables();
-                    tvNombreItem.setText(itemPagoConjunto.getNombre());
+            itemPagoConjunto = new ItemPagoConjunto(id, nombre, cantidadesConUsers, userThatPays, cantidadTotal);
+            getUserParcelables();
+            tvNombreItem.setText(itemPagoConjunto.getNombre());
         });
 
     }

@@ -23,12 +23,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ListaBalanceItemAdapter extends RecyclerView.Adapter<ListaBalanceItemAdapter.BalanceViewHolder> {
 
-    private final Map<UsuarioParaParcelable, Double> balance;
+    private Map<UsuarioParaParcelable, Double> balance;
 
     public ListaBalanceItemAdapter(Map<UsuarioParaParcelable, Double> balance) {
         this.balance = balance;
     }
 
+    public void upadteList(Map<UsuarioParaParcelable,Double> newMap){
+        this.balance = newMap;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override

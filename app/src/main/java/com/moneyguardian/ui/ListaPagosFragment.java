@@ -121,10 +121,10 @@ public class ListaPagosFragment extends Fragment {
         });
 
         if (!new UserChecks().checkUser(pagoConjunto.getOwner())) {
-            mainOpenButton.setVisibility(View.INVISIBLE);
-            btnAddNewItem.setVisibility(View.INVISIBLE);
-            fabEdit.setVisibility(View.INVISIBLE);
-            fabDelete.setVisibility(View.INVISIBLE);
+            mainOpenButton.setVisibility(View.GONE);
+            btnAddNewItem.setVisibility(View.GONE);
+            fabEdit.setVisibility(View.GONE);
+            fabDelete.setVisibility(View.GONE);
             mainOpenButton.setClickable(false);
             btnAddNewItem.setClickable(false);
             fabEdit.setClickable(false);
@@ -139,7 +139,9 @@ public class ListaPagosFragment extends Fragment {
             fabDelete.setOnClickListener(this::delete);
             fabEdit.setOnClickListener(v -> {editPagoConjunto();});
 
-            new Animations(root).setOnClickAnimationAndVisibility(mainOpenButton, Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
+            Animations animations = new Animations(root);
+            animations.setOnClickAnimationAndVisibility(mainOpenButton);
+            animations.setOtherButtons(Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
         }
 
         return root;

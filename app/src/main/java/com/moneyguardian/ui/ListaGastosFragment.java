@@ -75,7 +75,8 @@ public class ListaGastosFragment extends Fragment {
         FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
 
         // UI
-        animations.setOnClickAnimationAndVisibility(buttonOpen, Arrays.asList(buttonAddIngreso, buttonAddGasto));
+        animations.setOnClickAnimationAndVisibility(buttonOpen);
+        animations.setOtherButtons(Arrays.asList(buttonAddIngreso, buttonAddGasto));
         msgNoGastos = root.findViewById(R.id.msgNoGastos);
 
         // Manejo de refresh
