@@ -51,7 +51,7 @@ public class ListaPagosFragment extends Fragment {
     private static final String NAME_PAGO = "Nombre";
     private static final String IMAGEN = "Imagen";
     private static final String PAGO_CONJUNTO = "Pago Conjunto";
-    private static final int AVTIVITY_RETURN = 2;
+    private static final int AVTIVITY_RETURN = 3;
     RecyclerView listItemsPagosView;
     FloatingActionButton mainOpenButton;
     FloatingActionButton btnAddNewItem;
