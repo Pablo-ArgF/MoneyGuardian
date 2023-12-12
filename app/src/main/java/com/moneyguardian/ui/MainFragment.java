@@ -110,6 +110,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         else
             updateUserInfo();
 
+        currentFragment = linearChartFragment;
         if(mainActivity.getGastos().size() > 0)
             enableChartView();
         else

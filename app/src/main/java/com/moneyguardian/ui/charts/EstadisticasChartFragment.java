@@ -152,11 +152,11 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
         calendar.setTime(arrayStartDate);
         int startYear = calendar.get(Calendar.YEAR);
-        int startMonth = calendar.get(Calendar.MONTH);
-        return (year - startYear) * 12 + month - startMonth;
+        int startMonth = calendar.get(Calendar.MONTH) + 1;
+        return (year - startYear) * 12 + month - startMonth ;
     }
 
     private String[] getMonthRange(Date start, Date end) {
@@ -169,6 +169,8 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
             monthRange.add(formatter.format(calendar.getTime()));
             calendar.add(Calendar.MONTH, 1);
         }
+        //we include the last month
+        monthRange.add(formatter.format(calendar.getTime()));
 
         return monthRange.toArray(new String[0]);
     }
