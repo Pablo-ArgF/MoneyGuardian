@@ -1,5 +1,6 @@
 package com.moneyguardian.adapters;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,11 +64,11 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     public void add(Gasto g) {
         this.listaGastos.add(g);
         //we sort the list
-        listaGastos.sort((g1,g2) -> g2.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()));
+        listaGastos.sort((g1, g2) -> g2.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()));
         checkedGastos.put(g, false);
         notifyDataSetChanged();
     }
-    
+
     public void deleteGastos(List<Gasto> gastosList) {
         this.listaGastos.removeAll(gastosList);
         for (Gasto g : gastosList) {
@@ -121,28 +122,18 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         }
 
         public void bindUser(final Gasto gasto) {
-            // TODO falta validar
             nombre.setText(gasto.getNombre());
             fecha.setText(gasto.getFechaCreacion());
 
             int imageMoney = GastosUtil.getImageFor(gasto);
             imagenGasto.setImageResource(imageMoney);
+            imagenGasto.setImageTintList(new ColorStateList(new int[][]{}, new int[]{R.color.white}));
 
             // Si es un gasto o un ingreso
             String balancePago = (gasto.getBalance() > 0 ? "+" : "") + (gasto.getBalance()) + "€";
             balance.setText(balancePago);
             int color = gasto.getBalance() > 0 ? R.color.green : R.color.red;
             balance.setTextColor(ContextCompat.getColor(this.itemView.getContext(), color));
-
-            // TODO considero innecesario de momento realizar una vista de los pagos solo para mostrar
-            // los pocos campos que tienen, pero en caso de ser necesario -> descomentar
-            /** itemView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-            Log.i("GASTO", checkedGastos.get(gasto.getNombre()).toString());
-            listener.onItemClick(gasto);
-            }
-            });
-             **/
 
             CheckBox checkBox = itemView.findViewById(R.id.checkBoxGasto);
             checkBoxMap.put(gasto, checkBox);

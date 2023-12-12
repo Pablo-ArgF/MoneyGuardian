@@ -22,14 +22,14 @@ public class PagoConjunto implements Parcelable {
     private List<ItemPagoConjunto> items;
 
     public PagoConjunto(String id, String nombre, Date fechaPago, ArrayList<UsuarioParaParcelable>
-            participantes, Uri imagen, Date fechaLimite, List<ItemPagoConjunto> itemsPago,String owner) {
-        this(id,nombre, fechaPago, participantes, itemsPago);
+            participantes, Uri imagen, Date fechaLimite, List<ItemPagoConjunto> itemsPago, String owner) {
+        this(id, nombre, fechaPago, participantes, itemsPago);
         this.fechaLimite = fechaLimite;
         this.imagen = imagen;
         this.owner = owner;
     }
 
-    public PagoConjunto(String id,String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes, List<ItemPagoConjunto> items) {
+    public PagoConjunto(String id, String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes, List<ItemPagoConjunto> items) {
         this.id = id;
         this.nombre = nombre;
         this.fechaPago = fechaPago;
@@ -37,17 +37,17 @@ public class PagoConjunto implements Parcelable {
         this.items = items;
     }
 
-    public PagoConjunto(String id,String nombre, Date fecha, List<UsuarioParaParcelable> participantes, Uri imagen, Date fechaLimite) {
-        this(id,nombre, fecha, participantes, fechaLimite);
+    public PagoConjunto(String id, String nombre, Date fecha, List<UsuarioParaParcelable> participantes, Uri imagen, Date fechaLimite) {
+        this(id, nombre, fecha, participantes, fechaLimite);
         this.imagen = imagen;
     }
 
-    public PagoConjunto(String id,String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes) {
-        this(id,nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+    public PagoConjunto(String id, String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes) {
+        this(id, nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
     }
 
-    public PagoConjunto(String id,String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes, Date fechaLimite) {
-        this(id,nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
+    public PagoConjunto(String id, String nombre, Date fechaPago, List<UsuarioParaParcelable> participantes, Date fechaLimite) {
+        this(id, nombre, fechaPago, participantes, new ArrayList<ItemPagoConjunto>());
         this.fechaLimite = fechaLimite;
     }
 
@@ -140,19 +140,20 @@ public class PagoConjunto implements Parcelable {
         return items;
     }
 
-    public void addItem(ItemPagoConjunto ipc){
+    public void addItem(ItemPagoConjunto ipc) {
         items.add(ipc);
     }
 
-    public void upadteItem(ItemPagoConjunto ipc){
-        for(int i = 0;i < getItems().size(); i++){
-            if(getItems().get(i).getId().equals(ipc.getId())){
+    public void upadteItem(ItemPagoConjunto ipc) {
+        for (int i = 0; i < getItems().size(); i++) {
+            if (getItems().get(i).getId().equals(ipc.getId())) {
                 items.remove(i);
-                items.add(i,ipc);
+                items.add(i, ipc);
                 break;
             }
         }
     }
+
     public void setItems(List<ItemPagoConjunto> items) {
         this.items = items;
     }
