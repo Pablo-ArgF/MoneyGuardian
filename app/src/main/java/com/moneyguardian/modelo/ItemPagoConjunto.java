@@ -88,6 +88,9 @@ public class ItemPagoConjunto implements Parcelable {
     }
 
     public double getMoney(){
+        if(totalDinero == null){
+            return 0;
+        }
         return totalDinero;
     }
 

@@ -39,6 +39,7 @@ import com.moneyguardian.ui.PagosConjuntosFragment;
 import com.moneyguardian.util.ImageProcessor;
 import com.moneyguardian.util.PagosConjuntosUtil;
 import com.moneyguardian.util.UsuarioMapper;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -142,9 +143,10 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                         String pattern = "dd/MM/yyyy";
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-                        if(oldPago.getImagen() != null){
-                            this.selectedImageUri = oldPago.getImagen() ;
+                        if (oldPago.getImagen() != null) {
+                            this.selectedImageUri = oldPago.getImagen();
                             this.isImageSet = true;
+                            Picasso.get().load(this.selectedImageUri).into(this.IVPreviewImage);
                         }
 
                         fechaPago.setText(simpleDateFormat.format(oldPago.getFechaLimite()));
@@ -191,34 +193,35 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                 String[] fechaTexto = fechaPago.getText().toString().trim().split("/");
                 Calendar fechaLimite = Calendar.getInstance();
 
-                fechaLimite.set(Integer.parseInt(fechaTexto[2].trim()), Integer.parseInt(fechaTexto[1].trim())-1, Integer.parseInt(fechaTexto[0].trim()));
+                fechaLimite.set(Integer.parseInt(fechaTexto[2].trim()), Integer.parseInt(fechaTexto[1].trim()) - 1, Integer.parseInt(fechaTexto[0].trim()));
 
                 Date dateLimite = fechaLimite.getTime();
 
                 // La fecha se inicializa automáticamente a la actual
                 PagoConjunto pagoConjunto = null;
+                pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), new ArrayList<>(participantes), selectedImageUri, dateLimite,
+                        itemsPago, owner);
 
-                // Si no tenemos imagen
-                if (selectedImageUri == null) {
-                    pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), new ArrayList<>(participantes), selectedImageUri, dateLimite,
-                            itemsPago, owner);
-                } else {
-                    // Si tenemos imagen
-                    pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), new ArrayList<>(participantes), selectedImageUri, dateLimite,
-                            itemsPago, owner);
-
+                // Si tenemos imagen
+                if (selectedImageUri != null) {
                     // Añadimos la imagen a la BD
                     Bitmap imageBitmap = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
                     // Si la imagen se añade correctamente
                     UploadTask task = ImageProcessor.processImage(imageBitmap, userImageRef, getApplicationContext());
+                    PagoConjunto finalPagoConjunto = pagoConjunto;
                     task.addOnSuccessListener(taskSnapshot -> {
                         //we store the link to the image in the store in the db
-                        userImageRef.getDownloadUrl().addOnSuccessListener(uri -> db.collection("pagosConjuntos").document(pagoConjuntoUUID).update("imagen", uri).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getString(R.string.error_upload_pago_image), Toast.LENGTH_LONG).show()));
+                        userImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                    // Guardamos el pago conjunto
+                                    finalPagoConjunto.setImagen(uri);
+                                    PagosConjuntosUtil.addPagoConjunto(finalPagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
+                                    db.collection("pagosConjuntos").
+                                            document(pagoConjuntoUUID).update("imagen", uri).
+                                            addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getString(R.string.error_upload_pago_image), Toast.LENGTH_LONG).show());
+                                }
+                        );
                     });
                 }
-
-                // Guardamos el pago conjunto
-                PagosConjuntosUtil.addPagoConjunto(pagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
 
                 Intent intentResult = new Intent();
                 intentResult.putExtra(PagosConjuntosFragment.PAGO_CONJUNTO_CREADO, pagoConjunto);
@@ -275,25 +278,4 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Para guardar un archivo local en Firebase
-     *
-     * Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
-     * StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
-     * uploadTask = riversRef.putFile(file);
-     *
-     * // Register observers to listen for when the download is done or if it fails
-     * uploadTask.addOnFailureListener(new OnFailureListener() {
-     *     @Override
-     *     public void onFailure(@NonNull Exception exception) {
-     *         // Handle unsuccessful uploads
-     *     }
-     * }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-     *     @Override
-     *     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-     *         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-     *         // ...
-     *     }
-     * });
-     */
 }

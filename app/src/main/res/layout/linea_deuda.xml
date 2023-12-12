@@ -1,104 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imgUserDeuda"
-        android:layout_width="48dp"
-        android:layout_height="72dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_toStartOf="@+id/imgPagadorDeuda"
-        android:layout_toEndOf="@+id/imgUserDeuda">
+        android:layout_height="72dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/nombreUsuarioDeuda"
-            android:layout_width="79dp"
-            android:layout_height="wrap_content"
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgUserDeuda"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="0dp"
-            android:layout_toStartOf="@+id/linearMoneyToUser"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@string/amigo"
-            android:textAlignment="textStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            tools:ignore="RtlCompat"
-            tools:layout_marginEnd="-10d0dp" />
+            android:layout_marginStart="0dp" />
 
-        <LinearLayout
-            android:id="@+id/linearMoneyToUser"
-            android:layout_width="135dp"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginEnd="10dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/flechaDeuda"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="center|clip_vertical"
-                android:layout_weight="1"
-                android:src="@android:drawable/arrow_up_float" />
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_toStartOf="@+id/imgPagadorDeuda"
+            android:layout_toEndOf="@+id/imgUserDeuda">
 
             <TextView
-                android:id="@+id/textMoneyDeuda"
-                android:layout_width="match_parent"
+                android:id="@+id/nombreUsuarioDeuda"
+                android:layout_width="79dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="clip_horizontal|center"
-                android:text="0,0€"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                tools:gravity="center" />
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toStartOf="@+id/linearMoneyToUser"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/amigo"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                tools:ignore="RtlCompat" />
 
-            <ImageView
-                android:id="@+id/flechaDeuda2"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/linearMoneyToUser"
+                android:layout_width="135dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center|clip_vertical"
-                android:layout_weight="1"
-                android:src="@android:drawable/arrow_up_float" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/flechaDeuda"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center|clip_vertical"
+                    android:layout_weight="1"
+                    android:src="@android:drawable/arrow_up_float" />
 
-        <TextView
-            android:id="@+id/nombrePagadorDeuda"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                <TextView
+                    android:id="@+id/textMoneyDeuda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="clip_horizontal|center"
+                    android:text="0,0€"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    tools:gravity="center" />
+
+                <ImageView
+                    android:id="@+id/flechaDeuda2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center|clip_vertical"
+                    android:layout_weight="1"
+                    android:src="@android:drawable/arrow_up_float" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/nombrePagadorDeuda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/linearMoneyToUser"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/amigo"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                tools:ignore="RtlCompat" />
+
+
+        </RelativeLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgPagadorDeuda"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/linearMoneyToUser"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@string/amigo"
-            android:textAlignment="textStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            tools:ignore="RtlCompat" />
-
+            android:layout_marginEnd="0dp" />
 
     </RelativeLayout>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imgPagadorDeuda"
-        android:layout_width="48dp"
-        android:layout_height="72dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="0dp" />
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="?android:attr/listDivider" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -62,7 +62,7 @@ public class DeudasListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_deudas_list, container, false);
+        View root = inflater.inflate(R.layout.fragment_list_deudas, container, false);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();

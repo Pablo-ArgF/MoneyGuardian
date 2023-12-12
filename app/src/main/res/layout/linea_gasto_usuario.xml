@@ -2,19 +2,13 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_weight="1"
-        android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +28,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:contentDescription="@string/app_name"
-            android:theme="@style/Base.Theme.MoneyGuardian"
             app:srcCompat="@mipmap/ic_launcher" />
 
         <LinearLayout
@@ -78,6 +71,14 @@
 
 
         </LinearLayout>
+
     </LinearLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_weight="1"
+        android:background="?android:attr/listDivider" />
 
 </LinearLayout>
