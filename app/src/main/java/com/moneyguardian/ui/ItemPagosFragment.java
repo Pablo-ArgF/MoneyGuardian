@@ -134,11 +134,7 @@ public class ItemPagosFragment extends Fragment {
             deleteButton.setClickable(false);
             if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney()) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0)) {
                 openButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.baseline_done_24, getContext().getTheme()));
-                openButton.setOnClickListener(v -> {
-                    showDialog(v);
-                    openButton.setVisibility(View.GONE);
-                    openButton.setClickable(false);
-                });
+                openButton.setOnClickListener(this::showDialogMain);
             } else {
                 openButton.setVisibility(View.GONE);
                 openButton.setClickable(false);
@@ -147,12 +143,7 @@ public class ItemPagosFragment extends Fragment {
         } else {
             animations.setOnClickAnimationAndVisibility(openButton);
 
-            payButton.setOnClickListener(v -> {
-                showDialog(v);
-                openButton.performClick();
-                payButton.clearAnimation();
-                animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
-            });
+            payButton.setOnClickListener(this::showDialogPay);
 
             deleteButton.setOnClickListener(v -> db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPagoConjunto.getId()).delete().addOnSuccessListener(unused -> {
                 delteItem(root);
@@ -174,13 +165,34 @@ public class ItemPagosFragment extends Fragment {
         return root;
     }
 
-    private void showDialog(View v){
+    private void showDialogMain(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         LayoutInflater inflater = builder.create().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
             marcarComoPagado();
         });
-        builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> {
+            dialog.cancel();
+            openButton.setVisibility(View.GONE);
+            openButton.setClickable(false);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showDialogPay(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        LayoutInflater inflater = builder.create().getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
+            marcarComoPagado();
+        });
+        builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> {
+            dialog.cancel();
+            openButton.performClick();
+            payButton.clearAnimation();
+            animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
+        });
 
         AlertDialog dialog = builder.create();
         dialog.show();
