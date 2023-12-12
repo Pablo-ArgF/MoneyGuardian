@@ -221,6 +221,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                                 }
                         );
                     });
+                } else {
+                    PagosConjuntosUtil.addPagoConjunto(pagoConjunto, usuarioArrayAdapter.getChecked(), pagoConjuntoUUID);
                 }
 
                 Intent intentResult = new Intent();

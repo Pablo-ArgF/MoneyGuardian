@@ -190,8 +190,6 @@ public class PagosConjuntosFragment extends Fragment {
                                         throw new RuntimeException(String.valueOf(R.string.ErrorBaseDatosPago));
                                     }
 
-                                    Log.i("Firebase GET", document1.getData().toString());
-
                                     pagos.add(new PagoConjunto(document1.getId(), nombre, fechaPago, new ArrayList<>(participantes), finalImagen, fechaLimite, itemsPago,
                                             owner));
                                     mainActivity.setPagosConjuntos(pagos);
