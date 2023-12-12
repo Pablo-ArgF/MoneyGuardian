@@ -52,7 +52,6 @@ public class PagosConjuntosFragment extends Fragment {
     private PagosConjuntosListaAdapter pagosConjuntosListaAdapter;
     private MainActivity mainActivity;
     private FirebaseFirestore db;
-    private Uri imagen;
 
 
     public PagosConjuntosFragment() {
@@ -93,7 +92,8 @@ public class PagosConjuntosFragment extends Fragment {
 
 
         ArrayList<PagoConjunto> listaPagosConjuntos = new ArrayList<>();
-        if (this.mainActivity.getPagosConjuntos() == null || mainActivity.getPagosConjuntos().size() == 0) cargarDatos();
+        if (this.mainActivity.getPagosConjuntos() == null || mainActivity.getPagosConjuntos().size() == 0)
+            cargarDatos();
         else listaPagosConjuntos = new ArrayList<>(mainActivity.getPagosConjuntos());
 
         pagosConjuntosListaAdapter = new PagosConjuntosListaAdapter(listaPagosConjuntos, pago -> clickonItem(pago));
@@ -140,9 +140,11 @@ public class PagosConjuntosFragment extends Fragment {
                     db.collection("pagosConjuntos").document(document.getId()).get().addOnSuccessListener(document1 -> {
                         if (document1.getData() != null) {
                             String nombre = (String) document1.getData().get("nombre");
-                            imagen = null;
+                            Uri imagen;
                             if (document1.getData().get("imagen") != null) {
                                 imagen = Uri.parse((String) document1.getData().get("imagen"));
+                            } else {
+                                imagen = null;
                             }
                             Date fechaPago = ((Timestamp) document1.getData().get("fechaPago")).toDate();
                             Date fechaLimite = ((Timestamp) document1.getData().get("fechaLimite")).toDate();
