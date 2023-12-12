@@ -139,7 +139,7 @@ public class ListaAmigosFragment extends Fragment {
 
     private void updateUIGroups() {
         if (gruposAdapter.getItemCount() == 0) {
-            msgNoGroups.setVisibility(View.VISIBLE);
+            //msgNoGroups.setVisibility(View.VISIBLE);
             swipeRefreshLayoutGrupos.setVisibility(View.GONE);
         } else {
             msgNoGroups.setVisibility(View.GONE);
