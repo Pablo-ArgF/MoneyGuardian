@@ -1,40 +1,23 @@
 package com.moneyguardian;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
-import com.moneyguardian.ui.DeudasListFragment;
 import com.moneyguardian.ui.ListaAmigosFragment;
-import com.moneyguardian.ui.ListaGastosFragment;
+import com.moneyguardian.ui.ListasGastosDuedasFragment;
 import com.moneyguardian.ui.MainFragment;
 import com.moneyguardian.ui.PagosConjuntosFragment;
-import com.moneyguardian.userAuth.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     private MainFragment fragmentMain;

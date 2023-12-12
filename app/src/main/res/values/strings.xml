@@ -143,4 +143,5 @@
     <string name="stats_balance_menosQueElMesPasado">%1$.2f€ menos que \n el mes pasado</string>
     <string name="title_barChart">Balance</string>
     <string name="pagada_parte_pregunta">¿Quiere marcar su parte del pago como pagada?</string>
+    <string name="ListaGastos">Lista de gastos</string>
 </resources>
