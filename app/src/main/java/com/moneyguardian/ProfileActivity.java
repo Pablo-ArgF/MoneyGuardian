@@ -290,6 +290,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(v -> {
             auth = FirebaseAuth.getInstance();
+
             auth.signOut();
             Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
             startActivity(i);

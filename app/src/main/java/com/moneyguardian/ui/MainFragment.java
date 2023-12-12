@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.moneyguardian.FormularioGastoActivity;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.ProfileActivity;
@@ -57,6 +58,8 @@ import kotlinx.coroutines.future.FutureKt;
 
 
 public class MainFragment extends Fragment implements LifecycleOwner {
+
+    public ListenerRegistration documentListener; //listener that updates the fragment
     private MainActivity mainActivity;
     private CircleImageView profileBtn;
     private TextView txtWelcome;
@@ -259,11 +262,15 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             startActivity(intent);
         });
 
-
         if(auth.getUid() != null) {
             //listener to get changes on the user be represented here
-            db.collection("users").document(auth.getUid())
+            documentListener = db.collection("users").document(auth.getUid())
                     .addSnapshotListener((value, error) -> {
+                        //if user not authenticated, we detach the listener to the view
+                        if(auth.getUid() == null){
+                            documentListener.remove();
+                            return;
+                        }
                         mainActivity.setUser(UsuarioMapper.mapBasics(value));
                         //we update name and picture if needed
                         updateUserInfo();
@@ -271,6 +278,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         updateAllGastos(value);
                     });
 
+        }else{
+            if(documentListener != null)
+                documentListener.remove();
         }
         return root;
     }
@@ -416,7 +426,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
 
         //we personalize the balance for this month
-        balanceThisMonth.setText(thisMonth + "€");
+        balanceThisMonth.setText(String.format("%.02f€", thisMonth));
         if(thisMonth >= 0)
             balanceThisMonth.setTextColor(getResources().getColor(R.color.green));
         else

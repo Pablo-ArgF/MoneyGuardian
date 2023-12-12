@@ -40,6 +40,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
+import com.moneyguardian.util.Conexion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,12 +91,19 @@ public class LoginActivity extends AppCompatActivity {
         progressbar = findViewById(R.id.progressBar);
         btn_google = findViewById(R.id.googleBtn);
 
+        Conexion con = new Conexion(getApplicationContext());
+
         // Set on Click Listener on Sign-in button
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                loginUserAccount();
+                if(con.compruebaConexion())
+                    loginUserAccount();
+                else //show msg -> no network conection
+                    Toast.makeText(LoginActivity.this,
+                            getText(R.string.error_sin_conexion),
+                            Toast.LENGTH_SHORT).show();
             }
         });
         //For the register one we load the register activity
@@ -157,6 +165,12 @@ public class LoginActivity extends AppCompatActivity {
         btn_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!con.compruebaConexion()) {
+                    Toast.makeText(LoginActivity.this,
+                            getText(R.string.error_sin_conexion),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 oneTapClient.beginSignIn(signUpRequest)
                         .addOnSuccessListener(LoginActivity.this, new OnSuccessListener<BeginSignInResult>() {
                             @Override
@@ -169,6 +183,15 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnFailureListener(LoginActivity.this, new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                if(e.getMessage() != null){
+                                    if(e.getMessage().equals("16: Cannot find a matching credential.")) {
+                                        //the error is because no google account on the device
+                                        Toast.makeText(LoginActivity.this,
+                                                getText(R.string.error_singin_google_noAccountOnDevice),
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
                                 // No Google Accounts found. Just continue presenting the signed-out UI.
                                 Toast.makeText(LoginActivity.this,
                                         getText(R.string.error_singin_google),

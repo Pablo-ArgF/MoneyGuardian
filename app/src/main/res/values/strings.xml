@@ -143,4 +143,6 @@
     <string name="stats_balance_menosQueElMesPasado">%1$.2f€ menos que \n el mes pasado</string>
     <string name="title_barChart">Balance</string>
     <string name="pagada_parte_pregunta">¿Quiere marcar su parte del pago como pagada?</string>
+    <string name="error_sin_conexion">El dispositivo no está conectado a la red</string>
+    <string name="error_singin_google_noAccountOnDevice">No se ha encontrado ninguna cuenta de Google en el dispositivo para iniciar sesión</string>
 </resources>
