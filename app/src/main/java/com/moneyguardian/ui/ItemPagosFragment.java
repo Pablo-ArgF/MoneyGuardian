@@ -180,7 +180,7 @@ public class ItemPagosFragment extends Fragment {
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
             marcarComoPagado();
         });
-        builder.setView(inflater.inflate(R.layout.dialog_delete_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
 
         AlertDialog dialog = builder.create();
         dialog.show();
