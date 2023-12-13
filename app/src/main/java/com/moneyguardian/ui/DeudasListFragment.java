@@ -117,7 +117,7 @@ public class DeudasListFragment extends Fragment {
                         List<DocumentReference> referenciasPagos = (List<DocumentReference>) documentSnapshot.get("pagosConjuntos");
 
                         if (referenciasPagos != null) {
-
+                            ((MainActivity) getActivity()).setLoading(false);
                             for (DocumentReference document : referenciasPagos) {
 
                                 db.collection("pagosConjuntos").document(document.getId()).get().
@@ -197,7 +197,6 @@ public class DeudasListFragment extends Fragment {
                                                                             return null;
                                                                         }
                                                                     });
-
                                                                 }
                                                             });
                                                 }
@@ -205,7 +204,6 @@ public class DeudasListFragment extends Fragment {
                                         }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                ((MainActivity) getActivity()).setLoading(false);
                                                 updateUIGastos();
                                             }
                                         });
