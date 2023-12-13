@@ -133,7 +133,7 @@ public class PagosConjuntosFragment extends Fragment {
 
             List<DocumentReference> referenciasPagos = (List<DocumentReference>) documentSnapshot.get("pagosConjuntos");
 
-            if (referenciasPagos.size() != 0) {
+            if (referenciasPagos != null && referenciasPagos.size() != 0) {
 
                 for (DocumentReference document : referenciasPagos) {
 
