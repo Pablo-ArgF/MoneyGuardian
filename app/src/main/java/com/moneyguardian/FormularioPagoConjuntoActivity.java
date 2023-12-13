@@ -198,6 +198,7 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                 Date dateLimite = fechaLimite.getTime();
 
                 // La fecha se inicializa automáticamente a la actual
+                owner = mAuth.getUid();
                 PagoConjunto pagoConjunto = null;
                 pagoConjunto = new PagoConjunto(pagoConjuntoUUID, nombrePago.getText().toString(), new Date(), new ArrayList<>(participantes), selectedImageUri, dateLimite,
                         itemsPago, owner);
