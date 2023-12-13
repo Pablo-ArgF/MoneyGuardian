@@ -57,7 +57,6 @@ public class ItemPagosFragment extends Fragment {
     private RecyclerView rvBalance;
     private FloatingActionButton openButton;
     private FloatingActionButton editButton;
-    private FloatingActionButton payButton;
     private FloatingActionButton deleteButton;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -66,6 +65,7 @@ public class ItemPagosFragment extends Fragment {
     private Animations animations;
     private ListaBalanceItemAdapter adapter;
     private FirebaseAuth auth;
+    private FloatingActionButton payButton;
 
     public static ItemPagosFragment newInstance(ItemPagoConjunto itemPago, PagoConjunto pagoConjunto) {
         ItemPagosFragment fragment = new ItemPagosFragment();
@@ -96,7 +96,8 @@ public class ItemPagosFragment extends Fragment {
         super.onResume();
         if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid()))
                 && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney()
-                && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0) {
+                && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0
+                && !itemPagoConjunto.getUserThatPays().getId().equals(auth.getUid())) {
             animations.setOtherButtons(Arrays.asList(editButton, deleteButton,payButton));
         } else {
             animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
@@ -127,12 +128,13 @@ public class ItemPagosFragment extends Fragment {
         deleteButton = root.findViewById(R.id.floatingActionButtonItemDelete);
         payButton = root.findViewById(R.id.floatingActionButtonPayItemPago);
 
+
         if (!new UserChecks().checkUser(pagoConjunto.getOwner())) {
             editButton.setVisibility(View.GONE);
             deleteButton.setVisibility(View.GONE);
             editButton.setClickable(false);
             deleteButton.setClickable(false);
-            if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney()) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0)) {
+            if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney()) && (itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0) && !itemPagoConjunto.getUserThatPays().getId().equals(auth.getUid())) {
                 openButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.baseline_done_24, getContext().getTheme()));
                 openButton.setOnClickListener(this::showDialogMain);
             } else {
@@ -165,33 +167,34 @@ public class ItemPagosFragment extends Fragment {
         return root;
     }
 
-    private void showDialogMain(View v){
+    private void showDialogPay(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         LayoutInflater inflater = builder.create().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
             marcarComoPagado();
+            openButton.performClick();
+            payButton.clearAnimation();
+            animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
         });
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> {
             dialog.cancel();
-            openButton.setVisibility(View.GONE);
-            openButton.setClickable(false);
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
-    private void showDialogPay(View v){
+    private void showDialogMain(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         LayoutInflater inflater = builder.create().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
             marcarComoPagado();
+            openButton.setVisibility(View.GONE);
+            openButton.setClickable(false);
         });
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> {
             dialog.cancel();
-            openButton.performClick();
-            payButton.clearAnimation();
-            animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
+
         });
 
         AlertDialog dialog = builder.create();
@@ -209,9 +212,7 @@ public class ItemPagosFragment extends Fragment {
             }
         }
 
-        if (completeUser.getId().equals(itemPagoConjunto.getUserThatPays().getId())) {
-            itemPagoConjunto.getPagos().put(completeUser, itemPagoConjunto.getMoney());
-        } else {
+        if (!completeUser.getId().equals(itemPagoConjunto.getUserThatPays().getId())) {
             itemPagoConjunto.getPagos().put(itemPagoConjunto.getUserThatPays(), pagos.get(itemPagoConjunto.getUserThatPays()) + pagos.get(completeUser));
             itemPagoConjunto.getPagos().put(completeUser, 0.0);
         }
@@ -247,6 +248,7 @@ public class ItemPagosFragment extends Fragment {
             itemPagoConjunto = new ItemPagoConjunto(id, nombre, cantidadesConUsers, userThatPays, cantidadTotal);
             getUserParcelables();
             tvNombreItem.setText(itemPagoConjunto.getNombre());
+            //adapter.upadteList(itemPagoConjunto.getPagos());
         });
 
     }
