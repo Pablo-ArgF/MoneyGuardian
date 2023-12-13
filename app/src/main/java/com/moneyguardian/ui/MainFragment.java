@@ -266,6 +266,14 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             //listener to get changes on the user be represented here
             documentListener = db.collection("users").document(auth.getUid())
                     .addSnapshotListener((value, error) -> {
+                        //if we do not have the context return
+                        if(getContext() == null)
+                            return;
+
+                        if(mainActivity.getGastos().size() ==
+                                ((List<DocumentReference>)value.get("gastos")).size())
+                            return; //if no update in the number of gastos
+
                         //if user not authenticated, we detach the listener to the view
                         if(auth.getUid() == null){
                             documentListener.remove();

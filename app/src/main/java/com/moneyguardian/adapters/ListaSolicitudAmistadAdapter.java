@@ -37,6 +37,10 @@ public class ListaSolicitudAmistadAdapter extends RecyclerView.Adapter<ListaSoli
         listaSolicitudes.clear();
     }
 
+    public boolean contains(Usuario u) {
+        return this.listaSolicitudes.contains(u);
+    }
+
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
         void onAceptarUsuario(Usuario item);

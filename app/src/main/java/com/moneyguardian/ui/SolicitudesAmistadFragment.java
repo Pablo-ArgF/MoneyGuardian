@@ -256,8 +256,10 @@ public class SolicitudesAmistadFragment extends Fragment {
                         if (document != null && document.exists()) {
                             //convertimos este usuario en un Usuario y lo añadimos a la lista
                             Usuario u = UsuarioMapper.mapBasics(task.getResult());
-                            solicitudesAdapter.addSolicitante(u);
-                            listRequests.add(u);
+                            if(!solicitudesAdapter.contains(u)){
+                                solicitudesAdapter.addSolicitante(u);
+                                listRequests.add(u);
+                            }
                         }
                     }
                 }

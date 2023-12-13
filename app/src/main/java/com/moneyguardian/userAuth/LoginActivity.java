@@ -42,6 +42,7 @@ import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.util.Conexion;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -285,6 +286,7 @@ public class LoginActivity extends AppCompatActivity {
         Map<String, Object> user = new HashMap<>();
         user.put("name", mAuth.getCurrentUser().getEmail());
         user.put("email", mAuth.getCurrentUser().getEmail());
+        user.put("gastos",new ArrayList<>());
         user.put("profilePicture", getString(R.string.default_profilePicture));
         db.collection("users")
                 .document(mAuth.getUid())
