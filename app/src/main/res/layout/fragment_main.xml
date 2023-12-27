@@ -6,54 +6,23 @@
     android:layout_height="match_parent">
 
 
-    <RelativeLayout
-        android:id="@+id/nombreYFotoDePerfil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentTop="true"
-        >
 
-        <TextView
-            android:id="@+id/txtWelcome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
-            android:layout_toStartOf="@+id/profileButton"
-            android:fontFamily="@font/roboto_condensed_regular"
-            android:layout_centerVertical="true"
-
-            android:textSize="22sp"
-            />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileButton"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="5dp"
-            app:civ_border_color="@color/blue"
-            app:civ_border_width="2dp" />
-    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/generalInfoContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
-        android:layout_below="@+id/nombreYFotoDePerfil"
         >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             >
 
             <TextView
@@ -63,6 +32,21 @@
                 android:textSize="18sp"
                 android:layout_gravity="center_vertical"/>
 
+            <TextView
+                android:id="@+id/balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:padding="3dp"
+                android:textColor="@color/green"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
             <ImageView
                 android:id="@+id/iconCompareBalance"
                 android:layout_width="35dp"
@@ -73,19 +57,25 @@
                 android:id="@+id/compareBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="5dp"/>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/balance"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:padding="3dp"
-            android:textColor="@color/green"
-            />
+            android:layout_height="match_parent"
+            android:gravity="end">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileButton"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                app:civ_border_color="@color/blue"
+                app:civ_border_width="2dp" />
+        </LinearLayout>
+
+
     </LinearLayout>
 
 

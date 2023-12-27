@@ -62,8 +62,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     public ListenerRegistration documentListener; //listener that updates the fragment
     private MainActivity mainActivity;
     private CircleImageView profileBtn;
-    private TextView txtWelcome;
-    private LinearLayout tipsLayout;
 
 
     private FirebaseAuth auth;
@@ -133,7 +131,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         }
         root = inflater.inflate(R.layout.fragment_main,container, false);
         profileBtn = root.findViewById(R.id.profileButton);
-        txtWelcome = root.findViewById(R.id.txtWelcome);
         balanceThisMonth = root.findViewById(R.id.balance);
         compareBalanceLastMonth = root.findViewById(R.id.compareBalance);
         iconCompareBalanceLastMonth = root.findViewById(R.id.iconCompareBalance);
@@ -460,10 +457,6 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         Glide.with(root.getContext())
                 .load(profileUri)
                 .into(profileBtn);
-
-        //we load the name in the welcome msg
-        txtWelcome.setText( getString(R.string.welcome_msg,
-                mainActivity.getUser().getNombre()));
     }
 
     /**
