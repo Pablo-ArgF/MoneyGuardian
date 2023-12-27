@@ -17,13 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.FormItemsListaPago;
 import com.moneyguardian.R;
@@ -94,11 +93,8 @@ public class ItemPagosFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid()))
-                && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney()
-                && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0
-                && !itemPagoConjunto.getUserThatPays().getId().equals(auth.getUid())) {
-            animations.setOtherButtons(Arrays.asList(editButton, deleteButton,payButton));
+        if (itemPagoConjunto.getPagos().containsKey(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != itemPagoConjunto.getMoney() && itemPagoConjunto.getPagos().get(new UsuarioParaParcelable(auth.getCurrentUser().getUid())) != 0.0 && !itemPagoConjunto.getUserThatPays().getId().equals(auth.getUid())) {
+            animations.setOtherButtons(Arrays.asList(editButton, deleteButton, payButton));
         } else {
             animations.setOtherButtons(Arrays.asList(editButton, deleteButton));
         }
@@ -167,7 +163,7 @@ public class ItemPagosFragment extends Fragment {
         return root;
     }
 
-    private void showDialogPay(View v){
+    private void showDialogPay(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         LayoutInflater inflater = builder.create().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
@@ -184,7 +180,7 @@ public class ItemPagosFragment extends Fragment {
         dialog.show();
     }
 
-    private void showDialogMain(View v){
+    private void showDialogMain(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         LayoutInflater inflater = builder.create().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_pay_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
@@ -213,7 +209,8 @@ public class ItemPagosFragment extends Fragment {
         }
 
         if (!completeUser.getId().equals(itemPagoConjunto.getUserThatPays().getId())) {
-            itemPagoConjunto.getPagos().put(itemPagoConjunto.getUserThatPays(), Math.round((pagos.get(itemPagoConjunto.getUserThatPays()) + pagos.get(completeUser))*100.0)/100.0);
+            itemPagoConjunto.getPagos().put(itemPagoConjunto.getUserThatPays(),
+                    Math.round((pagos.get(itemPagoConjunto.getUserThatPays()) + pagos.get(completeUser)) * 100.0) / 100.0);
             itemPagoConjunto.getPagos().put(completeUser, 0.0);
         }
 
@@ -238,17 +235,30 @@ public class ItemPagosFragment extends Fragment {
             Double cantidadTotal = (Double) result.get("totalDinero");
             HashMap<String, Double> cantidadesConUsersReferences = (HashMap<String, Double>) result.get("UsuariosConPagos");
 
-            for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
+            /*for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
                 cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
             }
-
+*/
             UsuarioParaParcelable userThatPays = new UsuarioParaParcelable((String) result.get("usuarioPago"));
 
+            List<Task<DocumentSnapshot>> taskList = new ArrayList<>();
 
-            itemPagoConjunto = new ItemPagoConjunto(id, nombre, cantidadesConUsers, userThatPays, cantidadTotal);
-            getUserParcelables();
-            tvNombreItem.setText(itemPagoConjunto.getNombre());
-            //adapter.upadteList(itemPagoConjunto.getPagos());
+            cantidadesConUsersReferences.forEach((user,value) -> {
+                taskList.add(db.collection("users").document(user).get());
+            });
+
+            Tasks.whenAllSuccess(taskList).addOnSuccessListener(objects -> {
+
+                for (Object d : objects) {
+                    UsuarioParaParcelable user = (UsuarioMapper.mapBasicsParcelable((DocumentSnapshot) d));
+                    cantidadesConUsers.put(user,cantidadesConUsersReferences.get(user.getId()));
+                }
+
+
+                itemPagoConjunto = new ItemPagoConjunto(id, nombre, cantidadesConUsers, userThatPays, cantidadTotal);
+                tvNombreItem.setText(itemPagoConjunto.getNombre());
+                adapter.upadteList(itemPagoConjunto.getPagos());
+            });
         });
 
     }

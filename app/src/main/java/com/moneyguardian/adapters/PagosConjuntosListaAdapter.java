@@ -32,6 +32,12 @@ public class PagosConjuntosListaAdapter extends RecyclerView.Adapter<PagosConjun
         notifyItemInserted(listaPagosConjuntos.size() - 1);
     }
 
+    public void changeAllList(List<PagoConjunto> newPagos) {
+        listaPagosConjuntos = newPagos;
+        notifyDataSetChanged();
+
+    }
+
     public interface OnItemClickListener {
         void onItemClick(PagoConjunto item);
     }

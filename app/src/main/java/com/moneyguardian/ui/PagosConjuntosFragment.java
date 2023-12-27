@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -36,10 +37,12 @@ import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PagosConjuntosFragment extends Fragment {
 
@@ -52,6 +55,9 @@ public class PagosConjuntosFragment extends Fragment {
     private PagosConjuntosListaAdapter pagosConjuntosListaAdapter;
     private MainActivity mainActivity;
     private FirebaseFirestore db;
+
+    SearchView serachBar;
+    private ArrayList<PagoConjunto> listaPagosConjuntos;
 
 
     public PagosConjuntosFragment() {
@@ -77,6 +83,7 @@ public class PagosConjuntosFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         db = FirebaseFirestore.getInstance();
 
+        serachBar = root.findViewById(R.id.searchPago);
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshPagosConjuntos);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             cargarDatos();
@@ -91,7 +98,7 @@ public class PagosConjuntosFragment extends Fragment {
         listaPagosConjuntosView.setLayoutManager(layoutManager);
 
 
-        ArrayList<PagoConjunto> listaPagosConjuntos = new ArrayList<>();
+        listaPagosConjuntos = new ArrayList<>();
         if (this.mainActivity.getPagosConjuntos() == null || mainActivity.getPagosConjuntos().size() == 0)
             cargarDatos();
         else listaPagosConjuntos = new ArrayList<>(mainActivity.getPagosConjuntos());
@@ -105,6 +112,20 @@ public class PagosConjuntosFragment extends Fragment {
             // Al ser un fragment, hay que usar getActivity para obtener el contexto
             Intent intent = new Intent(getActivity(), FormularioPagoConjuntoActivity.class);
             startActivityForResult(intent, GESTION_ACTIVITY);
+        });
+
+        serachBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                pagosConjuntosListaAdapter.changeAllList((listaPagosConjuntos.stream().filter(pagoConjunto ->
+                        pagoConjunto.getNombre().toLowerCase().contains(newText.toLowerCase())).collect(Collectors.toList())));
+                return true;
+            }
         });
 
         // Inflate the layout for this fragment
@@ -194,8 +215,22 @@ public class PagosConjuntosFragment extends Fragment {
 
                                     pagos.add(new PagoConjunto(document1.getId(), nombre, fechaPago, new ArrayList<>(participantes), finalImagen, fechaLimite, itemsPago,
                                             owner));
+
+                                    pagos.sort(new Comparator<PagoConjunto>() {
+                                        @Override
+                                        public int compare(PagoConjunto o1, PagoConjunto o2) {
+                                            if(o1.getFechaPago().before(o2.getFechaPago())) {
+                                                return 1;
+                                            }else if (o1.getFechaPago().after(o2.getFechaPago())) {
+                                                return -1;
+                                            }
+                                            return 0;
+                                        }
+                                    });
+
                                     mainActivity.setPagosConjuntos(pagos);
                                     pagosConjuntosListaAdapter.updateList(pagos);
+                                    listaPagosConjuntos = pagos;
                                 });
                             });
                         }

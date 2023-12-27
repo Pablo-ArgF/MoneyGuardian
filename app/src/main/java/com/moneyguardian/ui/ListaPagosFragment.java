@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ListaPagosFragment extends Fragment {
 
@@ -58,6 +60,8 @@ public class ListaPagosFragment extends Fragment {
     FloatingActionButton fabDelete;
     FloatingActionButton fabEdit;
     SwipeRefreshLayout swipeRefreshLayout;
+
+    SearchView serachBar;
 
     private MainActivity mainActivity;
     private Uri imagen;
@@ -114,6 +118,7 @@ public class ListaPagosFragment extends Fragment {
         fabDelete = root.findViewById(R.id.floatingActionButtonDeletePagoConjunto);
         fabEdit = root.findViewById(R.id.floatingActionButtonEditPagoConjunto);
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshListaPagos);
+        serachBar = root.findViewById(R.id.searchItemPago);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             updateFromDB();
@@ -137,12 +142,15 @@ public class ListaPagosFragment extends Fragment {
                 mainOpenButton.callOnClick();
             });
             fabDelete.setOnClickListener(this::delete);
-            fabEdit.setOnClickListener(v -> {editPagoConjunto();});
+            fabEdit.setOnClickListener(v -> {
+                editPagoConjunto();
+            });
 
             Animations animations = new Animations(root);
             animations.setOnClickAnimationAndVisibility(mainOpenButton);
             animations.setOtherButtons(Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
         }
+
 
         return root;
     }
@@ -165,6 +173,22 @@ public class ListaPagosFragment extends Fragment {
 
         lpAdapter = new ItemListaAdapter(pagoConjunto.getItems(), this::clickonItem);
         listItemsPagosView.setAdapter(lpAdapter);
+
+        serachBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                lpAdapter.changeAllList((pagoConjunto.getItems().stream().filter(itemPagoConjunto ->
+                        itemPagoConjunto.getNombre().toLowerCase().contains(newText.toLowerCase())).collect(Collectors.toList())));
+                return true;
+            }
+        });
+
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {

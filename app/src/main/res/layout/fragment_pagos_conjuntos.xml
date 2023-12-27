@@ -23,11 +23,19 @@
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
             android:textSize="24sp" />
 
+        <android.widget.SearchView
+            android:id="@+id/searchPago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textNombrePagoConjunto"
+            android:layoutDirection="rtl"
+            />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshPagosConjuntos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textNombrePagoConjunto"
+            android:layout_below="@+id/searchPago"
             android:layout_above="@+id/btnNewPagoConjunto"
             >
 

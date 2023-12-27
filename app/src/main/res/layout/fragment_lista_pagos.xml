@@ -32,11 +32,19 @@
             android:layout_toEndOf="@+id/iconPago"
             android:textSize="22sp" />
 
+        <android.widget.SearchView
+            android:id="@+id/searchItemPago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iconPago"
+            android:layoutDirection="rtl"
+            />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshListaPagos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/iconPago">
+            android:layout_below="@id/searchItemPago">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mainListPagosRecycler"
@@ -100,6 +108,7 @@
             android:visibility="invisible"
             app:backgroundTint="#079C8E"
             app:rippleColor="@color/white" />
+
 
     </RelativeLayout>
 </FrameLayout>
