@@ -115,9 +115,7 @@ public class LinearChartFragment extends AbstractChartFragment {
         xAxis.setValueFormatter(dateXFormatter);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(textSize);
-
-        xAxis.setLabelRotationAngle(-20);
-
+        xAxis.setLabelCount(5,false);
 
         xAxis.setDrawLabels(true);
         xAxis.setDrawGridLines(false);

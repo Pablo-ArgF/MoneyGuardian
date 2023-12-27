@@ -48,6 +48,7 @@ public class IngresosPieChartFragment extends AbstractChartFragment {
         View root = inflater.inflate(R.layout.fragment_ingresos_pie_chart, container, false);
         this.msgNoIngresos =(LinearLayout) root.findViewById(R.id.msg_no_ingresos);
         this.chart = root.findViewById(R.id.pieChartIngresos);
+        chart.setExtraOffsets(18,0,18,0);
         return root;
     }
 

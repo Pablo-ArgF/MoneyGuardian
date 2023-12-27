@@ -48,6 +48,7 @@ public class EstadisticasChartFragment extends AbstractChartFragment {
 
     @Override
     public void updateUI() {
+
         if(getContext() == null)
             return; //avoid no attached to context exceptions
         if(datos.size() == 0)

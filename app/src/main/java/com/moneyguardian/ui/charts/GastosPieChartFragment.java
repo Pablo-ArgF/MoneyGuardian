@@ -46,6 +46,8 @@ public class GastosPieChartFragment extends AbstractChartFragment {
         View root = inflater.inflate(R.layout.fragment_gastos_pie_chart, container, false);
         this.msgNoGastos =(LinearLayout) root.findViewById(R.id.msg_no_gastos);
         this.chart = root.findViewById(R.id.pieChart);
+        chart.setExtraOffsets(18,0,18,0);
+
         return root;
     }
 
@@ -124,8 +126,6 @@ public class GastosPieChartFragment extends AbstractChartFragment {
         if(couldGetColor)
             chart.getLegend().setTextColor(color);
         chart.getLegend().setEnabled(false);
-
-
 
         chart.invalidate(); // refresh
     }

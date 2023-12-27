@@ -23,6 +23,6 @@ public class DateXValueFormatter extends ValueFormatter {
     @Override
     public String getAxisLabel(float value, AxisBase axis) {
         Date d = new Date((long) value);
-        return new SimpleDateFormat("dd/MM/YYYY").format(d);
+        return new SimpleDateFormat("dd/MM/YY").format(d);
     }
 }
