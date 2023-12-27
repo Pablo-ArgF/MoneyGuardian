@@ -20,72 +20,8 @@
             android:text="@string/titulo_seccion_amigos"
             android:textAlignment="center"
             android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tituloListaGrupos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/titulo_grupos_de_amigos"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btnNuevoGrupoAmigos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="@string/nuevo_grupo_amigos" />
-
-        </RelativeLayout>
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshGruposAmigos"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone"
-            >
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerListaGruposAmigos"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-        <LinearLayout
-            android:id="@+id/msgNoGroups"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/imgNoGroups"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/amigos_icon" />
-
-            <TextView
-                android:id="@+id/txtNoGroups"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/no_groups_msg"
-                android:textAlignment="center"
-                android:textSize="17sp" />
-
-        </LinearLayout>
+            android:textStyle="bold"
+            android:layout_marginVertical="14dp"/>
 
 
         <View
@@ -108,7 +44,9 @@
                 android:layout_centerVertical="true"
                 android:text="@string/titulo_lista_de_amigos"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                />
 
             <Button
                 android:id="@+id/btnGestionAmigos"

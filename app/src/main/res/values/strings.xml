@@ -7,15 +7,9 @@
     <string name="PagoConjuntoCosteHint">Coste del pago conjunto</string>
     <string name="FechaPagoConjunto">Fecha pago conjunto</string>
     <string name="AñadirPagoConjunto">Añadir nuevo pago conjunto</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="titulo_lista_de_amigos">Lista de amigos</string>
     <string name="nuevo_amigo">Nuevo amigo</string>
-    <string name="nuevo_grupo_amigos">Nuevo grupo</string>
-    <string name="titulo_grupos_de_amigos">Grupos de amigos</string>
     <string name="amigo">amigo</string>
-    <string name="nombreGrupo">nombre del grupo</string>
-    <string name="participantesGrupo">user1, user2, user 3, user 4, user 5, user 6, user 7, user 8, user 9, user 10</string>
     <string name="NuevoItemPago">Crear nuevo item</string>
     <string name="NuevoPagoConjunto">Nuevo Pago Conjunto</string>
     <string name="nombre">Nombre</string>
@@ -91,7 +85,6 @@
     <string name="question_remove_friend">¿Desea eliminar este amigo?</string>
     <string name="confirm_remove_friend">Eliminar</string>
     <string name="cancel">Cancelar</string>
-    <string name="no_groups_msg">No perteneces a ningún grupo, pulsa \'Nuevo grupo\' para crear tu primer grupo</string>
     <string name="moneyguardian">MoneyGuardian</string>
     <string name="error_upload_pago_image">Se ha producido un error al intentar subir la imagen.</string>
     <string name="ErrorBaseDatosPago">Se ha producido un error intentando obtener el Pago</string>

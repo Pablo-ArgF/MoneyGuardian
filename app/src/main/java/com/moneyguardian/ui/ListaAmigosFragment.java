@@ -23,18 +23,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.MainActivity;
 import com.moneyguardian.R;
 import com.moneyguardian.adapters.ListaAmigosAdapter;
-import com.moneyguardian.adapters.ListaGruposAdapter;
-import com.moneyguardian.modelo.GrupoUsuarios;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.util.AmistadesUtil;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,29 +36,19 @@ import java.util.stream.IntStream;
  * create an instance of this fragment.
  */
 public class ListaAmigosFragment extends Fragment {
-
-    //This view will hand other views the selected items
-    private static final String GRUPO_AMIGOS_SELECCIONADO = "Grupo de amigos seleccionado";
-    private static final String AMIGO_SELECCIONADO = "Amigo seleccionado";
-
-
-    private List<GrupoUsuarios> listaGrupos;
     private List<Usuario> listaAmigos;
 
     private RecyclerView listaAmigosView;
-    private RecyclerView listaGruposView;
     private SwipeRefreshLayout swipeRefreshLayoutAmigos;
-    private SwipeRefreshLayout swipeRefreshLayoutGrupos;
 
     private ListaAmigosAdapter amigosAdapter;
     private Button btnGestionAmigos;
-    private Button btnAddGroup;
     private MainActivity mainActivity;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private LinearLayout msgNoFriends;
     private LinearLayout msgNoGroups;
-    private ListaGruposAdapter gruposAdapter;
+
 
 
     public ListaAmigosFragment() {
@@ -98,7 +82,6 @@ public class ListaAmigosFragment extends Fragment {
     public void onResume() {
         super.onResume();
         cargarListaAmigos();
-        cargarListaGruposAmigos();
         updateUIFriends();
     }
 
@@ -137,15 +120,6 @@ public class ListaAmigosFragment extends Fragment {
         }
     }
 
-    private void updateUIGroups() {
-        if (gruposAdapter.getItemCount() == 0) {
-            //msgNoGroups.setVisibility(View.VISIBLE);
-            swipeRefreshLayoutGrupos.setVisibility(View.GONE);
-        } else {
-            msgNoGroups.setVisibility(View.GONE);
-            swipeRefreshLayoutGrupos.setVisibility(View.VISIBLE);
-        }
-    }
 
     private void cargarListaAmigos() {
         mainActivity.getAmigos().clear();
@@ -186,40 +160,8 @@ public class ListaAmigosFragment extends Fragment {
                 });
     }
 
-    private void cargarListaGruposAmigos() {
-        //TODO cambiar esto por llamada bd
 
 
-        String[] nombresGrupos = {"Amigos de la Universidad", "Familiares", "Compañeros de Trabajo", "Vecinos", "Amigos de la Infancia", "Equipo de Deportes", "Amigos de Club de Lectura", "Compañeros de Clase", "Vecinos de la Calle A", "Amigos de Juegos en Línea"};
-        List usuarios = IntStream.range(0, 30)
-                .mapToObj(i -> new Usuario("a", "Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com", null, null, null))
-                .collect(Collectors.toList());
-        List<List<Usuario>> miembrosGrupos = Arrays.asList(usuarios.subList(0, 3), usuarios.subList(3, 6), usuarios.subList(6, 9), usuarios.subList(9, 12), usuarios.subList(12, 15), usuarios.subList(15, 18), usuarios.subList(18, 21), usuarios.subList(21, 24), usuarios.subList(24, 27), usuarios.subList(27, 30));
-
-
-        listaGrupos = new LinkedList<>();
-        for (int i = 0; i < nombresGrupos.length; i++) {
-            GrupoUsuarios grupo = new GrupoUsuarios(nombresGrupos[i], miembrosGrupos.get(i));
-            listaGrupos.add(grupo);
-        }
-
-
-        updateUIGroups();
-    }
-
-    private void clickonGrupo(GrupoUsuarios grupo) {
-
-        Log.i("Click adapter", "Item Clicked " + grupo.getNombre());
-
-        //Paso el modo de apertura
-        /*
-        //TODO meter aqui si se quiere logica al clickar un grupo
-        Intent intent=new Intent (MainRecyclerActivity.this, ShowMovie.class);
-        intent.putExtra(PELICULA_SELECCIONADA, peli);
-
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-        */
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -227,12 +169,9 @@ public class ListaAmigosFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_lista_amigos, container, false);
         mainActivity = (MainActivity) getActivity();
-        listaGruposView = root.findViewById(R.id.recyclerListaGruposAmigos);
         listaAmigosView = root.findViewById(R.id.recyclerListaAmigos);
         btnGestionAmigos = root.findViewById(R.id.btnGestionAmigos);
-        btnAddGroup = root.findViewById(R.id.btnNuevoGrupoAmigos);
         msgNoFriends = root.findViewById(R.id.msgNoFriends);
-        msgNoGroups = root.findViewById(R.id.msgNoGroups);
         swipeRefreshLayoutAmigos = root.findViewById(R.id.swipeRefreshAmigos);
         swipeRefreshLayoutAmigos.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -241,19 +180,7 @@ public class ListaAmigosFragment extends Fragment {
                 swipeRefreshLayoutAmigos.setRefreshing(false);
             }
         });
-        swipeRefreshLayoutGrupos = root.findViewById(R.id.swipeRefreshGruposAmigos);
-        swipeRefreshLayoutGrupos.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                cargarListaGruposAmigos();
-                swipeRefreshLayoutGrupos.setRefreshing(false);
-            }
-        });
 
-
-        //we add the layout manager to the group list
-        RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(container.getContext());
-        listaGruposView.setLayoutManager(groupLayoutManager);
 
         //we add the layout manager to the friend list
         RecyclerView.LayoutManager friendLayoutManager = new LinearLayoutManager(container.getContext());
@@ -274,15 +201,11 @@ public class ListaAmigosFragment extends Fragment {
                 });
         listaAmigosView.setAdapter(amigosAdapter);
 
-        gruposAdapter = new ListaGruposAdapter(new ArrayList<>(),
-                (grupo) -> {
-                    clickonGrupo(grupo);
-                });
-        listaGruposView.setAdapter(gruposAdapter);
+
 
 
         //cargamos los datos en la vista
-        cargarListaGruposAmigos();
+
         if(mainActivity.getAmigos() == null || mainActivity.getAmigos().size() == 0)
             cargarListaAmigos();
         else
@@ -304,23 +227,6 @@ public class ListaAmigosFragment extends Fragment {
             }
         });
 
-        //por ahora cargamos un listado falso de grupos al apretar para ver la funcionalidad
-        btnAddGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] nombresGrupos = {"Amigos de la Universidad", "Familiares", "Compañeros de Trabajo", "Vecinos", "Amigos de la Infancia", "Equipo de Deportes", "Amigos de Club de Lectura", "Compañeros de Clase", "Vecinos de la Calle A", "Amigos de Juegos en Línea"};
-                List usuarios = IntStream.range(0, 30)
-                        .mapToObj(i -> new Usuario("a", "Usuario " + (i + 1), "usuario" + (i + 1) + "@example.com", null, null, null))
-                        .collect(Collectors.toList());
-                List<List<Usuario>> miembrosGrupos = Arrays.asList(usuarios.subList(0, 3), usuarios.subList(3, 6), usuarios.subList(6, 9), usuarios.subList(9, 12), usuarios.subList(12, 15), usuarios.subList(15, 18), usuarios.subList(18, 21), usuarios.subList(21, 24), usuarios.subList(24, 27), usuarios.subList(27, 30));
-
-                for (int i = 0; i < nombresGrupos.length; i++) {
-                    GrupoUsuarios grupo = new GrupoUsuarios(nombresGrupos[i], miembrosGrupos.get(i));
-                    gruposAdapter.addGrupo(grupo);
-                }
-                updateUIGroups();
-            }
-        });
 
 
         //listener to document changes in the db
@@ -328,7 +234,6 @@ public class ListaAmigosFragment extends Fragment {
                 .addSnapshotListener((value, error) -> {
                     mainActivity.setUser(UsuarioMapper.mapBasics(value));
                     cargarListaAmigos();
-                    cargarListaGruposAmigos();
                 });
 
         return root;
