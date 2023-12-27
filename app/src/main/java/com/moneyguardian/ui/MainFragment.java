@@ -68,10 +68,10 @@ public class MainFragment extends Fragment implements LifecycleOwner {
     private FirebaseFirestore db;
     private View root;
     private FragmentContainerView chartFragmentContainer;
-    private Button btnMenuBarChart;
-    private Button btnMenuGraphLine;
-    private Button btnMenuGraphPieGastos;
-    private Button btnMenuGraphPieIngresos;
+    private TextView btnMenuBarChart;
+    private TextView btnMenuGraphLine;
+    private TextView btnMenuGraphPieGastos;
+    private TextView btnMenuGraphPieIngresos;
     private EstadisticasChartFragment barChartFragment = EstadisticasChartFragment.newInstance(new ArrayList<>());
     private LinearChartFragment linearChartFragment = LinearChartFragment.newInstance(new ArrayList<>());
     private GastosPieChartFragment gastosPieChartFragment = GastosPieChartFragment.newInstance(new ArrayList<>());
@@ -112,8 +112,13 @@ public class MainFragment extends Fragment implements LifecycleOwner {
             updateUserInfo();
 
         currentFragment = linearChartFragment;
-        if(mainActivity.getGastos().size() > 0)
+        if(mainActivity.getGastos().size() > 0) {
             enableChartView();
+            //we mark the all filter as marked
+            markSelectedFilter(filterAll);
+            //we mark as the selected graph the line graph
+            markSelectedGraph(btnMenuGraphLine);
+        }
         else
             showNoChartView();
     }
@@ -150,6 +155,8 @@ public class MainFragment extends Fragment implements LifecycleOwner {
         this.notSelectedColors = filter1Month.getTextColors();
         //we mark the all filter as marked
         markSelectedFilter(filterAll);
+        //we mark as the selected graph the line graph
+        markSelectedGraph(btnMenuGraphLine);
 
 
 
@@ -174,6 +181,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .replace(R.id.chartFragmentContainer, barChartFragment)
                         .commit();
                 markSelectedFilter(filterAll);
+                markSelectedGraph(btnMenuBarChart);
                 currentFragment = barChartFragment;
                 //filter selector to all
                 updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
@@ -189,6 +197,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         .replace(R.id.chartFragmentContainer, linearChartFragment)
                         .commit();
                 markSelectedFilter(filterAll);
+                markSelectedGraph(btnMenuGraphLine);
                 currentFragment = linearChartFragment;
                 //filter selector to all
                 updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
@@ -202,6 +211,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     .replace(R.id.chartFragmentContainer, gastosPieChartFragment)
                     .commit();
             markSelectedFilter(filterAll);
+            markSelectedGraph(btnMenuGraphPieGastos);
             currentFragment = gastosPieChartFragment;
             updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
         });
@@ -212,6 +222,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                     .replace(R.id.chartFragmentContainer, ingresosPieChartFragment)
                     .commit();
             markSelectedFilter(filterAll);
+            markSelectedGraph(btnMenuGraphPieIngresos);
             currentFragment = ingresosPieChartFragment;
             updateFilterOnGraphs(AbstractChartFragment.Filter.ALL);
         });
@@ -288,6 +299,17 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                 documentListener.remove();
         }
         return root;
+    }
+
+    private void markSelectedGraph(TextView graph) {
+        //we mark all as not seleceted
+        btnMenuGraphPieIngresos.setTextColor(notSelectedColors);
+        btnMenuGraphPieGastos.setTextColor(notSelectedColors);
+        btnMenuGraphLine.setTextColor(notSelectedColors);
+        btnMenuBarChart.setTextColor(notSelectedColors);
+
+        //we mark the selected one
+        graph.setTextColor(ContextCompat.getColor(getContext(),R.color.blue));
     }
 
     /**

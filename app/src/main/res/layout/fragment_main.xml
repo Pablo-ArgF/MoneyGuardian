@@ -94,34 +94,52 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_alignParentTop="true"
-            >
 
-            <Button
+            >
+            <TextView
                 android:id="@+id/btn_lineChart"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="@string/title_linear_graph"
-                android:textSize="11sp" />
-            <Button
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+            <TextView
                 android:id="@+id/btn_barChart"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="@string/title_barChart"
-                android:textSize="11sp" />
-
-            <Button
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+            <TextView
                 android:id="@+id/btn_pieChartGastos"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="@string/title_pie_graph_gastos"
-                android:textSize="11sp" />
-
-            <Button
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+            <TextView
                 android:id="@+id/btn_pieChartIngresos"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="@string/title_pie_graph_ingresos"
-                android:textSize="11sp" />
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
         </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView
