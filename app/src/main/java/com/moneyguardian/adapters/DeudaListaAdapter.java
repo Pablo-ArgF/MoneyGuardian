@@ -67,7 +67,7 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
                         // Evita deudas a si mismo
                         if (!owner.getId().equals(user.getId())) {
                             // Evita que el usuario no esté en la deuda
-                            if ((owner.getId().equals(auth.getUid())) || user.getId().equals(auth.getUid()) && users.getValue() > 0) {
+                            if ((owner.getId().equals(auth.getUid())) || user.getId().equals(auth.getUid()) && users.getValue() != 0) {
                                 deudas.add(new DeudaDTO(owner, user, users.getValue()));
                                 notifyItemChanged(deudas.size() - 1);
                                 try {

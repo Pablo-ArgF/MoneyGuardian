@@ -74,7 +74,11 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         for (Gasto g : gastosList) {
             checkedGastos.remove(g);
         }
+        for(Map.Entry<Gasto, Boolean> a : checkedGastos.entrySet()){
+            a.setValue(false);
+        }
         notifyDataSetChanged();
+
     }
 
     public Map<Gasto, Boolean> getCheckedGastos() {

@@ -270,9 +270,9 @@ public class MainFragment extends Fragment implements LifecycleOwner {
                         if(getContext() == null)
                             return;
 
-                        if(mainActivity.getGastos().size() ==
+                        /*if(mainActivity.getGastos().size() ==
                                 ((List<DocumentReference>)value.get("gastos")).size())
-                            return; //if no update in the number of gastos
+                            return; //if no update in the number of gastos*/
 
                         //if user not authenticated, we detach the listener to the view
                         if(auth.getUid() == null){

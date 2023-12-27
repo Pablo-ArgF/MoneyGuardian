@@ -213,7 +213,7 @@ public class ItemPagosFragment extends Fragment {
         }
 
         if (!completeUser.getId().equals(itemPagoConjunto.getUserThatPays().getId())) {
-            itemPagoConjunto.getPagos().put(itemPagoConjunto.getUserThatPays(), pagos.get(itemPagoConjunto.getUserThatPays()) + pagos.get(completeUser));
+            itemPagoConjunto.getPagos().put(itemPagoConjunto.getUserThatPays(), Math.round((pagos.get(itemPagoConjunto.getUserThatPays()) + pagos.get(completeUser))*100.0)/100.0);
             itemPagoConjunto.getPagos().put(completeUser, 0.0);
         }
 
