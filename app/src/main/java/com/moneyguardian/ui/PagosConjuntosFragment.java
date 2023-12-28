@@ -6,11 +6,11 @@ import static androidx.core.util.ObjectsCompat.requireNonNull;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
@@ -37,7 +36,6 @@ import com.moneyguardian.modelo.UsuarioParaParcelable;
 import com.moneyguardian.util.UsuarioMapper;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,12 +50,14 @@ public class PagosConjuntosFragment extends Fragment {
 
     // Modelo de datos
     SwipeRefreshLayout swipeRefreshLayout;
+    SearchView serachBar;
+
+    LinearLayout noPagos;
     private PagosConjuntosListaAdapter pagosConjuntosListaAdapter;
     private MainActivity mainActivity;
     private FirebaseFirestore db;
-
-    SearchView serachBar;
     private ArrayList<PagoConjunto> listaPagosConjuntos;
+    private RecyclerView listaPagosConjuntosView;
 
 
     public PagosConjuntosFragment() {
@@ -89,9 +89,10 @@ public class PagosConjuntosFragment extends Fragment {
             cargarDatos();
             swipeRefreshLayout.setRefreshing(false);
         });
+        noPagos = root.findViewById(R.id.noPagosConjuntos);
 
 
-        RecyclerView listaPagosConjuntosView = root.findViewById(R.id.recyclerPagosConjuntos);
+        listaPagosConjuntosView = root.findViewById(R.id.recyclerPagosConjuntos);
         listaPagosConjuntosView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(root.getContext().getApplicationContext());
@@ -103,7 +104,7 @@ public class PagosConjuntosFragment extends Fragment {
             cargarDatos();
         else listaPagosConjuntos = new ArrayList<>(mainActivity.getPagosConjuntos());
 
-        pagosConjuntosListaAdapter = new PagosConjuntosListaAdapter(listaPagosConjuntos, pago -> clickonItem(pago));
+        pagosConjuntosListaAdapter = new PagosConjuntosListaAdapter(listaPagosConjuntos, this::clickonItem);
 
         listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
 
@@ -141,6 +142,13 @@ public class PagosConjuntosFragment extends Fragment {
             PagoConjunto pagoConjuntoNuevo = requireNonNull(data.getExtras()).getParcelable(PAGO_CONJUNTO_CREADO);
             mainActivity.addPagoCOnjunto(pagoConjuntoNuevo);
             pagosConjuntosListaAdapter.addItem(pagoConjuntoNuevo);
+            if(mainActivity.getPagosConjuntos().isEmpty()){
+                noPagos.setVisibility(View.VISIBLE);
+                listaPagosConjuntosView.setVisibility(View.GONE);
+            }else{
+                noPagos.setVisibility(View.GONE);
+                listaPagosConjuntosView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -176,7 +184,7 @@ public class PagosConjuntosFragment extends Fragment {
 
                             List<UsuarioParaParcelable> participantes = new ArrayList<>();
 
-                            List<Task> taskList = new ArrayList<>();
+                            List<Task<DocumentSnapshot>> taskList = new ArrayList<>();
 
                             users.forEach(user -> {
                                 taskList.add(user.get());
@@ -216,21 +224,20 @@ public class PagosConjuntosFragment extends Fragment {
                                     pagos.add(new PagoConjunto(document1.getId(), nombre, fechaPago, new ArrayList<>(participantes), finalImagen, fechaLimite, itemsPago,
                                             owner));
 
-                                    pagos.sort(new Comparator<PagoConjunto>() {
-                                        @Override
-                                        public int compare(PagoConjunto o1, PagoConjunto o2) {
-                                            if(o1.getFechaPago().before(o2.getFechaPago())) {
-                                                return 1;
-                                            }else if (o1.getFechaPago().after(o2.getFechaPago())) {
-                                                return -1;
-                                            }
-                                            return 0;
+                                    pagos.sort((o1, o2) -> {
+                                        if (o1.getFechaPago().before(o2.getFechaPago())) {
+                                            return 1;
+                                        } else if (o1.getFechaPago().after(o2.getFechaPago())) {
+                                            return -1;
                                         }
+                                        return 0;
                                     });
 
                                     mainActivity.setPagosConjuntos(pagos);
                                     pagosConjuntosListaAdapter.updateList(pagos);
                                     listaPagosConjuntos = pagos;
+                                    noPagos.setVisibility(View.GONE);
+                                    listaPagosConjuntosView.setVisibility(View.VISIBLE);
                                 });
                             });
                         }
@@ -239,6 +246,8 @@ public class PagosConjuntosFragment extends Fragment {
             } else {
                 mainActivity.setPagosConjuntos(new ArrayList<>());
                 pagosConjuntosListaAdapter.updateList(new ArrayList<>());
+                noPagos.setVisibility(View.VISIBLE);
+                listaPagosConjuntosView.setVisibility(View.GONE);
             }
         });
     }

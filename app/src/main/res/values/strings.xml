@@ -145,4 +145,6 @@
     <string name="error_sin_conexion">El dispositivo no está conectado a la red</string>
     <string name="error_singin_google_noAccountOnDevice">No se ha encontrado ninguna cuenta de Google en el dispositivo para iniciar sesión</string>
     <string name="ListaGastos">Lista de gastos</string>
+    <string name="no_items_pago">No tiene ningún item en el pago en conjunto añada uno</string>
+    <string name="no_pago_conjunto">No tiene ningún pago puede aladir uno con el boton de \'Añadir nuevo pago conjunto\'</string>
 </resources>

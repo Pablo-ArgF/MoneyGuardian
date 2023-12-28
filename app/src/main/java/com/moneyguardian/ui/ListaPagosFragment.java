@@ -7,10 +7,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -62,6 +64,7 @@ public class ListaPagosFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
 
     SearchView serachBar;
+    LinearLayout noItemsPago;
 
     private MainActivity mainActivity;
     private Uri imagen;
@@ -119,6 +122,8 @@ public class ListaPagosFragment extends Fragment {
         fabEdit = root.findViewById(R.id.floatingActionButtonEditPagoConjunto);
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshListaPagos);
         serachBar = root.findViewById(R.id.searchItemPago);
+        noItemsPago = root.findViewById(R.id.noItemsPago);
+
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             updateFromDB();
@@ -146,11 +151,11 @@ public class ListaPagosFragment extends Fragment {
                 editPagoConjunto();
             });
 
+
             Animations animations = new Animations(root);
             animations.setOnClickAnimationAndVisibility(mainOpenButton);
             animations.setOtherButtons(Arrays.asList(btnAddNewItem, fabDelete, fabEdit));
         }
-
 
         return root;
     }
@@ -189,6 +194,13 @@ public class ListaPagosFragment extends Fragment {
             }
         });
 
+        if(pagoConjunto.getItems().isEmpty()){
+            noItemsPago.setVisibility(View.VISIBLE);
+            listItemsPagosView.setVisibility(View.GONE);
+        }else{
+            noItemsPago.setVisibility(View.GONE);
+            listItemsPagosView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void clickonItem(ItemPagoConjunto itemPago) {
@@ -205,11 +217,11 @@ public class ListaPagosFragment extends Fragment {
 
         if (resultCode == RESULT_OK && requestCode == GESTION_ACTIVITY) {
             assert data != null;
-            lpAdapter.addItem(requireNonNull(data.getExtras()).getParcelable("NEW_ITEM"));
+            ItemPagoConjunto newItem = data.getExtras().getParcelable("NEW_ITEM");
+            lpAdapter.addItem(requireNonNull(newItem));
         }
 
         if (resultCode == RESULT_OK && requestCode == AVTIVITY_RETURN) {
-
             mainActivity.getPagosConjuntos().remove(pagoConjunto);
             pagoConjunto = data.getExtras().getParcelable("PAGO");
             mainActivity.addPagoCOnjunto(pagoConjunto);
@@ -218,6 +230,14 @@ public class ListaPagosFragment extends Fragment {
 
             if (imagen != null) Picasso.get().load(pagoConjunto.getImagen()).into(ivImagen);
             tvName.setText(pagoConjunto.getNombre());
+        }
+
+        if(lpAdapter.getItemCount() == 0){
+            noItemsPago.setVisibility(View.VISIBLE);
+            listItemsPagosView.setVisibility(View.GONE);
+        }else{
+            noItemsPago.setVisibility(View.GONE);
+            listItemsPagosView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -270,6 +290,13 @@ public class ListaPagosFragment extends Fragment {
             pagoConjunto.setItems(itemsPago);
             listaPagos = itemsPago;
             lpAdapter.changeAllList(itemsPago);
+            if(pagoConjunto.getItems().isEmpty()){
+                noItemsPago.setVisibility(View.VISIBLE);
+                listItemsPagosView.setVisibility(View.GONE);
+            }else{
+                noItemsPago.setVisibility(View.GONE);
+                listItemsPagosView.setVisibility(View.VISIBLE);
+            }
 
         });
 
