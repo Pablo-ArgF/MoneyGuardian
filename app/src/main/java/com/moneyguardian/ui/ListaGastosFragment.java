@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -74,9 +73,18 @@ public class ListaGastosFragment extends Fragment {
         FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
         FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
 
+        FloatingActionButton buttonDelete = root.findViewById(R.id.btnEliminarGasto);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertBorrarGasto();
+            }
+        });
+
         // UI
         animations.setOnClickAnimationAndVisibility(buttonOpen);
         animations.setOtherButtons(Arrays.asList(buttonAddIngreso, buttonAddGasto));
+        animations.setButtonDelete(buttonDelete);
         msgNoGastos = root.findViewById(R.id.msgNoGastos);
 
         // Manejo de refresh
@@ -144,29 +152,6 @@ public class ListaGastosFragment extends Fragment {
                 bundle.putBoolean("Ingreso", false);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, GESTION_GASTO);
-            }
-        });
-
-        /**
-         // Borrado y seleccionado de  gastos
-         CheckBox checkBoxSelectAll = root.findViewById(R.id.cbSelectAllGastos);
-         checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        adapter.selectAll(isChecked);
-        // TODO No funciona
-        View recycler = root.findViewById(R.id.recyclerGastos);
-        CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
-        if (cb != null)
-        cb.setSelected(isChecked);
-        }
-        });
-         */
-
-        Button buttonDelete = root.findViewById(R.id.btnEliminarGasto);
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertBorrarGasto();
             }
         });
 
