@@ -6,11 +6,9 @@ import static androidx.core.util.ObjectsCompat.requireNonNull;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
@@ -19,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -107,7 +105,7 @@ public class PagosConjuntosFragment extends Fragment {
 
         listaPagosConjuntosView.setAdapter(pagosConjuntosListaAdapter);
 
-        Button btnNuevoPago = root.findViewById(R.id.btnNewPagoConjunto);
+        FloatingActionButton btnNuevoPago = root.findViewById(R.id.btnNewPagoConjunto);
         btnNuevoPago.setOnClickListener(v -> {
             // Al ser un fragment, hay que usar getActivity para obtener el contexto
             Intent intent = new Intent(getActivity(), FormularioPagoConjuntoActivity.class);
