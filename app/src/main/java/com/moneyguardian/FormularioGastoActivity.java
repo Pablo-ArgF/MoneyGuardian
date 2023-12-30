@@ -1,21 +1,16 @@
 package com.moneyguardian;
 
-import static java.security.AccessController.getContext;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
-import android.graphics.Color;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -25,7 +20,10 @@ import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,8 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.concurrent.CountDownLatch;
 
 public class FormularioGastoActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -56,34 +53,86 @@ public class FormularioGastoActivity extends AppCompatActivity {
     FlexboxLayout categoryLayout;
     private String selectedCategory;
     private View selectedCategoryView;
+    private TextView textViewNombre;
+    private EditText editTextNombre;
+    private View.OnClickListener categoryListener;
+    private ArrayList<String> categoriasGastos;
+    private ArrayList<String> categoriasIngresos;
+    private TransitionDrawable backgroundAnimationGasto;
+    private TransitionDrawable backgroundAnimationIngreso;
+    private View backgroundView;
+    private TextView menuGasto;
+    private TextView menuIngreso;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
-        // Recogemos la "FLAG" para ver si es un gasto o un ingreso
-        if (b != null) {
-            isIngreso = b.getBoolean("Ingreso");
-        }
+        //listener used when selecting a category
+        categoryListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView   = ((TextView)v.findViewById(R.id.name_category));
+                selectedCategory = textView.getText().toString();
+
+                //we deselect previous category
+                if(selectedCategoryView != null){
+                    ((TextView)selectedCategoryView.findViewById(R.id.name_category))
+                            .setTextColor(getColor(R.color.black));
+                    selectedCategoryView.findViewById(R.id.image_category)
+                            .setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.black)));
+                }
+                //we select this one
+                selectedCategoryView = v;
+                int selectedColor = getColor(R.color.blue);
+                ((TextView)selectedCategoryView.findViewById(R.id.name_category)).setTextColor(selectedColor);
+                selectedCategoryView.findViewById(R.id.image_category)
+                        .setBackgroundTintList(ColorStateList.valueOf(selectedColor));
+            }
+        };
+
         setContentView(R.layout.activity_formulario_gasto);
 
-        TextView textViewNombre = findViewById(R.id.textViewNombreGasto);
-        EditText editTextNombre = findViewById(R.id.nombreGastoNuevo);
+        textViewNombre = findViewById(R.id.textViewNombreGasto);
+        editTextNombre = findViewById(R.id.nombreGastoNuevo);
         categoryLayout = findViewById(R.id.categoryLayout);
-        if (!isIngreso) {
-            // Si es un gasto
-            textViewNombre.setText(R.string.nombreGastoNuevo);
-            editTextNombre.setHint(R.string.nombreGastoNuevo);
-        } else {
-            // Si es un ingreso
-            textViewNombre.setText(R.string.nombreIngresoNuevo);
-            editTextNombre.setHint(R.string.nombreIngresoNuevo);
-        }
-
+        backgroundAnimationGasto = (TransitionDrawable)
+                ContextCompat.getDrawable(this, R.drawable.gastos_animation);
+        backgroundAnimationIngreso = (TransitionDrawable)
+                ContextCompat.getDrawable(this, R.drawable.ingresos_animation);
+        backgroundView = findViewById(R.id.background);
+        menuGasto = findViewById(R.id.menu_gasto);
+        menuIngreso = findViewById(R.id.menu_ingreso);
 
         // Manejo de base de datos
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        // Recogemos la "FLAG" para ver si es un gasto o un ingreso
+        if (b != null) {
+            isIngreso = b.getBoolean("Ingreso");
+            if(isIngreso)
+                selectOptionInMenu(menuIngreso);
+            else
+                selectOptionInMenu(menuGasto);
+        }
+        menuGasto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectOptionInMenu(menuGasto);
+                isIngreso = false;
+                updateView();
+            }
+        });
+        menuIngreso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectOptionInMenu(menuIngreso);
+                isIngreso = true;
+                updateView();
+            }
+        });
 
         Button buttonCreate = findViewById(R.id.buttonCrearGasto);
         buttonCreate.setOnClickListener(new View.OnClickListener() {
@@ -105,9 +154,6 @@ public class FormularioGastoActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         // Manejo de la fecha y el calendario
 
         EditText fechaText = findViewById(R.id.editDateGasto);
@@ -127,68 +173,101 @@ public class FormularioGastoActivity extends AppCompatActivity {
             }
         });
 
-        // Manejo del spinner con las categorías
-        Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
         Query query = null;
+        //we load both types of categories from the db
+        CountDownLatch latch = new CountDownLatch(2);
+
+        Task<QuerySnapshot> queryIngreso = db.collection("categorias/").whereEqualTo("tipo", "ingreso").get();
+        Task<QuerySnapshot> queryGasto = db.collection("categorias/").whereEqualTo("tipo", "gasto").get();
+
+        Tasks.whenAllSuccess(queryIngreso, queryGasto)
+                .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                    @Override
+                    public void onSuccess(List<Object> results) {
+                        // Both queries have completed successfully
+                        categoriasIngresos = new ArrayList<>();
+                        List<DocumentSnapshot> ingresoRefs = ((QuerySnapshot) results.get(0)).getDocuments();
+                        ingresoRefs.forEach(ref -> {
+                            categoriasIngresos.add((String) ref.get("nombre"));
+                        });
+
+                        categoriasGastos = new ArrayList<>();
+                        List<DocumentSnapshot> gastoRefs = ((QuerySnapshot) results.get(1)).getDocuments();
+                        gastoRefs.forEach(ref -> {
+                            categoriasGastos.add((String) ref.get("nombre"));
+                        });
+
+                        // Call updateView here
+                        updateView();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle failure
+                        e.printStackTrace();
+                    }
+                });
+
+    }
+
+    private void selectOptionInMenu(TextView selected) {
+        //deselect all
+        menuGasto.setTextColor(getResources().getColor(R.color.white));
+        menuIngreso.setTextColor(getResources().getColor(R.color.white));
+        menuGasto.setBackground(null);
+        menuIngreso.setBackground(null);
+
+        //select passed one
+        selected.setTextColor(getResources().getColor(R.color.black));
+        selected.setBackground(getResources().getDrawable(R.drawable.white_rounded));
+
+        //reset selected category
+        selectedCategory = null;
+
+    }
+
+    private void updateView() {
+
+        //we update the background fade of the view
         if (isIngreso) {
-            query = db.collection("categorias/").whereEqualTo("tipo", "ingreso");
+            backgroundView.setBackground(backgroundAnimationIngreso);
+            //backgroundAnimationIngreso.startTransition(1000);//TODO
         } else {
-            query = db.collection("categorias/").whereEqualTo("tipo", "gasto");
+            backgroundView.setBackground(backgroundAnimationGasto);
+            //backgroundAnimationGasto.startTransition(1000);
         }
 
+        if (!isIngreso) {
+            // Si es un gasto
+            textViewNombre.setText(R.string.nombreGastoNuevo);
+            editTextNombre.setHint(R.string.nombreGastoNuevo);
+        } else {
+            // Si es un ingreso
+            textViewNombre.setText(R.string.nombreIngresoNuevo);
+            editTextNombre.setHint(R.string.nombreIngresoNuevo);
+        }
 
-        View.OnClickListener categoryListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView textView = ((TextView)v.findViewById(R.id.name_category));
-                selectedCategory = textView.getText().toString();
-                
-                //we deselect previous category
-                if(selectedCategoryView != null){
-                    ((TextView)selectedCategoryView.findViewById(R.id.name_category)).setTextColor(getColor(R.color.black));
-                    selectedCategoryView.findViewById(R.id.image_category)
-                            .setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.black)));
-                }
-                //we select this one
-                selectedCategoryView = v;
-                int selectedColor = getColor(R.color.blue);
-                ((TextView)selectedCategoryView.findViewById(R.id.name_category)).setTextColor(selectedColor);
-                selectedCategoryView.findViewById(R.id.image_category)
-                        .setBackgroundTintList(ColorStateList.valueOf(selectedColor));
-            }
-        };
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<String> categorias = new ArrayList<>();
-                List<DocumentSnapshot> refs = task.getResult().getDocuments();
-                refs.forEach(ref -> {
-                    categorias.add((String) ref.get("nombre"));
-                });
-                /*spCategorias.setAdapter(new ArrayAdapter<String>(getBaseContext(),
-                        android.R.layout.simple_spinner_item, categorias));*/
-                //we add the cards to the categoryLayout
-                for(String category : categorias){
-                    // Inflate the LinearLayout from an XML layout file
-                    View view = LayoutInflater.from(FormularioGastoActivity.this)
-                            .inflate(R.layout.category_card,
+        //we add the cards to the categoryLayout
+        List<String> categorias = isIngreso? categoriasIngresos : categoriasGastos;
+        categoryLayout.removeAllViews(); //we clean the category container
+        for(String category : categorias){
+            // Inflate the LinearLayout from an XML layout file
+            View view = LayoutInflater.from(FormularioGastoActivity.this)
+                    .inflate(R.layout.category_card,
                             categoryLayout, false);
-                    //We add the click listener to the view
-                    view.setOnClickListener(categoryListener);
-                    // Get the TextView from the inflated layout
-                    TextView textView = view.findViewById(R.id.name_category);
-                    // Set the category name as the text of the TextView
-                    textView.setText(category);
-                    //set the image of the category as the icon on the card
-                    view.findViewById(R.id.image_category).setBackgroundDrawable(
-                            getDrawable(GastosUtil.getImageFor(category)));
-                    //We add the view to the layout
-                    categoryLayout.addView(view);
-
-                }
-
-            }
-        });
+            //We add the click listener to the view
+            view.setOnClickListener(categoryListener);
+            // Get the TextView from the inflated layout
+            TextView textView = view.findViewById(R.id.name_category);
+            // Set the category name as the text of the TextView
+            textView.setText(category);
+            //set the image of the category as the icon on the card
+            view.findViewById(R.id.image_category).setBackgroundDrawable(
+                    getDrawable(GastosUtil.getImageFor(category)));
+            //We add the view to the layout
+            categoryLayout.addView(view);
+        }
     }
 
     private Gasto saveGasto() {
@@ -206,10 +285,8 @@ public class FormularioGastoActivity extends AppCompatActivity {
         } else
             fecha = new Date();
 
-        Spinner spCategorias = findViewById(R.id.spinnerCategoriasGasto);
-
         // Guardamos el gasto, con la fecha actual o la establecida por el usuario
-        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, spCategorias.getSelectedItem().toString(), fecha);
+        Gasto gasto = new Gasto(nombre.getText().toString(), balanceFinal, selectedCategory .toString(), fecha);
 
         // Guardamos el gasto en la bd
         gasto = GastosUtil.addGasto(gasto);
