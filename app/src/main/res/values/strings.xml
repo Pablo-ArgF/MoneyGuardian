@@ -138,4 +138,7 @@
     <string name="error_sin_conexion">El dispositivo no está conectado a la red</string>
     <string name="error_singin_google_noAccountOnDevice">No se ha encontrado ninguna cuenta de Google en el dispositivo para iniciar sesión</string>
     <string name="ListaGastos">Lista de gastos</string>
+    <string name="gasto">Gasto</string>
+    <string name="ingreso">Ingreso</string>
+    <string name="error_no_category">Seleccione una categoría</string>
 </resources>
