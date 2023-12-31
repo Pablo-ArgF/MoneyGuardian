@@ -232,10 +232,8 @@ public class FormularioGastoActivity extends AppCompatActivity {
         //we update the background fade of the view
         if (isIngreso) {
             backgroundView.setBackground(backgroundAnimationIngreso);
-            //backgroundAnimationIngreso.startTransition(1000);//TODO
         } else {
             backgroundView.setBackground(backgroundAnimationGasto);
-            //backgroundAnimationGasto.startTransition(1000);
         }
 
         if (!isIngreso) {
