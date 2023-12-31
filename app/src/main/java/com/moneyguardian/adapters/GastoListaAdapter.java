@@ -58,12 +58,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         //we sort the list
         listaGastos.sort((g1, g2) -> g2.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()));
         checkedGastos.put(g, false);
-        Collections.sort(this.listaGastos, new Comparator<Gasto>() {
-            @Override
-            public int compare(Gasto o1, Gasto o2) {
-                return -o1.getFechaCreacionAsDate().compareTo(o2.getFechaCreacionAsDate());
-            }
-        });
+        Collections.sort(this.listaGastos, (o1, o2) -> -o1.getFechaCreacionAsDate().compareTo(o2.getFechaCreacionAsDate()));
         notifyDataSetChanged();
     }
 
