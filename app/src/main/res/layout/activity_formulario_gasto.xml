@@ -14,22 +14,25 @@
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/gastos_ingresos_animation"
-        android:id="@+id/background">
+        android:id="@+id/background"
+        android:layout_marginBottom="20dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/grey_rounded_smooth"
+            android:background="@drawable/dark_grey_rounded"
             android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            android:layout_marginTop="100dp">
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="45dp"
+            android:layout_marginTop="80dp">
 
             <TextView
                 android:id="@+id/menu_gasto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/white_rounded"
-                android:padding="7dp"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="7dp"
                 android:text="@string/gasto"
                 android:textColor="@color/black"
                 android:textSize="15sp"
@@ -39,7 +42,8 @@
                 android:id="@+id/menu_ingreso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="7dp"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="7dp"
                 android:text="@string/ingreso"
                 android:textColor="@color/white"
                 android:textSize="15sp"
@@ -48,104 +52,101 @@
 
         </LinearLayout>
     </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/grey_rounded_smooth"
-            android:padding="20dp"
             >
+
+            <TextView
+                android:id="@+id/textViewNombreGasto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:text="@string/NombreGasto"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/nombreGastoNuevo"
+                android:layout_width="217dp"
+                android:layout_height="49dp"
+                android:ems="10"
+                android:hint="@string/NombreGasto"
+                android:inputType="text"
+                android:textColorHint="@color/grey"
+                />
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:text="@string/Cantidad"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/balanceGastoNuevo"
+                android:layout_width="217dp"
+                android:layout_height="49dp"
+                android:ems="10"
+                android:hint="0,0€"
+                android:inputType="numberDecimal"
+                android:textColorHint="@color/grey"/>
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:text="@string/fecha"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/editDateGasto"
+                android:layout_width="154dp"
+                android:layout_height="50dp"
+                android:focusable="false"
+                android:hint="dd/mm/YYYY"
+                android:inputType="date"
+                android:textColorHint="@color/grey"/>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:text="@string/Categoria"
+                android:textSize="16sp" />
+
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <LinearLayout
+                android:layout_height="230dp"
+                android:padding="10dp"
+                android:background="@drawable/light_grey_rounded"
+                android:layout_marginTop="10dp">
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/categoryLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="@drawable/dark_grey_rounded"
-                    >
-                    <TextView
-                        android:id="@+id/textViewNombreGasto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/NombreGasto"
-                        android:textColor="@color/white"/>
-
-                    <EditText
-                        android:id="@+id/nombreGastoNuevo"
-                        android:layout_width="217dp"
-                        android:layout_height="49dp"
-                        android:ems="10"
-                        android:hint="@string/NombreGasto"
-                        android:inputType="text"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/grey"
-                        />
-
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Cantidad"
-                        android:textColor="@color/white"/>
-
-                    <EditText
-                        android:id="@+id/balanceGastoNuevo"
-                        android:layout_width="294dp"
-                        android:layout_height="59dp"
-                        android:ems="10"
-                        android:hint="0,0€"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/grey"/>
-
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fecha"
-                        android:textColor="@color/white"/>
-
-                    <EditText
-                        android:id="@+id/editDateGasto"
-                        android:layout_width="154dp"
-                        android:layout_height="50dp"
-                        android:focusable="false"
-                        android:hint="dd/mm/YYYY"
-                        android:inputType="date"
-                        android:textColorHint="@color/grey"/>
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Categoria"
-                        android:textColor="@color/white"/>
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/categoryLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:flexDirection="row"
-                        android:background="@drawable/light_grey_rounded"
-                        android:padding="10dp"
-                        app:flexWrap="wrap"
-                        app:justifyContent="flex_start">
-
-
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                    <Button
-                        android:id="@+id/buttonCrearGasto"
-                        android:layout_width="261dp"
-                        android:layout_height="65dp"
-                        android:text="@string/CrearGasto"
-                        android:textColor="@color/white"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="0dp"
-                        />
-                </LinearLayout>
+                    android:layout_height="150dp"
+                    app:flexDirection="row"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    />
             </ScrollView>
+            <Button
+                android:id="@+id/buttonCrearGasto"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/registrar"
+                android:textColor="@color/white"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                />
         </LinearLayout>
+    </ScrollView>
 </LinearLayout>
 

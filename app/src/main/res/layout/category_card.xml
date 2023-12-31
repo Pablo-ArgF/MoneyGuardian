@@ -25,6 +25,7 @@
         android:text="Nombre categoria"
         android:textColor="@color/black"
         android:textAlignment="center"
+        android:lines="2"
         />
 
 
