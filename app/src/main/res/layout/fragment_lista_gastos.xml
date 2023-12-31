@@ -60,7 +60,7 @@
             android:clickable="true"
             android:contentDescription="@string/ContentDescriptionAddGasto"
             android:focusable="true"
-            android:src="@android:drawable/ic_delete"
+            android:src="@android:drawable/ic_menu_delete"
             android:tint="@color/white"
             android:visibility="invisible" />
 
