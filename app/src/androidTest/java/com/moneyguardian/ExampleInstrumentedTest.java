@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-import com.moneyguardian.modelo.GrupoUsuarios;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
@@ -44,7 +43,7 @@ public class ExampleInstrumentedTest {
     private ItemPagoConjunto itemPagoConjunto;
     private final HashMap<UsuarioParaParcelable, Double> testPagos = new HashMap<>();
 
-    private GrupoUsuarios grupoUsuarios;
+
     private final List<Usuario> testUsuarios = new ArrayList<>();
 
 
@@ -54,8 +53,6 @@ public class ExampleInstrumentedTest {
         pagoConjunto = new PagoConjunto("id", testName, testDate, testParticipants, imagen, testDate);
         // Initialize the ItemPagoConjunto object using the constructor
         itemPagoConjunto = new ItemPagoConjunto(UUID.randomUUID().toString(),testName, testPagos,null,0.0);
-        // Initialize the GrupoUsuarios object using the constructor
-        grupoUsuarios = new GrupoUsuarios(testName, testUsuarios);
     }
 
 
@@ -147,41 +144,5 @@ public class ExampleInstrumentedTest {
         assertTrue(createdFromParcel.getPagos().isEmpty());
     }
 
-    @Test
-    public void grupoUsuarios_ParcelableWriteRead() {
-        // Write the data.
-        Parcel parcel = Parcel.obtain();
-        grupoUsuarios.writeToParcel(parcel, grupoUsuarios.describeContents());
-
-        // After writing, reset the parcel for reading.
-        parcel.setDataPosition(0);
-
-        // Read the data.
-        GrupoUsuarios createdFromParcel = GrupoUsuarios.CREATOR.createFromParcel(parcel);
-
-        // Verify the received data.
-        assertEquals(testName, createdFromParcel.getNombre());
-        assertTrue(createdFromParcel.getUsuarios().isEmpty());
-    }
-
-    @Test
-    public void grupoUsuariosNotEmpty_ParcelableWriteRead() {
-        Usuario usuario = new Usuario("id", testName, testEmail, null, new ArrayList<>(), new ArrayList<>());
-        testUsuarios.add(usuario);
-
-        // Write the data.
-        Parcel parcel = Parcel.obtain();
-        grupoUsuarios.writeToParcel(parcel, grupoUsuarios.describeContents());
-
-        // After writing, reset the parcel for reading.
-        parcel.setDataPosition(0);
-
-        // Read the data.
-        GrupoUsuarios createdFromParcel = GrupoUsuarios.CREATOR.createFromParcel(parcel);
-
-        // Verify the received data.
-        assertTrue(!createdFromParcel.getUsuarios().isEmpty());
-        assertEquals(createdFromParcel.getUsuarios().get(0), usuario);
-    }
 
 }
