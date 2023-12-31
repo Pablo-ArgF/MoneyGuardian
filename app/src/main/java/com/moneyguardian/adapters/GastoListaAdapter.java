@@ -20,6 +20,7 @@ import com.moneyguardian.util.GastosUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,19 +44,6 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         this.nightModeFlags = nightModeFlags;
     }
 
-    public void selectAll(Boolean isChecked) {
-        for (Map.Entry<Gasto, Boolean> entry : checkedGastos.entrySet()) {
-            entry.setValue(isChecked);
-        }
-        // TODO la funcionalidad funcina, el marcado de checkboxes, no
-        /**
-         for (Map.Entry<Gasto, CheckBox> entry : checkBoxMap.entrySet()) {
-         entry.getValue().setSelected(isChecked);
-         }
-         notifyDataSetChanged();
-         */
-    }
-
     /**
      * Este método devuelve el número de gastos que tienen el value en el mapa puesto a true
      *
@@ -70,6 +58,12 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         //we sort the list
         listaGastos.sort((g1, g2) -> g2.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()));
         checkedGastos.put(g, false);
+        Collections.sort(this.listaGastos, new Comparator<Gasto>() {
+            @Override
+            public int compare(Gasto o1, Gasto o2) {
+                return -o1.getFechaCreacionAsDate().compareTo(o2.getFechaCreacionAsDate());
+            }
+        });
         notifyDataSetChanged();
     }
 
@@ -78,7 +72,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         for (Gasto g : gastosList) {
             checkedGastos.remove(g);
         }
-        for(Map.Entry<Gasto, Boolean> a : checkedGastos.entrySet()){
+        for (Map.Entry<Gasto, Boolean> a : checkedGastos.entrySet()) {
             a.setValue(false);
         }
         notifyDataSetChanged();
