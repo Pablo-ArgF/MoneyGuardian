@@ -2,7 +2,7 @@ package com.moneyguardian.modelo.dto;
 
 import com.moneyguardian.modelo.UsuarioParaParcelable;
 
-public class DeudaDTO {
+public class DeudaDTO implements Comparable<DeudaDTO> {
 
     private UsuarioParaParcelable usuario;
     private UsuarioParaParcelable pagador;
@@ -36,5 +36,17 @@ public class DeudaDTO {
 
     public void setCantidad(double cantidad) {
         this.cantidad = cantidad;
+    }
+
+    @Override
+    public int compareTo(DeudaDTO o) {
+        int result = 0;
+        if (this.usuario != null && o.getUsuario() != null) {
+            result = this.usuario.compareTo(o.usuario);
+        }
+        if (result == 0 && this.pagador != null && o.getPagador() != null) {
+            result = this.pagador.compareTo(o.getPagador());
+        }
+        return result;
     }
 }
