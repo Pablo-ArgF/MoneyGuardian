@@ -26,12 +26,14 @@
             android:id="@+id/imgNoDeudas"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="clip_horizontal|center|clip_vertical"
             android:src="@drawable/list_empty" />
 
         <TextView
             android:id="@+id/txtNoDeudas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="clip_horizontal|center|clip_vertical"
             android:text="@string/no_deudas"
             android:textAlignment="center"
             android:textSize="17sp" />

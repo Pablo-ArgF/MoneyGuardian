@@ -1,6 +1,7 @@
 package com.moneyguardian.adapters;
 
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.GastoViewHolder> {
 
+    private static int nightModeFlags = Configuration.UI_MODE_NIGHT_NO;
+
     public interface OnItemClickListener {
         void onItemClick(Gasto gasto);
     }
@@ -35,8 +38,9 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     private static Map<Gasto, CheckBox> checkBoxMap = new HashMap<>();
     private List<Gasto> listaGastos;
 
-    public GastoListaAdapter() {
+    public GastoListaAdapter(int nightModeFlags) {
         this.listaGastos = new ArrayList<>();
+        this.nightModeFlags = nightModeFlags;
     }
 
     public void selectAll(Boolean isChecked) {
@@ -129,7 +133,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             nombre.setText(gasto.getNombre());
             fecha.setText(gasto.getFechaCreacion());
 
-            int imageMoney = GastosUtil.getImageFor(gasto);
+            int imageMoney = GastosUtil.getImageFor(gasto.getCategoria(), nightModeFlags);
             imagenGasto.setImageResource(imageMoney);
             imagenGasto.setImageTintList(new ColorStateList(new int[][]{}, new int[]{R.color.white}));
 

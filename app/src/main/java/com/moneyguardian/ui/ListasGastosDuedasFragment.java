@@ -31,13 +31,10 @@ public class ListasGastosDuedasFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
+
         View root = inflater.inflate(R.layout.fragment_listas_gastos_duedas, container, false);
 
 
@@ -48,7 +45,7 @@ public class ListasGastosDuedasFragment extends Fragment {
         btnListaGastos.setTextColor(getResources().getColor(R.color.blue, null));
         this.nonSelectedColor = btnListaDeudas.getTextColors();
         if (currentFragment == 0) {
-            getParentFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).commit();
+            getParentFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).addToBackStack(null).commit();
         }
 
         btnListaGastos.setOnClickListener(new View.OnClickListener() {

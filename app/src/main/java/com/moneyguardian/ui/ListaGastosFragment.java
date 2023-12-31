@@ -3,6 +3,7 @@ package com.moneyguardian.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,7 @@ public class ListaGastosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -93,7 +95,10 @@ public class ListaGastosFragment extends Fragment {
             @Override
             public void onRefresh() {
                 ((MainActivity) getActivity()).setLoading(true);
-                adapter = new GastoListaAdapter();
+
+                int nightModeFlags = getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+                adapter = new GastoListaAdapter(nightModeFlags);
                 recyclerView.setAdapter(adapter);
                 cargarDatos();
                 swipeRefreshLayout.setRefreshing(false);
@@ -110,7 +115,9 @@ public class ListaGastosFragment extends Fragment {
 
         // Para no rehacer el adapter cuando cambiamos de fragment
         if (adapter == null) {
-            adapter = new GastoListaAdapter();
+            int nightModeFlags = getResources().getConfiguration().uiMode &
+                    Configuration.UI_MODE_NIGHT_MASK;
+            adapter = new GastoListaAdapter(nightModeFlags);
         }
 
         // Si el adapter ya existe, lo colocamos
