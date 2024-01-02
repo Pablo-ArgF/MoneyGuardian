@@ -23,67 +23,94 @@
         <TextView
             android:id="@+id/namePagos"
             android:layout_width="match_parent"
-            android:layout_height="27dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="18dp"
             android:layout_toEndOf="@+id/iconPago"
-            android:textSize="22sp" />
+            android:textSize="30sp"
+
+            />
+
+        <View
+            android:id="@+id/dividerItemPagos"
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_below="@+id/iconPago"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:background="?android:attr/listDivider" />
 
         <android.widget.SearchView
             android:id="@+id/searchItemPago"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iconPago"
+            android:layout_below="@+id/dividerItemPagos"
             android:layoutDirection="rtl" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshListaPagos"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/searchItemPago">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_below="@+id/searchItemPago"
+            >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+            <TextView
+                android:id="@+id/itemsSeleccionados"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/items_seleccionados_to_delete"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mainListPagosRecycler"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshListaPagos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp" >
-            </androidx.recyclerview.widget.RecyclerView>
+                android:layout_marginTop="10dp">
 
-            <LinearLayout
-                android:id="@+id/noItemsPago"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_no_items_pago_conjunto" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/mainListPagosRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/no_items_pago"
-                    android:textAlignment="center" />
-            </LinearLayout>
-            </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/noItemsPago"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_no_items_pago_conjunto" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:text="@string/no_items_pago"
+                            android:textAlignment="center" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButtonMainPagoConjunto"

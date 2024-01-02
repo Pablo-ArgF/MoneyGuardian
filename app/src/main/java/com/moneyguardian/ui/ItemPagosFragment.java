@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -143,9 +142,9 @@ public class ItemPagosFragment extends Fragment {
 
             payButton.setOnClickListener(this::showDialogPay);
 
-            deleteButton.setOnClickListener(v -> db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPagoConjunto.getId()).delete().addOnSuccessListener(unused -> {
+            deleteButton.setOnClickListener(v ->{
                 delteItem(root);
-            }));
+            });
 
             editButton.setOnClickListener(v -> {
                 editItemPago();
@@ -223,6 +222,9 @@ public class ItemPagosFragment extends Fragment {
 
         adapter.upadteList(itemPagoConjunto.getPagos());
 
+        if(itemPagoConjunto.isPagado()){
+            getParentFragmentManager().popBackStack();
+        }
     }
 
     private void upadteFromDB() {
@@ -235,15 +237,11 @@ public class ItemPagosFragment extends Fragment {
             Double cantidadTotal = (Double) result.get("totalDinero");
             HashMap<String, Double> cantidadesConUsersReferences = (HashMap<String, Double>) result.get("UsuariosConPagos");
 
-            /*for (Map.Entry<String, Double> user : cantidadesConUsersReferences.entrySet()) {
-                cantidadesConUsers.put(new UsuarioParaParcelable(user.getKey()), user.getValue());
-            }
-*/
             UsuarioParaParcelable userThatPays = new UsuarioParaParcelable((String) result.get("usuarioPago"));
 
             List<Task<DocumentSnapshot>> taskList = new ArrayList<>();
 
-            cantidadesConUsersReferences.forEach((user,value) -> {
+            cantidadesConUsersReferences.forEach((user, value) -> {
                 taskList.add(db.collection("users").document(user).get());
             });
 
@@ -251,7 +249,7 @@ public class ItemPagosFragment extends Fragment {
 
                 for (Object d : objects) {
                     UsuarioParaParcelable user = (UsuarioMapper.mapBasicsParcelable((DocumentSnapshot) d));
-                    cantidadesConUsers.put(user,cantidadesConUsersReferences.get(user.getId()));
+                    cantidadesConUsers.put(user, cantidadesConUsersReferences.get(user.getId()));
                 }
 
 
@@ -298,14 +296,15 @@ public class ItemPagosFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
         LayoutInflater inflater = builder.create().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_delete_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
-            pagoConjunto.getItems().remove(itemPagoConjunto);
-            getParentFragmentManager().popBackStack();
+            db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(itemPagoConjunto.getId()).delete().addOnSuccessListener(unused -> {
+                pagoConjunto.getItems().remove(itemPagoConjunto);
+                getParentFragmentManager().popBackStack();
+            });
         });
         builder.setView(inflater.inflate(R.layout.dialog_delete_question, null)).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
     }
 
     @Override

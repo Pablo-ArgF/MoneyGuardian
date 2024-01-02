@@ -7,7 +7,9 @@
     android:layout_gravity="center"
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_marginTop="5dp"
+    >
 
     <ImageView
         android:id="@+id/imgViewPagoConjunto"

@@ -2,7 +2,7 @@
     <string name="app_name">MoneyGuardian</string>
     <string name="PagosConjuntos">Pagos conjuntos</string>
     <string name="Amigos">Amigos</string>
-    <string name="nombrePagoConjunto">Pagos conjuntos</string>
+    <string name="nombrePagoConjunto">Pagos Conjuntos</string>
     <string name="FechaPago">Fecha del pago</string>
     <string name="PagoConjuntoCosteHint">Coste del pago conjunto</string>
     <string name="FechaPagoConjunto">Fecha pago conjunto</string>
@@ -147,4 +147,9 @@
     <string name="ListaGastos">Lista de gastos</string>
     <string name="no_items_pago">No tiene ningún item en el pago en conjunto añada uno</string>
     <string name="no_pago_conjunto">No tiene ningún pago puede aladir uno con el boton de \'Añadir nuevo pago conjunto\'</string>
+    <string name="item_del_pago_title">Item del Pago</string>
+    <string name="item_ya_pagado_desc">Item ya pagado</string>
+    <string name="items_seleccionados_to_delete">Items Seleccionados</string>
+    <string name="delete_selected_item">¿Quiere eliminar el item seleccionado?</string>
+    <string name="delete_selected_items_plural">¿Quiere eliminar los items seleccionados?</string>
 </resources>

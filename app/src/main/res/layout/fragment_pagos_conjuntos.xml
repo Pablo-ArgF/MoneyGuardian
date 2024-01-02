@@ -22,11 +22,21 @@
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
             android:textSize="24sp" />
 
+        <View
+            android:id="@+id/dividerPagos"
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_below="@+id/textNombrePagoConjunto"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:background="?android:attr/listDivider" />
+
         <android.widget.SearchView
             android:id="@+id/searchPago"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textNombrePagoConjunto"
+            android:layout_below="@+id/dividerPagos"
             android:layoutDirection="rtl" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -34,7 +44,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btnNewPagoConjunto"
-            android:layout_below="@+id/searchPago">
+            android:layout_below="@+id/searchPago"
+            android:layout_marginTop="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

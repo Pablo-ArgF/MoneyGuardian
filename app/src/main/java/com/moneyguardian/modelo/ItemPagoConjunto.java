@@ -105,4 +105,8 @@ public class ItemPagoConjunto implements Parcelable {
     public void setUserThatPays(UsuarioParaParcelable userThatPays) {
         this.userThatPays = userThatPays;
     }
+
+    public boolean isPagado(){
+        return getPagos().get(getUserThatPays()) == 0.0;
+    }
 }
