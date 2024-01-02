@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -31,12 +32,14 @@ import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.Animations;
+import com.moneyguardian.util.BottomFilter;
 import com.moneyguardian.util.GastosUtil;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ListaGastosFragment extends Fragment {
     public static final String GASTO_CREADO = "GASTO_CREADO";
@@ -54,11 +57,13 @@ public class ListaGastosFragment extends Fragment {
     // UI
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout msgNoGastos;
+    private ImageButton filterButton;
+    private List<String> filtrosAplicados;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -88,6 +93,8 @@ public class ListaGastosFragment extends Fragment {
         animations.setOtherButtons(Arrays.asList(buttonAddIngreso, buttonAddGasto));
         animations.setButtonDelete(buttonDelete);
         msgNoGastos = root.findViewById(R.id.msgNoGastos);
+        filterButton = root.findViewById(R.id.filtro_gastos);
+        filtrosAplicados = new ArrayList<>();
 
         // Manejo de refresh
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshGastos);
@@ -159,6 +166,32 @@ public class ListaGastosFragment extends Fragment {
                 bundle.putBoolean("Ingreso", false);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, GESTION_GASTO);
+            }
+        });
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                BottomFilter bottomFilter = new BottomFilter(filtrosAplicados);
+                Callable<Void> callback = new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        filtrosAplicados = bottomFilter.getFiltros();
+                        // Aplicar los filtros desde el adapter
+                        adapter.applyFilters(filtrosAplicados);
+                        if (adapter.getItemCount() == 0) {
+                            msgNoGastos.setVisibility(View.VISIBLE);
+                            swipeRefreshLayout.setVisibility(View.GONE);
+                        }else {
+                            msgNoGastos.setVisibility(View.GONE);
+                            swipeRefreshLayout.setVisibility(View.VISIBLE);
+                        }
+                        return null;
+                    }
+                };
+                bottomFilter.setCallback(callback);
+                bottomFilter.show(getParentFragmentManager(), null);
             }
         });
 

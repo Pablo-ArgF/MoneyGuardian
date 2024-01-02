@@ -31,6 +31,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
 
     private static int nightModeFlags = Configuration.UI_MODE_NIGHT_NO;
 
+
     public interface OnItemClickListener {
         void onItemClick(Gasto gasto);
     }
@@ -38,6 +39,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     private static Map<Gasto, Boolean> checkedGastos = new HashMap<>();
     private static Map<Gasto, CheckBox> checkBoxMap = new HashMap<>();
     private List<Gasto> listaGastos;
+    private List<Gasto> listaCompleta;
 
     public GastoListaAdapter(int nightModeFlags) {
         this.listaGastos = new ArrayList<>();
@@ -51,6 +53,24 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
      */
     public int getNumberOfChecked() {
         return Collections.frequency(checkedGastos.values(), true);
+    }
+
+    public void applyFilters(List<String> filtrosAplicados) {
+        if(this.listaCompleta == null){
+            this.listaCompleta = new ArrayList<>(this.listaGastos);
+        }
+        if (!filtrosAplicados.isEmpty()) {
+            List<Gasto> filteredList = new ArrayList<>();
+            for (Gasto gasto : listaCompleta) {
+                if (filtrosAplicados.contains(gasto.getCategoria())) {
+                    filteredList.add(gasto);
+                }
+            }
+            this.listaGastos = new ArrayList<>(filteredList);
+        } else {
+            this.listaGastos = this.listaCompleta;
+        }
+        notifyDataSetChanged();
     }
 
     public void add(Gasto g) {
