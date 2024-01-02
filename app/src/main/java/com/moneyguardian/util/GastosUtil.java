@@ -1,6 +1,9 @@
 package com.moneyguardian.util;
 
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,28 +66,34 @@ public class GastosUtil {
         return gastoList;
     }
 
-    public static int getImageFor(Gasto gasto) {
-        if (gasto.getCategoria() == null)
-            return gasto.getBalance() > 0 ? R.drawable.ic_money : R.drawable.ic_money_off;
-        switch (gasto.getCategoria()) {
+    public static int getImageFor(String categoria, int nightModeFlags){
+        if(nightModeFlags == Configuration.UI_MODE_NIGHT_YES){
+            return getImageForNightMode(categoria);
+        }
+        return getImageFor(categoria);
+    }
+
+    private static int getImageForNightMode(String categoria) {
+        switch (categoria) {
             case "Alimentación":
-                return R.drawable.ic_alimentacion;
+                return R.drawable.ic_alimentacion_w;
             case "Salud":
-                return R.drawable.ic_salud;
+                return R.drawable.ic_salud_w;
             case "Transporte":
-                return R.drawable.ic_transport;
+                return R.drawable.ic_transporte_w;
             case "Educación":
-                return R.drawable.ic_educacion;
+                return R.drawable.ic_educacion_w;
             case "Trabajo":
-                return R.drawable.ic_trabajo;
+                return R.drawable.ic_trabajo_w;
             case "Ingresos pasivos":
-                return R.drawable.ic_inv_pasivo;
+                return R.drawable.ic_inv_pasivo_w;
             case "Inversion":
-                return R.drawable.ic_inversion;
+                return R.drawable.ic_inversion_w;
             default:
-                return gasto.getBalance() > 0 ? R.drawable.ic_money : R.drawable.ic_money_off;
+                return R.drawable.ic_money_off;
         }
     }
+
 
     public static int getImageFor(String category) {
         switch (category) {

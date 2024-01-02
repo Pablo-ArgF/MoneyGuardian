@@ -7,15 +7,9 @@
     <string name="PagoConjuntoCosteHint">Coste del pago conjunto</string>
     <string name="FechaPagoConjunto">Fecha pago conjunto</string>
     <string name="AñadirPagoConjunto">Añadir nuevo pago conjunto</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="titulo_lista_de_amigos">Lista de amigos</string>
     <string name="nuevo_amigo">Nuevo amigo</string>
-    <string name="nuevo_grupo_amigos">Nuevo grupo</string>
-    <string name="titulo_grupos_de_amigos">Grupos de amigos</string>
     <string name="amigo">amigo</string>
-    <string name="nombreGrupo">nombre del grupo</string>
-    <string name="participantesGrupo">user1, user2, user 3, user 4, user 5, user 6, user 7, user 8, user 9, user 10</string>
     <string name="NuevoItemPago">Crear nuevo item</string>
     <string name="NuevoPagoConjunto">Nuevo Pago Conjunto</string>
     <string name="nombre">Nombre</string>
@@ -91,7 +85,6 @@
     <string name="question_remove_friend">¿Desea eliminar este amigo?</string>
     <string name="confirm_remove_friend">Eliminar</string>
     <string name="cancel">Cancelar</string>
-    <string name="no_groups_msg">No perteneces a ningún grupo, pulsa \'Nuevo grupo\' para crear tu primer grupo</string>
     <string name="moneyguardian">MoneyGuardian</string>
     <string name="error_upload_pago_image">Se ha producido un error al intentar subir la imagen.</string>
     <string name="ErrorBaseDatosPago">Se ha producido un error intentando obtener el Pago</string>
@@ -135,7 +128,7 @@
     <string name="ListaDeudas">Lista de deudas</string>
     <string name="no_gastos">No tienes ningún gasto/ingreso todavía, añade alguno para poder verlos aquí.</string>
     <string name="Categoria">Categoría</string>
-    <string name="nombreGastoNuevo">Nombre del gasto\n</string>
+    <string name="nombreGastoNuevo">Nombre del gasto</string>
     <string name="nombreIngresoNuevo">Nombre del ingreso</string>
     <string name="no_deudas">No tienes ninguna deuda pendiente con ningún usuario.</string>
     <string name="stats_balance_masQueElMesPasado">%1$.2f€ más que \n el mes pasado</string>
@@ -145,6 +138,11 @@
     <string name="error_sin_conexion">El dispositivo no está conectado a la red</string>
     <string name="error_singin_google_noAccountOnDevice">No se ha encontrado ninguna cuenta de Google en el dispositivo para iniciar sesión</string>
     <string name="ListaGastos">Lista de gastos</string>
+    <string name="ContentDescriptionAddPago">Añadir nuevo pago conjunto</string>
+    <string name="gasto">Gasto</string>
+    <string name="ingreso">Ingreso</string>
+    <string name="error_no_category">Seleccione una categoría</string>
+    <string name="registrar">Registrar</string>
     <string name="no_items_pago">No tiene ningún item en el pago en conjunto añada uno</string>
     <string name="no_pago_conjunto">No tiene ningún pago puede aladir uno con el boton de \'Añadir nuevo pago conjunto\'</string>
     <string name="item_del_pago_title">Item del Pago</string>

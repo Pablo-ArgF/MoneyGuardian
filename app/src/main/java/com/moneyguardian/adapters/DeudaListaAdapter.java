@@ -22,6 +22,7 @@ import com.moneyguardian.util.UsuarioMapper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -81,6 +82,8 @@ public class DeudaListaAdapter extends RecyclerView.Adapter<DeudaListaAdapter.De
                 }
             });
         }
+        // Ordenar la lista de gastos
+        Collections.sort(this.deudas);
     }
 
 
