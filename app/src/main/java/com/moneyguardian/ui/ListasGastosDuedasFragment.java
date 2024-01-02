@@ -25,19 +25,17 @@ public class ListasGastosDuedasFragment extends Fragment {
 
     public ListasGastosDuedasFragment() {
         // Required empty public constructor
-        listaGastosFragment = new ListaGastosFragment();
-        deudasListFragmentragment = new DeudasListFragment();
-        currentFragment = 0;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
+
+        listaGastosFragment = new ListaGastosFragment();
+        deudasListFragmentragment = new DeudasListFragment();
+        currentFragment = 0;
+
         View root = inflater.inflate(R.layout.fragment_listas_gastos_duedas, container, false);
 
 
@@ -47,9 +45,11 @@ public class ListasGastosDuedasFragment extends Fragment {
         TextView btnListaDeudas = root.findViewById(R.id.btnListaDeudas);
         btnListaGastos.setTextColor(getResources().getColor(R.color.blue, null));
         this.nonSelectedColor = btnListaDeudas.getTextColors();
+
         if (currentFragment == 0) {
-            getParentFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).commit();
+            getChildFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).addToBackStack(null).commit();
         }
+
 
         btnListaGastos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +58,7 @@ public class ListasGastosDuedasFragment extends Fragment {
                 btnListaDeudas.setTextColor(nonSelectedColor);
                 ((MainActivity) getActivity()).setLoading(false);
                 currentFragment = 1;
-                getParentFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).addToBackStack(null).commit();
+                getChildFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).addToBackStack(null).commit();
             }
         });
 
@@ -68,7 +68,7 @@ public class ListasGastosDuedasFragment extends Fragment {
                 btnListaDeudas.setTextColor(getResources().getColor(R.color.blue, null));
                 btnListaGastos.setTextColor(nonSelectedColor);
                 currentFragment = 2;
-                getParentFragmentManager().beginTransaction().replace(R.id.fragmentListas, deudasListFragmentragment).addToBackStack(null).commit();
+                getChildFragmentManager().beginTransaction().replace(R.id.fragmentListas, deudasListFragmentragment).addToBackStack(null).commit();
             }
         });
 
@@ -80,10 +80,10 @@ public class ListasGastosDuedasFragment extends Fragment {
         super.onResume();
         if (currentFragment == R.layout.fragment_list_deudas) {
             deudasListFragmentragment = new DeudasListFragment();
-            getParentFragmentManager().beginTransaction().replace(R.id.fragmentListas, deudasListFragmentragment).commit();
+            getChildFragmentManager().beginTransaction().replace(R.id.fragmentListas, deudasListFragmentragment).commit();
         } else {
             listaGastosFragment = new ListaGastosFragment();
-            getParentFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).commit();
+            getChildFragmentManager().beginTransaction().replace(R.id.fragmentListas, listaGastosFragment).commit();
         }
     }
 }

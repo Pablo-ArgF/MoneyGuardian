@@ -3,11 +3,12 @@ package com.moneyguardian.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -31,12 +32,14 @@ import com.moneyguardian.R;
 import com.moneyguardian.adapters.GastoListaAdapter;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.Animations;
+import com.moneyguardian.util.BottomFilter;
 import com.moneyguardian.util.GastosUtil;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ListaGastosFragment extends Fragment {
     public static final String GASTO_CREADO = "GASTO_CREADO";
@@ -54,10 +57,13 @@ public class ListaGastosFragment extends Fragment {
     // UI
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout msgNoGastos;
+    private ImageButton filterButton;
+    private List<String> filtrosAplicados;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -74,10 +80,21 @@ public class ListaGastosFragment extends Fragment {
         FloatingActionButton buttonAddIngreso = root.findViewById(R.id.buttonAddIngreso);
         FloatingActionButton buttonAddGasto = root.findViewById(R.id.buttonAddGasto);
 
+        FloatingActionButton buttonDelete = root.findViewById(R.id.btnEliminarGasto);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertBorrarGasto();
+            }
+        });
+
         // UI
         animations.setOnClickAnimationAndVisibility(buttonOpen);
         animations.setOtherButtons(Arrays.asList(buttonAddIngreso, buttonAddGasto));
+        animations.setButtonDelete(buttonDelete);
         msgNoGastos = root.findViewById(R.id.msgNoGastos);
+        filterButton = root.findViewById(R.id.filtro_gastos);
+        filtrosAplicados = new ArrayList<>();
 
         // Manejo de refresh
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshGastos);
@@ -85,7 +102,10 @@ public class ListaGastosFragment extends Fragment {
             @Override
             public void onRefresh() {
                 ((MainActivity) getActivity()).setLoading(true);
-                adapter = new GastoListaAdapter();
+
+                int nightModeFlags = getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+                adapter = new GastoListaAdapter(nightModeFlags);
                 recyclerView.setAdapter(adapter);
                 cargarDatos();
                 swipeRefreshLayout.setRefreshing(false);
@@ -102,7 +122,9 @@ public class ListaGastosFragment extends Fragment {
 
         // Para no rehacer el adapter cuando cambiamos de fragment
         if (adapter == null) {
-            adapter = new GastoListaAdapter();
+            int nightModeFlags = getResources().getConfiguration().uiMode &
+                    Configuration.UI_MODE_NIGHT_MASK;
+            adapter = new GastoListaAdapter(nightModeFlags);
         }
 
         // Si el adapter ya existe, lo colocamos
@@ -147,26 +169,29 @@ public class ListaGastosFragment extends Fragment {
             }
         });
 
-        /**
-         // Borrado y seleccionado de  gastos
-         CheckBox checkBoxSelectAll = root.findViewById(R.id.cbSelectAllGastos);
-         checkBoxSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        adapter.selectAll(isChecked);
-        // TODO No funciona
-        View recycler = root.findViewById(R.id.recyclerGastos);
-        CheckBox cb = recycler.findViewById(R.id.checkBoxGasto);
-        if (cb != null)
-        cb.setSelected(isChecked);
-        }
-        });
-         */
+        filterButton.setOnClickListener(new View.OnClickListener() {
 
-        Button buttonDelete = root.findViewById(R.id.btnEliminarGasto);
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertBorrarGasto();
+                BottomFilter bottomFilter = new BottomFilter(filtrosAplicados);
+                Callable<Void> callback = new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        filtrosAplicados = bottomFilter.getFiltros();
+                        // Aplicar los filtros desde el adapter
+                        adapter.applyFilters(filtrosAplicados);
+                        if (adapter.getItemCount() == 0) {
+                            msgNoGastos.setVisibility(View.VISIBLE);
+                            swipeRefreshLayout.setVisibility(View.GONE);
+                        }else {
+                            msgNoGastos.setVisibility(View.GONE);
+                            swipeRefreshLayout.setVisibility(View.VISIBLE);
+                        }
+                        return null;
+                    }
+                };
+                bottomFilter.setCallback(callback);
+                bottomFilter.show(getParentFragmentManager(), null);
             }
         });
 

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-public class UsuarioParaParcelable implements Parcelable {
+public class UsuarioParaParcelable implements Parcelable, Comparable<UsuarioParaParcelable> {
 
     private String nombre;
     private String email;
@@ -110,16 +110,16 @@ public class UsuarioParaParcelable implements Parcelable {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if(obj == null){
+        if (obj == null) {
             return false;
         }
 
-        if(obj.getClass() != this.getClass()){
+        if (obj.getClass() != this.getClass()) {
             return false;
         }
         UsuarioParaParcelable newUser = (UsuarioParaParcelable) obj;
 
-        if(!newUser.getId().equals(getId())){
+        if (!newUser.getId().equals(getId())) {
             return false;
         }
 
@@ -129,5 +129,17 @@ public class UsuarioParaParcelable implements Parcelable {
     @Override
     public int hashCode() {
         return 1;
+    }
+
+    @Override
+    public int compareTo(UsuarioParaParcelable o) {
+        int result = 0;
+        if (this.id != null && o.getId() != null) {
+            result = this.id.compareTo(o.getId());
+        }
+        if (result == 0) {
+            result = this.email.compareTo(o.getEmail());
+        }
+        return result;
     }
 }

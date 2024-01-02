@@ -191,8 +191,6 @@ public class DeudasListFragment extends Fragment {
                                                                             finalImagen, fechaLimite, itemsPago, owner), new Callable<Void>() {
                                                                         @Override
                                                                         public Void call() throws Exception {
-                                                                            // TODO ¿Funcional approach en Java? Como te quedas
-                                                                            // Ojalá haber hecho esta clase en Kotlin
                                                                             updateUIGastos();
                                                                             return null;
                                                                         }

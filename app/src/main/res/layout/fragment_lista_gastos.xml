@@ -9,29 +9,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnEliminarGasto"
+        <ImageButton
+            android:id="@+id/filtro_gastos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:text="@string/confirm_remove_friend"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.9"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.046" />
+            android:layout_marginStart="337dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="0dp"
+            android:backgroundTint="#00000000"
+            android:bottomLeftRadius="10dp"
+            android:bottomRightRadius="10dp"
+            android:scaleType="fitCenter"
+            android:topLeftRadius="10dp"
+            android:topRightRadius="10dp"
+            app:srcCompat="@drawable/ic_filter_list"
+            app:tint="@color/black" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshGastos"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnEliminarGasto"
-            android:layout_alignParentBottom="true">
+            android:layout_height="667dp"
+            android:layout_below="@+id/imageButton"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="-17dp"
+            android:layout_marginBottom="0dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerGastos"
@@ -45,6 +49,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="5dp" />
+
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -61,6 +66,22 @@
             android:focusable="true"
             android:src="@android:drawable/ic_input_add"
             android:tint="@color/white" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnEliminarGasto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toStartOf="@+id/buttonOpenMenuGastos"
+            android:backgroundTint="@color/red"
+            android:clickable="true"
+            android:contentDescription="@string/ContentDescriptionAddGasto"
+            android:focusable="true"
+            android:src="@android:drawable/ic_menu_delete"
+            android:tint="@color/white"
+            android:visibility="invisible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonAddGasto"

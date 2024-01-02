@@ -1,6 +1,7 @@
 package com.moneyguardian.adapters;
 
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.moneyguardian.util.GastosUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.GastoViewHolder> {
 
+    private static int nightModeFlags = Configuration.UI_MODE_NIGHT_NO;
+
+
     public interface OnItemClickListener {
         void onItemClick(Gasto gasto);
     }
@@ -34,22 +39,11 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
     private static Map<Gasto, Boolean> checkedGastos = new HashMap<>();
     private static Map<Gasto, CheckBox> checkBoxMap = new HashMap<>();
     private List<Gasto> listaGastos;
+    private List<Gasto> listaCompleta;
 
-    public GastoListaAdapter() {
+    public GastoListaAdapter(int nightModeFlags) {
         this.listaGastos = new ArrayList<>();
-    }
-
-    public void selectAll(Boolean isChecked) {
-        for (Map.Entry<Gasto, Boolean> entry : checkedGastos.entrySet()) {
-            entry.setValue(isChecked);
-        }
-        // TODO la funcionalidad funcina, el marcado de checkboxes, no
-        /**
-         for (Map.Entry<Gasto, CheckBox> entry : checkBoxMap.entrySet()) {
-         entry.getValue().setSelected(isChecked);
-         }
-         notifyDataSetChanged();
-         */
+        this.nightModeFlags = nightModeFlags;
     }
 
     /**
@@ -61,11 +55,30 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         return Collections.frequency(checkedGastos.values(), true);
     }
 
+    public void applyFilters(List<String> filtrosAplicados) {
+        if(this.listaCompleta == null){
+            this.listaCompleta = new ArrayList<>(this.listaGastos);
+        }
+        if (!filtrosAplicados.isEmpty()) {
+            List<Gasto> filteredList = new ArrayList<>();
+            for (Gasto gasto : listaCompleta) {
+                if (filtrosAplicados.contains(gasto.getCategoria())) {
+                    filteredList.add(gasto);
+                }
+            }
+            this.listaGastos = new ArrayList<>(filteredList);
+        } else {
+            this.listaGastos = this.listaCompleta;
+        }
+        notifyDataSetChanged();
+    }
+
     public void add(Gasto g) {
         this.listaGastos.add(g);
         //we sort the list
         listaGastos.sort((g1, g2) -> g2.getFechaCreacionAsDate().compareTo(g1.getFechaCreacionAsDate()));
         checkedGastos.put(g, false);
+        Collections.sort(this.listaGastos, (o1, o2) -> -o1.getFechaCreacionAsDate().compareTo(o2.getFechaCreacionAsDate()));
         notifyDataSetChanged();
     }
 
@@ -74,7 +87,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         for (Gasto g : gastosList) {
             checkedGastos.remove(g);
         }
-        for(Map.Entry<Gasto, Boolean> a : checkedGastos.entrySet()){
+        for (Map.Entry<Gasto, Boolean> a : checkedGastos.entrySet()) {
             a.setValue(false);
         }
         notifyDataSetChanged();
@@ -129,7 +142,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             nombre.setText(gasto.getNombre());
             fecha.setText(gasto.getFechaCreacion());
 
-            int imageMoney = GastosUtil.getImageFor(gasto);
+            int imageMoney = GastosUtil.getImageFor(gasto.getCategoria(), nightModeFlags);
             imagenGasto.setImageResource(imageMoney);
             imagenGasto.setImageTintList(new ColorStateList(new int[][]{}, new int[]{R.color.white}));
 

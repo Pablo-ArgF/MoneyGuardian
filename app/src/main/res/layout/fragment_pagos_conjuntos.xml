@@ -33,32 +33,34 @@
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshPagosConjuntos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/searchPago"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_above="@+id/btnNewPagoConjunto"
-            >
+            android:layout_below="@+id/searchPago">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerPagosConjuntos"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
-        <Button
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnNewPagoConjunto"
-            android:layout_width="259dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="51dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="15dp"
-            android:text="@string/AñadirPagoConjunto"
-            android:textSize="16sp" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/blue"
+            android:clickable="true"
+            android:contentDescription="@string/ContentDescriptionAddPago"
+            android:focusable="true"
+            android:src="@android:drawable/ic_input_add"
+            android:tint="@color/white" />
+
 
     </RelativeLayout>
+
 </FrameLayout>
