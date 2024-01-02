@@ -241,16 +241,18 @@ public class ListaPagosFragment extends Fragment {
     }
 
     private void longPress() {
-        ItemListaAdapter.changeSelectMode(true);
-        itemsSeleccionadosTV.setVisibility(View.VISIBLE);
-        itemsSeleccionadosTV.setText(lpAdapter.getItemsPagoSeleccionados().size() + " " + getString(R.string.items_seleccionados_to_delete));
-        if (btnAddNewItem.getVisibility() == View.VISIBLE) {
-            mainOpenButton.performClick();
+        if(new UserChecks().checkUser(pagoConjunto.getOwner())) {
+            ItemListaAdapter.changeSelectMode(true);
+            itemsSeleccionadosTV.setVisibility(View.VISIBLE);
+            itemsSeleccionadosTV.setText(lpAdapter.getItemsPagoSeleccionados().size() + " " + getString(R.string.items_seleccionados_to_delete));
+            if (btnAddNewItem.getVisibility() == View.VISIBLE) {
+                mainOpenButton.performClick();
+            }
+            mainOpenButton.clearAnimation();
+            mainOpenButton.setOnClickListener(this::deleteItemsSlected);
+            mainOpenButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red, getContext().getTheme())));
+            mainOpenButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.ic_menu_delete, getContext().getTheme()));
         }
-        mainOpenButton.clearAnimation();
-        mainOpenButton.setOnClickListener(this::deleteItemsSlected);
-        mainOpenButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red, getContext().getTheme())));
-        mainOpenButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.ic_menu_delete, getContext().getTheme()));
     }
 
     private void deleteItemsSlected(View v) {
@@ -259,10 +261,11 @@ public class ListaPagosFragment extends Fragment {
         builder.setView(inflater.inflate(R.layout.dialog_delete_question, null)).setPositiveButton(R.string.acceptBtn, (dialog, which) -> {
             for(ItemPagoConjunto i : lpAdapter.getItemsPagoSeleccionados()){
                 db.collection("pagosConjuntos").document(pagoConjunto.getId()).collection("itemsPago").document(i.getId()).delete().addOnSuccessListener(unused -> {
-                    pagoConjunto.getItems().remove(i);
-                    lpAdapter.notifyDataSetChanged();
-                    notSelectedItems();
+
                 });
+                pagoConjunto.getItems().remove(i);
+                lpAdapter.notifyDataSetChanged();
+                notSelectedItems();
             }
             ItemListaAdapter.setItemsPagoSeleccionados(new ArrayList<>());
         });

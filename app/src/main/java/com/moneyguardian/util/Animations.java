@@ -38,7 +38,7 @@ public class Animations {
                     fab.setVisibility(View.VISIBLE);
                     fab.setClickable(true);
                 }
-                if (buttonDelete.getVisibility() == View.INVISIBLE) {
+                if (buttonDelete != null && buttonDelete.getVisibility() == View.INVISIBLE) {
                     buttonDelete.startAnimation(toLeft);
                     buttonDelete.setVisibility(View.VISIBLE);
                     buttonDelete.setClickable(true);
@@ -50,9 +50,11 @@ public class Animations {
                     fab.setVisibility(View.INVISIBLE);
                     fab.setClickable(false);
                 }
-                buttonDelete.startAnimation(toRight);
-                buttonDelete.setVisibility(View.INVISIBLE);
-                buttonDelete.setClickable(false);
+                if(buttonDelete != null) {
+                    buttonDelete.startAnimation(toRight);
+                    buttonDelete.setVisibility(View.INVISIBLE);
+                    buttonDelete.setClickable(false);
+                }
                 mainButton.startAnimation(rotateClose);
             }
         });
