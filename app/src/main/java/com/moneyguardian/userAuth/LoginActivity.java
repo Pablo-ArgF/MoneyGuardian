@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.default_web_client_id))
                         // Show all accounts on the device.
-                        .setFilterByAuthorizedAccounts(false)
+                        .setFilterByAuthorizedAccounts(true)
                         .build())
                 .build();
         

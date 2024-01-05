@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "881426924975",
+    "firebase_url": "https://moneguardian-app-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "moneguardian-app",
     "storage_bucket": "moneguardian-app.appspot.com"
   },
@@ -35,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "881426924975-etpv0lisj9l3c2k5bhmd9icvgq26v4j7.apps.googleusercontent.com",
+              "client_id": "881426924975-djg99gp6ebn09tlgf6bnpjmdd27s85ma.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
