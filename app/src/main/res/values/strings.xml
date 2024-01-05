@@ -51,7 +51,7 @@
     <string name="signin">Registrarse</string>
     <string name="error_singin">Correo o contraseña incorrectos, intentelo de nuevo</string>
     <string name="error_singin_google">Error al iniciar sesión con Google</string>
-    <string name="default_web_client_id">881426924975-djg99gp6ebn09tlgf6bnpjmdd27s85ma.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">881426924975-etpv0lisj9l3c2k5bhmd9icvgq26v4j7.apps.googleusercontent.com</string>
     <string name="logout">Cerrar sesión</string>
     <string name="error_singin_usedMail">El correo usado ya está registrado</string>
     <string name="error_db_add_user">Error al registrar al usuario</string>
