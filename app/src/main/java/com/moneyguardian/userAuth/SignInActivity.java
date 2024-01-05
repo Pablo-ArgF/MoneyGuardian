@@ -158,6 +158,7 @@ public class SignInActivity  extends AppCompatActivity {
         user.put("friends",new ArrayList<>());
         user.put("friendRequests",new ArrayList<>());
         user.put("gastos",new ArrayList<>());
+        user.put("pagosConjuntos",new ArrayList<>());
 
         db.collection("users")
                 .document(mAuth.getUid())

@@ -287,6 +287,7 @@ public class LoginActivity extends AppCompatActivity {
         user.put("name", mAuth.getCurrentUser().getEmail());
         user.put("email", mAuth.getCurrentUser().getEmail());
         user.put("gastos",new ArrayList<>());
+        user.put("pagosConjuntos",new ArrayList<>());
         user.put("profilePicture", getString(R.string.default_profilePicture));
         db.collection("users")
                 .document(mAuth.getUid())
