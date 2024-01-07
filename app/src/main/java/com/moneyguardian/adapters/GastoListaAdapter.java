@@ -142,7 +142,7 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
             nombre.setText(gasto.getNombre());
             fecha.setText(gasto.getFechaCreacion());
 
-            int imageMoney = GastosUtil.getImageFor(gasto.getCategoria(), nightModeFlags);
+            int imageMoney = GastosUtil.getImageFor(gasto.getCategoria());
             imagenGasto.setImageResource(imageMoney);
             imagenGasto.setImageTintList(new ColorStateList(new int[][]{}, new int[]{R.color.white}));
 
