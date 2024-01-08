@@ -22,8 +22,7 @@
             android:scaleType="fitCenter"
             android:topLeftRadius="10dp"
             android:topRightRadius="10dp"
-            app:srcCompat="@drawable/ic_filter_list"
-            app:tint="@color/black" />
+            app:srcCompat="@drawable/ic_filter_list" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshGastos"
