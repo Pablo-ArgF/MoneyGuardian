@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.R;
+import com.moneyguardian.modelo.DeudaDTO;
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
-import com.moneyguardian.modelo.dto.DeudaDTO;
 import com.moneyguardian.util.UsuarioMapper;
 import com.squareup.picasso.Picasso;
 

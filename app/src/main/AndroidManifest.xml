@@ -38,10 +38,7 @@
             android:exported="false"
             android:label="@string/title_activity_signin"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".SocialActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ProfileActivity"
             android:exported="true"

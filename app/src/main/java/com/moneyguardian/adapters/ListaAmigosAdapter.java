@@ -1,7 +1,5 @@
 package com.moneyguardian.adapters;
 
-import static java.security.AccessController.getContext;
-
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -18,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Usuario;
 
-import java.security.AccessControlContext;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -1,12 +1,8 @@
 package com.moneyguardian.util;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UsuarioMapper {
 

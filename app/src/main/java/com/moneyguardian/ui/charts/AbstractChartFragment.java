@@ -1,17 +1,12 @@
 package com.moneyguardian.ui.charts;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

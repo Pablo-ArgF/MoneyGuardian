@@ -6,7 +6,6 @@
         android:fromXDelta="0%"
         android:toXDelta="-25%" />
 
-    <!-- TODO error en la escala y el alpha -->
     <scale
         android:pivotX="50%"
         android:pivotY="50%"

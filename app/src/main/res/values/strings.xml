@@ -150,4 +150,5 @@
     <string name="items_seleccionados_to_delete">Items Seleccionados</string>
     <string name="delete_selected_item">¿Quiere eliminar el item seleccionado?</string>
     <string name="delete_selected_items_plural">¿Quiere eliminar los items seleccionados?</string>
+    <string name="error_no_users_pago_conjunto">Debe haber como mínimo otro usuario en el pago</string>
 </resources>

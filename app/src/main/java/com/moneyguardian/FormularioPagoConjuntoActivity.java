@@ -67,7 +67,6 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
                     // Para saber que la imagen está colocada y no es la default
                     this.isImageSet = true;
                 } catch (IOException ef) {
-                    // TODO
                     ef.printStackTrace();
                 }
                 IVPreviewImage.setImageBitmap(selectedImageBitmap);
@@ -271,10 +270,8 @@ public class FormularioPagoConjuntoActivity extends AppCompatActivity {
 
         // Si no hay, como mínimo, otro usuario en el pago, no dejamos que se efectue
         if (!usuarioArrayAdapter.atLeastOneUserSelected()) {
-            // TODO: al ser un text view, no deja ver cual es el error
             TextView usuarios = findViewById(R.id.textViewParticipantes);
-            // TODO sacarlo al strings.xml?
-            usuarios.setError("Debe haber como mínimo otro usuario en el pago");
+            usuarios.setError(getString(R.string.error_no_users_pago_conjunto));
             return false;
         }
 

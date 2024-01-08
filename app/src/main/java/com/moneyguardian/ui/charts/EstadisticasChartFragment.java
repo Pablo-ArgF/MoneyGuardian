@@ -12,23 +12,20 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.github.mikephil.charting.charts.BarChart;
-
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 

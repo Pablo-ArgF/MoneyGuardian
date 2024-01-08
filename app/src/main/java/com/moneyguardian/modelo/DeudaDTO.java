@@ -1,6 +1,4 @@
-package com.moneyguardian.modelo.dto;
-
-import com.moneyguardian.modelo.UsuarioParaParcelable;
+package com.moneyguardian.modelo;
 
 public class DeudaDTO implements Comparable<DeudaDTO> {
 

@@ -232,6 +232,8 @@ public class ListaAmigosFragment extends Fragment {
         //listener to document changes in the db
         db.collection("users").document(auth.getUid())
                 .addSnapshotListener((value, error) -> {
+                    if(auth.getUid() == null)
+                        return;
                     mainActivity.setUser(UsuarioMapper.mapBasics(value));
                     cargarListaAmigos();
                 });

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgUsuarioSolicitud"
@@ -41,7 +39,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/circle_button"
             android:src="@drawable/equis"
-            android:tint="@color/red" />
+            app:tint="@color/red" />
 
         <ImageButton
             android:id="@+id/btnAceptarSolicitud"
@@ -50,7 +48,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/circle_button"
             android:src="@drawable/baseline_done_24"
-            android:tint="@color/green" />
+            app:tint="@color/green" />
 
     </LinearLayout>
 

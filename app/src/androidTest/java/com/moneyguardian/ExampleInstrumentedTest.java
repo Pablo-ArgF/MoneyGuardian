@@ -1,22 +1,23 @@
 package com.moneyguardian;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.moneyguardian.modelo.ItemPagoConjunto;
 import com.moneyguardian.modelo.PagoConjunto;
 import com.moneyguardian.modelo.Usuario;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Date;

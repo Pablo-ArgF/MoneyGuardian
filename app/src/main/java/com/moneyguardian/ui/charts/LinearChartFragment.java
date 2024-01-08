@@ -2,8 +2,6 @@ package com.moneyguardian.ui.charts;
 
 import android.os.Build;
 import android.os.Bundle;
-
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,22 +9,18 @@ import android.view.ViewGroup;
 
 import androidx.core.content.ContextCompat;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.Gasto;
 import com.moneyguardian.util.DateXValueFormatter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class LinearChartFragment extends AbstractChartFragment {

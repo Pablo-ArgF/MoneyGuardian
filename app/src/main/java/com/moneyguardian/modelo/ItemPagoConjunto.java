@@ -1,10 +1,7 @@
 package com.moneyguardian.modelo;
 
-import static java.lang.Math.abs;
-
 import android.os.Parcel;
 import android.os.Parcelable;
-
 
 import java.util.HashMap;
 

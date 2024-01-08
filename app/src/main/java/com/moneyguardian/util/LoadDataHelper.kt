@@ -3,16 +3,13 @@
 package com.moneyguardian.util
 
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.moneyguardian.modelo.Gasto
-import com.moneyguardian.modelo.UsuarioParaParcelable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.function.Consumer
 
 class LoadDataHelper {
 

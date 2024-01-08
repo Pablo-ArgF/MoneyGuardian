@@ -1,7 +1,5 @@
 package com.moneyguardian.util;
 
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.moneyguardian.modelo.Gasto;
 

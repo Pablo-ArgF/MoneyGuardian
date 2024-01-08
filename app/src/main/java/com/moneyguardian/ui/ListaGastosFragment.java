@@ -35,7 +35,6 @@ import com.moneyguardian.util.Animations;
 import com.moneyguardian.util.BottomFilter;
 import com.moneyguardian.util.GastosUtil;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

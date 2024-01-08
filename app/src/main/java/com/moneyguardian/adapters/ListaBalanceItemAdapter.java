@@ -10,10 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.R;
 import com.moneyguardian.modelo.UsuarioParaParcelable;
-import com.moneyguardian.util.UsuarioMapper;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;

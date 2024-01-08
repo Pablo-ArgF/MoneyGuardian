@@ -1,14 +1,9 @@
 package com.moneyguardian.util;
 
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moneyguardian.R;
@@ -19,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import kotlin.NotImplementedError;
 
 public class GastosUtil {
 

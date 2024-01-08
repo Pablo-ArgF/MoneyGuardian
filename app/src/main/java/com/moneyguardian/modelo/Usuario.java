@@ -3,17 +3,14 @@ package com.moneyguardian.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
 import java.util.List;
-import java.util.Objects;
 
 public class Usuario implements Parcelable {
 
     private String nombre;
     private String correo;
     private List<UsuarioParaParcelable> amigos;
-    private List<PagoConjunto> misPagosConjuntos; //TODO esto no creo que lo haya que tener
+    private List<PagoConjunto> misPagosConjuntos;
     private String uriImg;
     private String id;
 
