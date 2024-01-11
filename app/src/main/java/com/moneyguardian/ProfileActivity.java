@@ -65,8 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-
-        userImageRef = storage.getReference()
+        if(auth.getUid() != null)
+            userImageRef = storage.getReference()
                 .child("users/"+auth.getCurrentUser().getUid()+".jpg");
 
         btnEditPicture = findViewById(R.id.btnEditProfilePic);
