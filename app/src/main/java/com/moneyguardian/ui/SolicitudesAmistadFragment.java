@@ -196,8 +196,9 @@ public class SolicitudesAmistadFragment extends Fragment {
         //listener for changes in the friendRequests
         db.collection("users").document(auth.getUid())
                 .addSnapshotListener((value, error) -> {
-                    //we reload the friend requests
-                    showFriendRequestsFromDocument(value);
+                    if(auth.getUid() != null)
+                        //we reload the friend requests
+                        showFriendRequestsFromDocument(value);
                 });
 
         return root;
