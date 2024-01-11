@@ -144,7 +144,7 @@
     <string name="error_no_category">Seleccione una categoría</string>
     <string name="registrar">Registrar</string>
     <string name="no_items_pago">No tiene ningún item en el pago en conjunto añada uno</string>
-    <string name="no_pago_conjunto">No tiene ningún pago puede aladir uno con el boton de \'Añadir nuevo pago conjunto\'</string>
+    <string name="no_pago_conjunto">No tiene ningún pago conjunto, añada uno para verlo aquí</string>
     <string name="item_del_pago_title">Item del Pago</string>
     <string name="item_ya_pagado_desc">Item ya pagado</string>
     <string name="items_seleccionados_to_delete">Items Seleccionados</string>
