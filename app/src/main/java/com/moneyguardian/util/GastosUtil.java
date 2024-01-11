@@ -1,7 +1,5 @@
 package com.moneyguardian.util;
 
-import android.content.res.Configuration;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -66,7 +64,7 @@ public class GastosUtil {
             case "Salud":
                 return R.drawable.ic_salud;
             case "Transporte":
-                return R.drawable.ic_transport;
+                return R.drawable.ic_transporte;
             case "Educación":
                 return R.drawable.ic_educacion;
             case "Trabajo":
