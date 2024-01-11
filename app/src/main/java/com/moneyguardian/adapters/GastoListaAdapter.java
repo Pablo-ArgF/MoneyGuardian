@@ -88,6 +88,9 @@ public class GastoListaAdapter extends RecyclerView.Adapter<GastoListaAdapter.Ga
         for (Map.Entry<Gasto, Boolean> a : checkedGastos.entrySet()) {
             a.setValue(false);
         }
+        for(Map.Entry<Gasto,CheckBox> checks : checkBoxMap.entrySet()){
+            checks.getValue().setChecked(false);
+        }
         notifyDataSetChanged();
 
     }

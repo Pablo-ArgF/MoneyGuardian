@@ -517,7 +517,7 @@ public class MainFragment extends Fragment implements LifecycleOwner {
 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.chartFragmentContainer, noChartFragment)
-                .commit();
+                .commitAllowingStateLoss(); //this allows to change even if state of mainactivity is paused
 
         //we disable the buttons to change the graph
         btnMenuBarChart.setEnabled(false);
